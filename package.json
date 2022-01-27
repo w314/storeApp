@@ -1,0 +1,26 @@
+{
+  "name": "storeApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run build && node dist/server.js",
+    "build": "npx tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/w314/storeApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/w314/storeApp/issues"
+  },
+  "homepage": "https://github.com/w314/storeApp#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  }
+}

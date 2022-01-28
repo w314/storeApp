@@ -85,15 +85,54 @@ npx tsc --init
   ```
 Running `npm start` should log "Hello World".
 
+#### Add `eslint` and `prettier`
 
+1. Install
+```bash
+npm i --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
+npm i --save-dev prettier eslint-config-prettier eslint-plugin-prettier
+```
 
-#### Add `prettier`
+2. Add configuration files
 
+In project root directory:
 
+  ```bash
+  echo '{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint",
+      "prettier"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier"
+    ],
+    "rules": {
+      "no-console": "off",
+      "prettier/prettier": 2 // Means error
+    }
+  }
+  ' > .eslintrc
+  ```
+  
+  ```bash
+  echo '{
+    "semi": true,
+    "singleQuote": true
+  }' > .prettierrc
+  ```
 
+  3. Add scripts to `package.json`
 
-- 
-
-- set up git `git init`
-- add remote repository `git remote add <remote-repository>`
+  In `package.json` under `scripts` add:
+  ```javascript
+  "scripts": {
+    "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
+  },
+  ```
 

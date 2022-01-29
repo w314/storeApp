@@ -176,5 +176,38 @@ npm i --save-dev tsc-watch
 Starting server with `npm run devStart`, opening th e browser at `localhost:3000` the page should display: "Application Starting Page"
 
 
+#### Add `dotenv` to handle environment variables
+1. Install
+```bash
+npm i dotenv
+```
 
+2. Create .env file to store environment variables
+```bash
+touch .env
+```
+
+3. Add `.env` file to `.gitignore` to keep sensitive information local
+```bash
+echo .env >> .gitignore
+```
+
+
+
+#### Add `node-postgres`
+node-postgres is a collection of node.js modules for interfacing with your PostgreSQL database. It has support for callbacks, promises, async/await, connection pooling, prepared statements, cursors, streaming results, C/C++ bindings, rich type parsing, and more.
+
+1. Install
+```bash
+npm i pg
+npm i --save-dev @types/pg 
+```
+2. Connect App to Postgres database
+Create file to handle connection.
+```bash
+touch src/database.ts
+```
+Add code to file:
+```typescript
+import 
 

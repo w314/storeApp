@@ -186,12 +186,27 @@ npm i dotenv
 ```bash
 touch .env
 ```
+Add variables to your `.env` file:
+```bash
+POSTGRES_DB=plants
+```
 
 3. Add `.env` file to `.gitignore` to keep sensitive information local
 ```bash
-echo .env >> .gitignore
+echo ".env" >> .gitignore
 ```
+4. Initialize environment variables in your program
+```typescript
+dotenv.config()
+```
+`dotenv.config()`  will create a javascript object called `process.env` which will have all the environment variables as properties.
 
+```typescript
+//environment variables can be accessed like:
+process.env.POSTGRES_DB
+// or
+const { POSTGRES_DB } = process.env;
+```
 
 
 #### Add `node-postgres`
@@ -209,5 +224,28 @@ touch src/database.ts
 ```
 Add code to file:
 ```typescript
-import 
+import dotenv from 'dotenv'
+import { Pool } from 'pg'
+
+
+// intializing the environment variables
+dotenv.config()
+
+const {
+    POSTGRES_HOST,
+    POSTGRES_DB,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+} = process.env
+
+// connect to database
+const client = new Pool({
+    host: POSTGRES_HOST,
+    database: POSTGRES_DB,
+    user: POSTGRES_USER,
+    password: POSTGRES_PASSWORD,
+})
+
+export default client;
+```
 

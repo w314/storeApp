@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import { Pool } from 'pg'
 
 
-// setup variables for db connection
+// intializing the environment variables
 dotenv.config()
 
 const {

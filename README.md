@@ -176,6 +176,30 @@ npm i --save-dev tsc-watch
 Starting server with `npm run devStart`, opening th e browser at `localhost:3000` the page should display: "Application Starting Page"
 
 
+#### Create the database and the user the app will use
+1. Start Postgres is termnal
+```bash
+psql -U postgres
+```
+Enter password for postgres user. When `postgres=#` prompt appears:
+2. Create user for application
+```sql
+CREATE USER store_app_user WITH PASSWORD 'storeSecret';
+```
+3. Create database for application
+```sql
+CREATE DATABASE store_app_db;
+GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
+```
+4. Test database
+Connect to the database:
+```bash
+\c store_app_db
+\dt
+```
+Outputs: "Did not find any relations."
+
+
 #### Add `dotenv` to handle environment variables
 1. Install
 ```bash
@@ -188,7 +212,10 @@ touch .env
 ```
 Add variables to your `.env` file:
 ```bash
-POSTGRES_DB=plants
+POSTGRES_HOST=127.0.0.1
+POSTGRES_DB=store_app_db
+POSTGRES_USER=store_app_user
+POSTGRES_PASSWORD=storeSecret
 ```
 
 3. Add `.env` file to `.gitignore` to keep sensitive information local
@@ -227,7 +254,6 @@ Add code to file:
 import dotenv from 'dotenv'
 import { Pool } from 'pg'
 
-
 // intializing the environment variables
 dotenv.config()
 
@@ -248,4 +274,30 @@ const client = new Pool({
 
 export default client;
 ```
+
+#### Add database migration
+
+Migrations are documents outlining changes to the database over time, they are `tracking changes to the database schema`
+
+1. Install `db-migrate`
+```bash
+npm i -g db-migrate
+npm add db-migrate
+npm add db-migrate-pg
+```
+- installing `db-migrate` globally (`-g`) allows us to use the terminal commands it provides.
+- `npm add db-migrate` adds it to `package.json` (how to do it in one step?)
+
+2. Create migrations
+In terminal run:
+```bash
+db-migrate create items-table --sql-file
+```
+
+
+3. Run migrations
+```bash
+db-migrate up
+```
+
 

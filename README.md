@@ -287,15 +287,36 @@ npm add db-migrate-pg
 ```
 - installing `db-migrate` globally (`-g`) allows us to use the terminal commands it provides.
 - `npm add db-migrate` adds it to `package.json` (how to do it in one step?)
+2. Add `database.json` file to project root directory
+This reference file allows us to specify what database we want to run migrations on.
+```bash
+echo `
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db",
+    "user": "store_app_user",
+    "password": "storeSecret"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db_test",
+    "user": "store_app_user_test",
+    "password": "storeSecretTest"
+  }
+}` > database.json
+```
 
-2. Create migrations
+3. Create migrations
 In terminal run:
 ```bash
 db-migrate create items-table --sql-file
 ```
 
 
-3. Run migrations
+4. Run migrations
 ```bash
 db-migrate up
 ```

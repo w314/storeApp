@@ -212,10 +212,12 @@ touch .env
 ```
 Add variables to your `.env` file:
 ```bash
+echo '
 POSTGRES_HOST=127.0.0.1
 POSTGRES_DB=store_app_db
 POSTGRES_USER=store_app_user
 POSTGRES_PASSWORD=storeSecret
+' > .env
 ```
 
 3. Add `.env` file to `.gitignore` to keep sensitive information local
@@ -281,16 +283,15 @@ Migrations are documents outlining changes to the database over time, they are `
 
 1. Install `db-migrate`
 ```bash
-npm i -g db-migrate
-npm add db-migrate
-npm add db-migrate-pg
+yarn global add db-migrate
+yarn add db-migrate db-migrate-pg
 ```
-- installing `db-migrate` globally (`-g`) allows us to use the terminal commands it provides.
-- `npm add db-migrate` adds it to `package.json` (how to do it in one step?)
+- installing `db-migrate` globally allows us to use the terminal commands it provides.
+- `yarn add db-migrate` adds it to `package.json`
 2. Add `database.json` file to project root directory
 This reference file allows us to specify what database we want to run migrations on.
 ```bash
-echo `
+echo '
 {
   "dev": {
     "driver": "pg",
@@ -306,10 +307,11 @@ echo `
     "user": "store_app_user_test",
     "password": "storeSecretTest"
   }
-}` > database.json
+}' > database.json
 ```
 
 3. Create migrations
+
 In terminal run:
 ```bash
 db-migrate create items-table --sql-file

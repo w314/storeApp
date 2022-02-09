@@ -312,7 +312,7 @@ echo '
 ```
 
 
-### Create database for the application
+### Create database facing side of the application
 
 #### Create migrations
 1. Create migration file
@@ -387,5 +387,32 @@ export class ProductStore {
   }
 }
 ```
+### Testing
+1. Install Jasmine
+```bash
+# install jasmine
+npm i jasmine jasmine-spec-reporter
 
+# install type definitions for jasmine
+npm i --save-dev @types/jasmine
+```
+2. Initiate Jasmine
+```bash
+npx jasmine init
+```
+Creates `spec` directory and `jasmine.json` configuration file.
+In configuration file set:
+```javascript
+{
+  "spec_dir": "dist/tests",
+  "spec_files":  [
+      "**/*[sS]pec.js"
+  ],
+  "helpers": [
+    "helpers/**/*.js"
+  ],
+  "stopSpecOnExpectationFailure": false,
+  "random": false 
+}
+```
 

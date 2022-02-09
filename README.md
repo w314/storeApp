@@ -10,6 +10,7 @@ mkdir storeApp
 cd storeApp
 mkdir src
 mkdir dist
+mkdir src/models
 echo "console.log('Hello World')" > src/server.ts
 ```
 
@@ -277,7 +278,7 @@ const client = new Pool({
 export default client;
 ```
 
-#### Add database migration
+#### Add database migration tools
 
 Migrations are documents outlining changes to the database over time, they are `tracking changes to the database schema`
 
@@ -310,17 +311,44 @@ echo '
 }' > database.json
 ```
 
-3. Create migrations
 
-In terminal run:
+### Create database for the application
+
+#### Create migrations
+1. Create migration file
 ```bash
-db-migrate create items-table --sql-file
+db-migrate create products-table --sql-file
+```
+- it will create the directory `migrations`
+- a generated file that should not be modified
+- an `sqls` directory with two files for the up and down migrations
+
+2. Add up migration sql:
+```sql
+CREATE TABLE products (name VARCHAR(100), price float, id SERIAL PRIMARY KEY);
 ```
 
+3. App down migration sql:
+```sql
+DROP TABLE products;
+```
 
 4. Run migrations
 ```bash
 db-migrate up
 ```
+
+#### Create models
+
+1. Create file for item model
+```bash
+echo '
+import client from '../database'
+
+//create item type for typescript
+export type Item {
+    id : Number;
+    name : string;
+}
 
 

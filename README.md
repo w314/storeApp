@@ -305,8 +305,8 @@ echo '
     "driver": "pg",
     "host": "127.0.0.1",
     "database": "store_app_db_test",
-    "user": "store_app_user_test",
-    "password": "storeSecretTest"
+    "user": "store_app_user",
+    "password": "storeSecret"
   }
 }' > database.json
 ```
@@ -357,9 +357,9 @@ import client from '../database'
 
 // creating a TypeScipt type for our table items
 export type Product = {
-    id : Number;
+    id : number;
     name : string;
-    price: Number;
+    price: number;
 }
 
 /*
@@ -396,7 +396,21 @@ npm i jasmine jasmine-spec-reporter
 # install type definitions for jasmine
 npm i --save-dev @types/jasmine
 ```
-2. Initiate Jasmine
+
+2. Create directory for tests
+```bash
+# test directory
+mkdir src/tests
+# directory for jasmine-spec-reporter helpers
+mkdir src/tests/helpers
+# file for jasmine-spec-reporter configuration
+touch src/tests/helpers/reporter.ts
+# file for first spec
+touch src/tests/product_spec.ts
+```
+
+3. Configure Jasmine & Jasmine Spec Reporter
+- for `Jasmine`
 ```bash
 npx jasmine init
 ```
@@ -416,3 +430,142 @@ In configuration file set:
 }
 ```
 
+For `jasemine-spec-reporter` add content to `tests/helpers/reporter.ts`:
+```typescript
+import { DisplayProcessor, SpecReporter, StacktraceOption } from 'jasmine-spec-reporter'
+import SuiteInfo = jasmine.SuiteInfo
+
+class CustomProcessor extends DisplayProcessor {
+  public displayJasmineStarted(info: SuiteInfo, log: string): string {
+    return `TypeScript ${log}`
+  }
+}
+
+jasmine.getEnv().clearReporters()
+jasmine.getEnv().addReporter(
+  new SpecReporter({
+    spec: {
+      displayStacktrace: StacktraceOption.NONE,
+    },
+    customProcessors: [CustomProcessor],
+  })
+)
+```
+4. Add test script to `package.json`
+```javascript
+"jasmine": "jasmine",
+"test": "ENV=test db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop test",
+```
+- `ENV=test` set the environment variable in `.env` file to test
+> in windows use `set ENV=test`
+- `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
+- `jasmine-ts` runs the test
+-  `db-migrate db:drop test` clears the database after running the tests
+
+
+5. Setup testing database
+- in `.env` file add
+```javascript
+POSTGRES_TEST_DB=store_app_db_test
+ENV=dev
+```
+Every time before running tests we will set `ENV` to `test`.
+
+- Create test database
+
+Start Postgres is termnal
+```bash
+psql -U postgres
+```
+Enter password for postgres user when `postgres=#` prompt appears.<br>
+Create database for application
+```sql
+CREATE DATABASE store_app_db_test;
+GRANT ALL PRIVILEGES ON DATABASE store_app_db_test TO store_app_user;
+```
+
+- Add connection to test database.The `database.ts` file should look like this now:
+```typescript
+import dotenv from 'dotenv'
+import { Pool } from 'pg'
+
+
+// intializing the environment variables
+dotenv.config()
+
+const {
+    POSTGRES_HOST,
+    POSTGRES_DB,
+    POSTGRES_TEST_DB,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+    ENV
+} = process.env
+
+// declare client
+let client: Pool = new Pool();
+
+// connect and set client to  test database
+if(ENV ==='test') {
+    client = new Pool({
+        host: POSTGRES_HOST,
+        database: POSTGRES_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
+    })
+}
+
+// connect and set client to dev database
+if (ENV === 'dev') {
+    client = new Pool({
+        host: POSTGRES_HOST,
+        database: POSTGRES_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
+    })    
+}
+
+export default client;
+```
+- Add test database to `database.json` file for `db-migration`:
+```javascript
+
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db",
+    "user": "store_app_user",
+    "password": "storeSecret"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db_test",
+    "user": "store_app",
+    "password": "storeSecret"
+  }
+}
+```
+
+
+5. Add tests to run
+Write tests in `product_spec.ts`:
+```typescript
+// import class to test and the types used
+import { Product, ProductStore } from '../models/product';
+
+console.log('import done');
+const store = new ProductStore();
+console.log('store created');
+describe('Product Model', () => {
+  it('should have and index method', () => {
+    expect(store.index).toBeDefined();
+  });
+});
+```
+
+6. Run tests
+```bash
+npm run test
+```

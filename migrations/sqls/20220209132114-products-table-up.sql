@@ -1,2 +1,2 @@
 /* Replace with your SQL commands */
-DROP TABLE products;
+CREATE TABLE products (name VARCHAR(100), price float, id SERIAL PRIMARY KEY);

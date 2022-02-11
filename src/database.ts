@@ -20,10 +20,11 @@ let client: Pool = new Pool();
 if (ENV === 'test') {
   client = new Pool({
     host: POSTGRES_HOST,
-    database: POSTGRES_DB,
+    database: POSTGRES_TEST_DB,
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
   });
+  console.log(client)
 }
 
 // connect and set client to dev database
@@ -34,6 +35,7 @@ if (ENV === 'dev') {
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
   });
+  console.log(client)
 }
 
 export default client;

@@ -1,8 +1,6 @@
-USE PAT to push changes to origin
-
 Install and start app on linux
+^ FOR that install latest nodejs, with installing nvm first
 
 Document steps
 
 Use Docker
-

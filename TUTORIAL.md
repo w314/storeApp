@@ -452,12 +452,13 @@ jasmine.getEnv().addReporter(
 4. Add test script to `package.json`
 ```javascript
 "jasmine": "jasmine",
-"test": "ENV=test db-migrate --env test up && npm run build && npm run jasmine && db-migrate db:drop test",
+"test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
+
 ```
 - `ENV=test` set the environment variable in `.env` file to test
 > in windows use `set ENV=test`
 - `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
-- `jasmine-ts` runs the test
+- `ENV=test jasmine-ts` runs the test, `ENV=test` part needed here again otherwise runs it on regular database
 -  `db-migrate db:drop test` clears the database after running the tests
 
 

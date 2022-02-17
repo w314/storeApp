@@ -9,7 +9,7 @@
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts}\"",
     "testMigrate": "set ENV=test && db-migrate --env test reset && db-migrate --env test up",
-    "test": "set ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && npm run jasmine  && db-migrate --env test reset",
+    "test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
     "jasmine": "jasmine",
     "build": "npx tsc"
   },

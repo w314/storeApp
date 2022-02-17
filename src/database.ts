@@ -24,7 +24,7 @@ if (ENV === 'test') {
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
   });
-  console.log(client)
+  console.log(client);
 }
 
 // connect and set client to dev database
@@ -35,7 +35,7 @@ if (ENV === 'dev') {
     user: POSTGRES_USER,
     password: POSTGRES_PASSWORD,
   });
-  console.log(client)
+  console.log(client);
 }
 
 export default client;

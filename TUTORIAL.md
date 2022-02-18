@@ -331,6 +331,7 @@ CREATE TABLE products (name VARCHAR(100), price float, id SERIAL PRIMARY KEY);
 DROP TABLE products;
 ```
 
+
 4. Run migrations
 ```bash
 db-migrate up
@@ -625,3 +626,29 @@ app.listen(port, () => {
   console.log(`Server is listening on localhost:${port}`);
 });
 ```
+
+#### Add `users` TABLE
+
+1. Create migrations
+```bash
+db-migrate create users-table --sql-file
+```
+Under `migrations\sqls\` add `sql` commands.
+- in the `*-users-table-up.sql` 
+```sql
+/* Replace with your SQL commands */
+CREATE TABLE users (
+    firstName VARCHAR(100), 
+    lastName VARCHAR(100), 
+    pasword_digest VARCHAR, 
+    id SERIAL PRIMARY KEY
+);
+```
+- in the `*-users-table-down.sql`:
+```sql
+DROP TABLE IF EXISTS users;
+```
+
+2. Add model
+3. Add handlers
+4. Import handlers to server.ts file

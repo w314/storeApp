@@ -58,15 +58,7 @@ docker exec -it <container_id> psql -U <POSTGRES_USER> <POSTGRES_DB>
 CREATE DATABASE store_app_db_test;
 ```
 
-into docker-compose.yml file?:
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-
-
-### 2. Start the app
-In the browser go to `localhost:3000`, the page will show the text `Application starting page`
+CHanged jasmine test script (documented in TUTTORIAL) after that could create procut in table.
 
 ## How to use the app
 

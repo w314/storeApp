@@ -1,1 +1,1 @@
-set up handler for all RESTful actons for products route
+Add users table and setup storing passwords hashed and salt and pepper

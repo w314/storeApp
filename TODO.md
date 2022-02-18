@@ -1,1 +1,1 @@
-Start docker adn run tests wiht npm run test and figure out what is "pending"
+set up handler for all RESTful actons for products route

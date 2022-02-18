@@ -568,3 +568,60 @@ describe('Product Model', () => {
 ```bash
 npm run test
 ```
+
+## SETUP HANDLERS
+Each model file will have its handler file. This file will have all the handler functions associated with the REST-ful routes regarding that model.
+
+### Setup file structure
+
+```bash
+mkdir src/handlers
+touch src/handlers product.ts
+```
+### Add content to handler file
+
+```typescript
+import express from 'express'
+// import type and class of model this handler file handles
+import { Product, ProductStore } from '../models/product'
+
+const store = new ProductStore();
+
+// express handler function
+const index = async (req: express.Request, res: express.Response) => {
+  const products = await store.index();
+  res.json(products)
+}
+
+// to allow the handler above access to express method we create the function below, that takes in an instance of express application object as a parameter. The server.ts file will provide that when calls this function
+const productRoutes = (app:express.Application) => {
+  // we call express method, that match our routes and call the RESTful route handler to create a response
+  app.get('/product', index)
+}
+
+export default productRoutes
+```
+
+### Call this route form server file
+Add content to server.ts
+```typescript
+import express from 'express';
+// import routes created for product
+import productRoutes from './handlers/product'
+
+const app: express.Application = express();
+const port = 3000;
+
+// set up endpoint
+app.get('/', (req: express.Request, res: express.Response) => {
+  res.send('Application Starting Page');
+});
+
+// use routes created for products
+productRoutes(app)
+
+// start server
+app.listen(port, () => {
+  console.log(`Server is listening on localhost:${port}`);
+});
+```

@@ -1,4 +1,5 @@
 import express from 'express';
+import productRoutes from './handlers/product';
 
 const app: express.Application = express();
 const port = 3000;
@@ -7,6 +8,8 @@ const port = 3000;
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Application Starting Page');
 });
+
+productRoutes(app);
 
 // start server
 app.listen(port, () => {

@@ -75,7 +75,9 @@ export class ProductStore {
       conn.release();
       return updatedProduct;
     } catch (err) {
-      throw new Error(`Could not update product ${product.name}. Error: ${err}`);
+      throw new Error(
+        `Could not update product ${product.name}. Error: ${err}`
+      );
     }
   }
   // DELETE

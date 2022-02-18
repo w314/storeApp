@@ -32,10 +32,10 @@ export class ProductStore {
   }
 
   // SHOW
-  async show(id: string): Promise<Product> {
+  async show(id: number): Promise<Product> {
     try {
       const conn = await client.connect();
-      const sql = `SELECT * FROM TABLE products WHERE id=($1)`;
+      const sql = `SELECT * FROM products WHERE id=($1)`;
       const product = await conn.query(sql, [id]);
       conn.release();
       return product.rows[0];
@@ -63,7 +63,7 @@ export class ProductStore {
   async update(product: Product): Promise<Product> {
     try {
       const conn = await client.connect();
-      const sql = `UPDATE TABLE products 
+      const sql = `UPDATE products 
             SET name=($2), price=($3) 
             WHERE id=($1) RETURNING *`;
       const result = await conn.query(sql, [
@@ -75,14 +75,14 @@ export class ProductStore {
       conn.release();
       return updatedProduct;
     } catch (err) {
-      throw new Error(`Coul not update product ${product.name}. Error: ${err}`);
+      throw new Error(`Could not update product ${product.name}. Error: ${err}`);
     }
   }
   // DELETE
   async delete(product: Product): Promise<Product> {
     try {
       const conn = await client.connect();
-      const sql = `SELECT * FROM products WHERE id=($1)`;
+      const sql = `DELETE FROM products WHERE id=($1)`;
       await conn.query(sql, [product.id]);
       conn.release();
       return product;

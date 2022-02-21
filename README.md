@@ -19,7 +19,7 @@ In the `.env` file add content:
 ```bash
 
 ```
-##  Start the application
+### First time setup for testing to run
 ### 1. Setup `Docker` container
 <br>In the terminal run
 ```bash
@@ -29,20 +29,27 @@ sudo docker-compose up -d
 
 - In case of the error:
 `docker-compose up cannot start service postgres: driver failed programming external connectivity on endpoint`, 
-stop local postgresql with:
+<br>A) stop local postgresql with:
     ```bash
-    sudo postgresql stop
+    sudo service postgresql stop
     ```
+    <br>B) Change post assignment in `docker-compose.yml` file:
+    ```bash
+    ports:
+      - '5433:5432'
+    ```
+
     And run `docker-compose` up again.
+
 
 The created docker container can be listed with:
 ```bash
-docker ps
+sudo docker ps
 ```
 
 ### Connect to docker container
 ```bash
-docker exec -it <container_id> bash
+sudo docker exec -it <container_id> bash
 ```
 This will connect to the container. To connec to the database:
 ```bash
@@ -58,7 +65,20 @@ docker exec -it <container_id> psql -U <POSTGRES_USER> <POSTGRES_DB>
 CREATE DATABASE store_app_db_test;
 ```
 
-CHanged jasmine test script (documented in TUTTORIAL) after that could create procut in table.
+
+##  Start the application
+
+1. In the terminal start docker container
+```bash
+sudo docker-compose up
+```
+2. In the terminal in project directory start the application
+```bash
+npm start
+```
+3. open application in browser: `localhost:3000`
 
 ## How to use the app
+
+
 

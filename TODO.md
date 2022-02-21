@@ -1,1 +1,1 @@
-Add users table and setup storing passwords hashed and salt and pepper
+test create user method

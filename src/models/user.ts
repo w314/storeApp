@@ -13,6 +13,7 @@ const saltRounds: string = process.env.SALT_ROUNDS as string;
 // create typescript type for user
 export type User = {
   id: number;
+  userName: string;
   firstName: string;
   lastName: string;
   password_digest: string;
@@ -22,7 +23,7 @@ export type User = {
 export class UserStore {
   // add methods for CRUD actions
 
-  async create(user: User, password_digest: string): Promise<User> {
+  async create(user: User): Promise<User> {
     try {
       // function for password encryption
       const hash = bcrypt.hashSync(
@@ -37,7 +38,7 @@ export class UserStore {
       const result = await conn.query(sql, [
         user.firstName,
         user.lastName,
-        password_digest,
+        hash,
       ]);
       const createdUser = result.rows[0];
 

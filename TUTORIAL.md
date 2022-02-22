@@ -665,7 +665,7 @@ SALT_ROUNDS=10
   <br>`BCYPT_PASSWORD` is the extra string used in the peppering step.
 - add model file
 ```bash
-touch src/models/users.ts
+touch src/models/user.ts
 ```
 - add content
 ```typescript
@@ -723,6 +723,9 @@ export class UserStore {
 }
 
 ```
-3. Add tests
+3. Add tests for model
+```bash
+
+```
 4. Add handlers
 5. Import handlers to server.ts file

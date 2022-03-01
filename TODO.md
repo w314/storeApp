@@ -1,1 +1,1 @@
-test create user method
+finish user.ts model authenticate method

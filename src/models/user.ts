@@ -21,6 +21,30 @@ export type User = {
 
 // create Class representing table
 export class UserStore {
+  // add authenticate method for sign-in
+  async authenticate(userName: string, password: string): Promise<User | null> {
+    try {
+      // get user's password from database
+      const conn = await client.connect()
+      const sql = `SELECT password_digest FROM users WHERE userName = $1`
+      const result = await conn.query(sql, [userName])
+      // disconnect from database
+      conn.release()
+      // if userName is valid and we got a password back
+      if (result.rows.length) {
+        const user = result.rows[0]
+        // get user's password
+        if (bcrypt.compareSync(password+pepper, user.password_digest)) {
+          return user
+        }
+      }
+      // if userName is invalid
+      return null
+    } catch (err) {
+      throw new Error(`Could not authenticate user. Error: ${err}`)
+    }
+  }
+
   // add methods for CRUD actions
 
   async create(user: User): Promise<User> {

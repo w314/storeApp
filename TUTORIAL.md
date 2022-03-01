@@ -725,6 +725,9 @@ export class UserStore {
 ```
 3. Add tests for model
 ```bash
+touch src/tests/user_spec.ts
+```
+```typescript
 
 ```
 4. Add handlers

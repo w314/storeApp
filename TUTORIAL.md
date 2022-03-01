@@ -629,6 +629,8 @@ app.listen(port, () => {
 
 #### Add `users` TABLE
 
+> IMPORTANT: when creating tables DO NOT use camelCase, the result from the database come back all lower case even if the migration table was set up with camelCase and than the property names of the User from the database doesn't match the property names of the User type.
+
 1. Create migrations
 ```bash
 db-migrate create users-table --sql-file
@@ -638,6 +640,7 @@ Under `migrations\sqls\` add `sql` commands.
 ```sql
 /* Replace with your SQL commands */
 CREATE TABLE users (
+    userName VARCHAR(100),
     firstName VARCHAR(100), 
     lastName VARCHAR(100), 
     pasword_digest VARCHAR, 

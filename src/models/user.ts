@@ -13,21 +13,21 @@ const saltRounds: string = process.env.SALT_ROUNDS as string;
 // create typescript type for user
 export type User = {
   id: number;
-  userName: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  firstname: string;
+  lastname: string;
   password_digest: string;
 };
 
 // create Class representing table
 export class UserStore {
   // add authenticate method for sign-in
-  async authenticate(userName: string, password: string): Promise<User | null> {
+  async authenticate(username: string, password: string): Promise<User | null> {
     try {
       // get user's password from database
       const conn = await client.connect();
       const sql = `SELECT password_digest FROM users WHERE userName = $1`;
-      const result = await conn.query(sql, [userName]);
+      const result = await conn.query(sql, [username]);
       // disconnect from database
       conn.release();
       // if userName is valid and we got a password back
@@ -57,11 +57,12 @@ export class UserStore {
       // connect to database
       const conn = await client.connect();
       // add user
-      const sql = `INSERT INTO users (firstName, lastName, password_digest) 
-                VALUES ($1, $2, $3) RETURNING *`;
+      const sql = `INSERT INTO users (userName, firstName, lastName, password_digest) 
+                VALUES ($1, $2, $3, $4) RETURNING *`;
       const result = await conn.query(sql, [
-        user.firstName,
-        user.lastName,
+        user.username,
+        user.firstname,
+        user.lastname,
         hash,
       ]);
       const createdUser = result.rows[0];

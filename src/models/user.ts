@@ -25,23 +25,23 @@ export class UserStore {
   async authenticate(userName: string, password: string): Promise<User | null> {
     try {
       // get user's password from database
-      const conn = await client.connect()
-      const sql = `SELECT password_digest FROM users WHERE userName = $1`
-      const result = await conn.query(sql, [userName])
+      const conn = await client.connect();
+      const sql = `SELECT password_digest FROM users WHERE userName = $1`;
+      const result = await conn.query(sql, [userName]);
       // disconnect from database
-      conn.release()
+      conn.release();
       // if userName is valid and we got a password back
       if (result.rows.length) {
-        const user = result.rows[0]
+        const user = result.rows[0];
         // get user's password
-        if (bcrypt.compareSync(password+pepper, user.password_digest)) {
-          return user
+        if (bcrypt.compareSync(password + pepper, user.password_digest)) {
+          return user;
         }
       }
       // if userName is invalid
-      return null
+      return null;
     } catch (err) {
-      throw new Error(`Could not authenticate user. Error: ${err}`)
+      throw new Error(`Could not authenticate user. Error: ${err}`);
     }
   }
 

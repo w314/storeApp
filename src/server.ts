@@ -1,15 +1,13 @@
 import express from 'express';
 import productRoutes from './handlers/product';
 import userRoutes from './handlers/user';
-import bodyParser from 'body-parser'
-
+import bodyParser from 'body-parser';
 
 const app: express.Application = express();
 const port = 3000;
 
 // use bodyParser middleware
-app.use(bodyParser.json())
-
+app.use(bodyParser.json());
 
 // set up endpoint
 app.get('/', (req: express.Request, res: express.Response) => {

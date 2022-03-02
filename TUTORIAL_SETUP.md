@@ -485,6 +485,7 @@ echo '
 ### 1. Install `JWT`
 ```bash
 npm i jsonwebtoken
+npm i --save-dev @types/jsonwebtoken
 ```
 ### 2. Add new environmental variabel to `.env` file
 ```bash

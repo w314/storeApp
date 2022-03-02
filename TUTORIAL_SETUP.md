@@ -479,6 +479,25 @@ echo '
   }
 }' > database.json
 ```
+## Add [`body-parser](https://www.npmjs.com/package/body-parser)
+### 1. Install
+
+```bash
+npm i body-parser
+```
+Node.js body parsing middleware.
+Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+
+### 2. Use `body-parser` into `server.ts` file
+```typescript
+// import body-parser
+import bodyParser from 'body-parser'
+
+// after declaring the app include
+app.use(bodyParser.json())
+```
+
+
 
 ## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)
 

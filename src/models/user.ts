@@ -4,11 +4,14 @@ import bcrypt from 'bcrypt';
 import client from '../database';
 // import dotenv to handle environment variables
 import dotenv from 'dotenv';
+// import jwt for authentication
+import jsonwebtoken from 'jsonwebtoken';
 
 // initialize environment variables
 dotenv.config();
 const pepper: string = process.env.BCRYPT_PASSWORD as string;
 const saltRounds: string = process.env.SALT_ROUNDS as string;
+const tokenSecret: string = process.env.TOKEN_SECRET as string;
 
 // create typescript type for user
 export type User = {
@@ -47,8 +50,8 @@ export class UserStore {
 
   // add methods for CRUD actions
 
-  // create user  
-  async create(user: User): Promise<User> {
+  // create user and return a JWT
+  async create(user: User): Promise<string> {
     try {
       // function for password encryption
       const hash = bcrypt.hashSync(
@@ -71,7 +74,10 @@ export class UserStore {
       // disconnect from database
       conn.release();
 
-      return createdUser;
+      // create token
+      const token = jsonwebtoken.sign(createdUser, tokenSecret);
+
+      return token;
     } catch (err) {
       throw new Error(`Couldn't create user. Error: ${err}`);
     }

@@ -9,11 +9,13 @@ const store = new ProductStore();
 const index = async (_req: express.Request, res: express.Response) => {
   try {
     console.log(`request came in`);
-    // const products = await store.index();
-    // console.log(`Products:`)
-    // console.log(products)
-    // res.json(products)
-    res.send('Products index route');
+    const products = await store.index();
+    console.log(`Products:`)
+    console.log(products)
+    // res.send('Products index route');
+
+    res.json(products)
+    // res.send('Products index route');
   } catch (err) {
     res.status(400);
     res.json(err);
@@ -35,7 +37,15 @@ const show = async (req: express.Request, res: express.Response) => {
 
 const create = async (_req: express.Request, res: express.Response) => {
   try {
-    res.send('Products CREATE route');
+    console.log(_req.body)
+    const product = {
+      id: 0,
+      name: _req.body.name,
+      price: _req.body.price
+    }
+    console.log(product)
+    const productCreated = await store.create(product)
+    res.json(productCreated);
   } catch (err) {
     res.status(400);
     res.json(err);

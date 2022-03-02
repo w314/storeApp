@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node dist/server.js",
-    "devStart": "nodemon src/server.ts",
+    "devStart": "db-migrate --env test reset && db-migrate --env test up && nodemon src/server.ts",
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts}\"",
     "testMigrate": "set ENV=test && db-migrate --env test reset && db-migrate --env test up",
@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",

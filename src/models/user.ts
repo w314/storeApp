@@ -47,6 +47,7 @@ export class UserStore {
 
   // add methods for CRUD actions
 
+  // create user  
   async create(user: User): Promise<User> {
     try {
       // function for password encryption

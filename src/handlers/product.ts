@@ -9,10 +9,9 @@ const store = new ProductStore();
 // express handler function
 const index = async (_req: express.Request, res: express.Response) => {
   try {
-    console.log(`request came in`);
     const products = await store.index();
-    console.log(`Products:`);
-    console.log(products);
+    // console.log(`Products:`);
+    // console.log(products);
     // res.send('Products index route');
 
     res.json(products);
@@ -25,11 +24,9 @@ const index = async (_req: express.Request, res: express.Response) => {
 
 const show = async (req: express.Request, res: express.Response) => {
   try {
-    // console.log(`SHOW request with url: ${req.url}`)
     const id = parseInt(req.params.id);
-    // const product = await store.show(id)
-    // res.json(product)
-    res.send(`Product show route, id of requested product: ${id}`);
+    const product = await store.show(id)
+    res.json(product)
   } catch (err) {
     res.status(400);
     res.json(err);
@@ -53,28 +50,28 @@ const create = async (_req: express.Request, res: express.Response) => {
   }
 };
 
-const update = async (req: express.Request, res: express.Response) => {
-  try {
-    // console.log(`SHOW request with url: ${req.url}`)
-    const id = parseInt(req.params.id);
-    // const product = await store.show(id)
-    // res.json(product)
-    res.send(`Product UPDATE route, id of requested product: ${id}`);
-  } catch (err) {
-    res.status(400);
-    res.json(err);
-  }
-};
+// const update = async (req: express.Request, res: express.Response) => {
+//   try {
+//     // console.log(`SHOW request with url: ${req.url}`)
+//     const id = parseInt(req.params.id);
+//     // const product = await store.show(id)
+//     // res.json(product)
+//     res.send(`Product UPDATE route, id of requested product: ${id}`);
+//   } catch (err) {
+//     res.status(400);
+//     res.json(err);
+//   }
+// };
 
-const destroy = async (req: express.Request, res: express.Response) => {
-  try {
-    const id = parseInt(req.params.id);
-    res.send(`Product DELETE route, id of requested product: ${id}`);
-  } catch (err) {
-    res.status(400);
-    res.json(err);
-  }
-};
+// const destroy = async (req: express.Request, res: express.Response) => {
+//   try {
+//     const id = parseInt(req.params.id);
+//     res.send(`Product DELETE route, id of requested product: ${id}`);
+//   } catch (err) {
+//     res.status(400);
+//     res.json(err);
+//   }
+// };
 
 // to allow the handler above access to express method we create the function below,
 // that takes in an instance of express application object as a parameter.
@@ -85,8 +82,8 @@ const productRoutes = (app: express.Application) => {
   app.get('/products', index);
   app.get('/products/:id', show);
   app.post('/products', verifyAuthToken, create);
-  app.put('/products/:id', update);
-  app.delete('/products/:id', destroy);
+  // app.put('/products/:id', update);
+  // app.delete('/products/:id', destroy);
 };
 
 export default productRoutes;

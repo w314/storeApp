@@ -28,8 +28,8 @@ export class ProductStore {
       // close database connection
       conn.release();
       // return query result
-      console.log('Returning from model:')
-      console.log(result.rows)
+      // console.log('Returning from model:')
+      // console.log(result.rows)
       return result.rows;
     } catch (err) {
       throw new Error(`Cannot get products. Error: ${err}`);

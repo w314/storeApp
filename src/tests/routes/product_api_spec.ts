@@ -7,7 +7,8 @@ import client from '../../database'
 // import Product type
 import { Product, ProductStore } from '../../models/product'
 
-
+// using id 2 & 3 for products as product wiht id 1 was already created during 
+// product model testing
 const testProducts: Product[] = [
     {
         id: 2,
@@ -45,13 +46,25 @@ describe('Product API', () => {
     })
 
     describe('GET/products', () => {
-        it('gives list of products', (done) => {
+        it('shows list of products', (done) => {
             request(app)
                 .get('/products')
                 .expect(200)
                 .then((response) => {
                     // console.log(response)
                     expect(response.body).toEqual(testProducts)
+                    done()
+                })
+                .catch((Error) => {
+                    Error ? done.fail(Error) : done()
+                })
+        })
+        it('shows product with specific id', (done) => {
+            request(app)
+                .get('/products/2')
+                .expect(200)
+                .then((response) => {
+                    expect(response.body).toEqual(testProducts[0])
                     done()
                 })
                 .catch((Error) => {

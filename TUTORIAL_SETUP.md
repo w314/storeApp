@@ -230,7 +230,9 @@ jasmine.getEnv().addReporter(
 - `ENV=test jasmine-ts` runs the test, `ENV=test` part needed here again otherwise runs it on regular database
 -  `db-migrate db:drop test` clears the database after running the tests
 
-
+Tests can be run by
+- `npm run test`
+- `npm run test --silent` if we don't want to see the npm error messages
 ### 5. Setup testing database
 - in `.env` file add
 ```javascript
@@ -418,15 +420,15 @@ const { POSTGRES_DB } = process.env;
 ```
 
 
-### Add `node-postgres`
+## Add `node-postgres`
 node-postgres is a collection of node.js modules for interfacing with your PostgreSQL database. It has support for callbacks, promises, async/await, connection pooling, prepared statements, cursors, streaming results, C/C++ bindings, rich type parsing, and more.
 
-1. Install
+### 1. Install
 ```bash
 npm i pg
 npm i --save-dev @types/pg 
 ```
-2. Connect App to Postgres database
+### 2. Connect App to Postgres database
 Create file to handle connection.
 ```bash
 touch src/database.ts
@@ -457,11 +459,11 @@ const client = new Pool({
 export default client;
 ```
 
-### Add database migration tools
+## Add database migration tools
 
 Migrations are documents outlining changes to the database over time, they are `tracking changes to the database schema`
 
-1. Install `db-migrate`
+### 1. Install `db-migrate`
 ```bash
 yarn global add db-migrate
 yarn add db-migrate db-migrate-pg
@@ -507,7 +509,22 @@ import bodyParser from 'body-parser'
 app.use(bodyParser.json())
 ```
 
+## Add [morgan](https://www.npmjs.com/package/morgan)
+>HTTP request logger middleware for node.js
 
+### 1. Install
+```bash
+# install morgan
+npm i morgan
+# install types for morgan
+npm i --save-dev @types/morgan
+```
+
+### 2. Use morgan in `server.ts` file
+After the `app` is declared include line:
+```typescript
+app.use(morgan('dev'))
+```
 
 ## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)
 

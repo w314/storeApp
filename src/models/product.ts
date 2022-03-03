@@ -1,6 +1,9 @@
 // import database connection
 import client from '../database';
 
+// console.log('client in model')
+// console.log(client)
+
 // creating a TypeScipt type for our table items
 export type Product = {
   id: number;
@@ -25,6 +28,8 @@ export class ProductStore {
       // close database connection
       conn.release();
       // return query result
+      console.log('Returning from model:')
+      console.log(result.rows)
       return result.rows;
     } catch (err) {
       throw new Error(`Cannot get products. Error: ${err}`);

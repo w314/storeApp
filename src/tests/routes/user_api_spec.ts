@@ -10,22 +10,22 @@ const testUser1 = {
     password: '1234'
 }
 
-describe('API TEST TESTING GET/ endpoint', () => {
-    it('returns JWT token when creating new user'), () => {
-        request(app)
-            .get('/')
-            .expect(200)
-            // .expect('Content-Type', 'text/html; charset=utf-8')
-            .then((response) => {
-                console.log(response)
-                expect(response.text).toBe('Application starting page')
-                // done()
-            })
-            .catch((Error) => {
-                // Error ? done.fail(Error) : done();
-            })
-    }
-})
+// describe('API TEST TESTING GET/ endpoint', () => {
+//     it('returns JWT token when creating new user'), () => {
+//         request(app)
+//             .get('/')
+//             .expect(200)
+//             // .expect('Content-Type', 'text/html; charset=utf-8')
+//             .then((response) => {
+//                 console.log(response)
+//                 expect(response.text).toBe('Application starting page')
+//                 // done()
+//             })
+//             .catch((Error) => {
+//                 // Error ? done.fail(Error) : done();
+//             })
+//     }
+// })
 
 // describe('POST/users endpoint', () => {
 //     it('returns JWT token when creating new user'), (done: Function) => {

@@ -92,13 +92,13 @@ Running `npm start` should log "Hello World".
 
 ## Add `eslint` and `prettier`
 
-1. Install
+### 1. Install
 ```bash
 npm i --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-npm i --save-dev prettier eslint-config-prettier eslint-plugin-prettier
+npm i --save-dev prettier eslint-config-pr ettier eslint-plugin-prettier
 ```
 
-2. Add configuration files
+### 2. Add configuration files
 
 In project root directory:
 
@@ -131,7 +131,7 @@ In project root directory:
   }' > .prettierrc
   ```
 
-  3. Add scripts to `package.json`
+  ### 3. Add scripts to `package.json`
 
   In `package.json` under `scripts` add:
   ```javascript
@@ -145,16 +145,22 @@ In project root directory:
 
 ## Add Jasmine for testing
 
-1. Install Jasmine
+### 1. Install Jasmine
 ```bash
 # install jasmine
 npm i jasmine jasmine-spec-reporter
-
 # install type definitions for jasmine
 npm i --save-dev @types/jasmine
+
+# install supertest for api endpoints testing
+npm i --save-dev supertest
+# install type definitions for supertest
+npm i --save-dev @types/supertest
 ```
 
-2. Create directory for tests
+- [supertest](https://www.npmjs.com/package/supertest) is a module for testing HTTP
+
+### 2. Create directory for tests
 ```bash
 # test directory
 mkdir src/tests
@@ -162,11 +168,15 @@ mkdir src/tests
 mkdir src/tests/helpers
 # file for jasmine-spec-reporter configuration
 touch src/tests/helpers/reporter.ts
+# directory for model tests
+mkdir src/tests/models
+# directory for API endpoint tests
+mkdir src/tests/routes
 # file for first spec
-touch src/tests/product_spec.ts
+touch src/tests/models/product_spec.ts
 ```
 
-3. Configure Jasmine & Jasmine Spec Reporter
+### 3. Configure Jasmine & Jasmine Spec Reporter
 - for `Jasmine`
 ```bash
 npx jasmine init
@@ -208,7 +218,7 @@ jasmine.getEnv().addReporter(
   })
 )
 ```
-4. Add test script to `package.json`
+### 4. Add test script to `package.json`
 ```javascript
 "jasmine": "jasmine",
 "test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
@@ -221,7 +231,7 @@ jasmine.getEnv().addReporter(
 -  `db-migrate db:drop test` clears the database after running the tests
 
 
-5. Setup testing database
+### 5. Setup testing database
 - in `.env` file add
 ```javascript
 POSTGRES_TEST_DB=store_app_db_test
@@ -310,7 +320,7 @@ export default client;
 
 ## Add `express`
 
-1. Install
+### 1. Install
 ```bash
 npm i express
 npm i --save-dev @types/express

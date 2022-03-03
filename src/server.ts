@@ -21,3 +21,6 @@ userRoutes(app);
 app.listen(port, () => {
   console.log(`Server is listening on localhost:${port}`);
 });
+
+
+export default app

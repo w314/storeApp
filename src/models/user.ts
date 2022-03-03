@@ -50,7 +50,7 @@ export class UserStore {
 
   // add methods for CRUD actions
 
-  // index
+  // index: give a list of all users
   async index(): Promise<User[]> {
     try {
       // connect to database
@@ -66,6 +66,22 @@ export class UserStore {
       throw new Error(`Could not get use list. Error: ${err}`);
     }
   }
+
+  // show one specific user
+  async show(userId: number): Promise <User> {
+    try {
+      // connect to database
+      const conn = await client.connect()
+      // get user
+      const sql = `SELECT * FROM users WHERE user_id = $1`
+      const result = await conn.query(sql, [userId])
+      // disconnect from database
+      conn.release()
+      return result.rows[1]
+    } catch (err) {
+      throw new Error(`Could not get user. Error: ${err}`)
+    }
+  }  
 
   // create user and return created user
   async create(user: User): Promise<User> {

@@ -69,6 +69,7 @@ describe('User Model', () => {
   });
   it('shows a list of users', async () => {
     const result = await store.index();
+    expect(result.length).toEqual(1)
     expect(result[0].username).toEqual(testUser.username);
   });
 });

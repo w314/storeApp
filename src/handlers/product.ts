@@ -41,7 +41,6 @@ const create = async (_req: express.Request, res: express.Response) => {
       name: _req.body.name,
       price: _req.body.price,
     };
-    // console.log(product);
     const productCreated = await store.create(product);
     res.json(productCreated);
   } catch (err) {

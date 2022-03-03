@@ -1,5 +1,5 @@
 NEXT:
-add show method to user model
+add create to user handler (need it to test POST /products endpoint)
 
 
 LATER:

@@ -5,7 +5,9 @@ import app from '../../server'
 // import client to set up database for testing
 import client from '../../database'
 // import Product type
-import { Product, ProductStore } from '../../models/product'
+import { Product } from '../../models/product'
+// import user model to sign in user for testing product creation
+import { User, UserStore } from '../../models/user'
 
 // using id 2 & 3 for products as product wiht id 1 was already created during 
 // product model testing
@@ -59,6 +61,8 @@ describe('Product API', () => {
                     Error ? done.fail(Error) : done()
                 })
         })
+    })
+    describe('GET/products/id', () => {
         it('shows product with specific id', (done) => {
             request(app)
                 .get('/products/2')
@@ -71,7 +75,49 @@ describe('Product API', () => {
                     Error ? done.fail(Error) : done()
                 })
         })
+
     })
-    
-    
+    describe('POST /products', () => {
+        it('creates product when jwt token is provided', async (done) => {
+            // sign in user to get JWT token
+            // const store = new UserStore()
+            const user: User = {
+                id: 0,
+                username: 'bigbird',
+                firstname: 'big',
+                lastname: 'bird',
+                password_digest: 'secretChirp'
+            }
+            let token = ''
+
+            await request(app)
+            .post('/users')
+            .send(user)
+            .then((Response) => {
+                token = Response.text
+            })
+
+            console.log(`token:`)
+            console.log(token)
+            
+            // product to create
+            const product: Product = {
+                id: 0,
+                name: 'test',
+                price: 11.3
+            }
+
+            request(app)
+            .post('/products')
+            .set('Authorization', `${token}`)
+            .send(product)
+            .expect(200)
+            .then((Response) => {
+                console.log('API response')
+                console.log(Response)
+            })
+
+
+        })
+    })    
 })

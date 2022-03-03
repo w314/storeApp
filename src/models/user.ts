@@ -54,16 +54,16 @@ export class UserStore {
   async index(): Promise<User[]> {
     try {
       // connect to database
-      const conn = await client.connect()
+      const conn = await client.connect();
       // get user list
-      const sql = 'SELECT * FROM users'
-      const result = await conn.query(sql)
+      const sql = 'SELECT * FROM users';
+      const result = await conn.query(sql);
       // disconnect from database
-      conn.release()
+      conn.release();
       // return user list
-      return result.rows
+      return result.rows;
     } catch (err) {
-      throw new Error(`Could not get use list. Error: ${err}`)
+      throw new Error(`Could not get use list. Error: ${err}`);
     }
   }
 

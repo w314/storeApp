@@ -50,8 +50,25 @@ export class UserStore {
 
   // add methods for CRUD actions
 
-  // create user and return a JWT
-  async create(user: User): Promise<string> {
+  // index
+  async index(): Promise<User[]> {
+    try {
+      // connect to database
+      const conn = await client.connect()
+      // get user list
+      const sql = 'SELECT * FROM users'
+      const result = await conn.query(sql)
+      // disconnect from database
+      conn.release()
+      // return user list
+      return result.rows
+    } catch (err) {
+      throw new Error(`Could not get use list. Error: ${err}`)
+    }
+  }
+
+  // create user and return created user
+  async create(user: User): Promise<User> {
     try {
       // function for password encryption
       const hash = bcrypt.hashSync(
@@ -73,11 +90,7 @@ export class UserStore {
 
       // disconnect from database
       conn.release();
-
-      // create token
-      const token = jsonwebtoken.sign(createdUser, tokenSecret);
-
-      return token;
+      return createdUser;
     } catch (err) {
       throw new Error(`Couldn't create user. Error: ${err}`);
     }

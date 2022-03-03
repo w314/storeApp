@@ -17,18 +17,14 @@ export class ProductStore {
   async index(): Promise<Product[]> {
     try {
       // open connection to db
-      console.log('Connecting to database');
-      console.log(`Client is:\n ${client}`);
       const conn = await client.connect();
       // sql command we want to execute
       const sql = 'SELECT * FROM products';
       // run query on database
-      console.log(`Running query:\n ${sql}`);
       const result = await conn.query(sql);
       // close database connection
       conn.release();
       // return query result
-      console.log(`Returning:\n ${result.rows}`);
       return result.rows;
     } catch (err) {
       throw new Error(`Cannot get products. Error: ${err}`);

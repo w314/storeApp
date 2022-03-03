@@ -2,6 +2,7 @@ import express from 'express';
 import { request } from 'http';
 // import type and class of model this handler file handles
 import { Product, ProductStore } from '../models/product';
+import verifyAuthToken from './utilities/verifyAuthToken';
 
 const store = new ProductStore();
 
@@ -37,13 +38,13 @@ const show = async (req: express.Request, res: express.Response) => {
 
 const create = async (_req: express.Request, res: express.Response) => {
   try {
-    console.log(_req.body);
+    // console.log(_req.body);
     const product = {
       id: 0,
       name: _req.body.name,
       price: _req.body.price,
     };
-    console.log(product);
+    // console.log(product);
     const productCreated = await store.create(product);
     res.json(productCreated);
   } catch (err) {
@@ -83,7 +84,7 @@ const productRoutes = (app: express.Application) => {
   // call the RESTful route handler to create a response
   app.get('/products', index);
   app.get('/products/:id', show);
-  app.post('/products', create);
+  app.post('/products', verifyAuthToken, create);
   app.put('/products/:id', update);
   app.delete('/products/:id', destroy);
 };

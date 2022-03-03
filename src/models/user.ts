@@ -73,11 +73,11 @@ export class UserStore {
       // connect to database
       const conn = await client.connect()
       // get user
-      const sql = `SELECT * FROM users WHERE user_id = $1`
+      const sql = `SELECT * FROM users WHERE id = $1`
       const result = await conn.query(sql, [userId])
       // disconnect from database
       conn.release()
-      return result.rows[1]
+      return result.rows[0]
     } catch (err) {
       throw new Error(`Could not get user. Error: ${err}`)
     }

@@ -4,10 +4,12 @@ import { User, UserStore } from '../../models/user';
 import bcrypt from 'bcrypt';
 // import dotenv to use enviromental variables
 import dotenv from 'dotenv';
+import jsonwebtoken, { Jwt } from 'jsonwebtoken'
 
 // initialize enviromental variables
 dotenv.config();
 const pepper = process.env.BCRYPT_PASSWORD;
+const tokenSecret: string = process.env.TOKEN_SECRET as string
 const store = new UserStore();
 const testUser1 = {
   id: 1,
@@ -55,10 +57,15 @@ describe('User Model', () => {
     );
     // use bcrypt to test if hashed password in result is the hash of the password provided
     if (result) {
+      // separate payload object from jwt token result
+      const verifyObj: jsonwebtoken.JwtPayload  = jsonwebtoken.verify(result, tokenSecret) as jsonwebtoken.JwtPayload
+      // expect user name returned in jwt token to match username
+      expect(testUser1.username).toEqual(verifyObj.username)
+      // encrypted user password should be the same encrypted password provided by the jwt token
       expect(
         bcrypt.compareSync(
           testUser1.password_digest + pepper,
-          result.password_digest
+          verifyObj.password_digest
         )
       ).toBeTrue;
     } else {
@@ -72,6 +79,16 @@ describe('User Model', () => {
     );
     expect(result).toBeNull;
   });
+  // it('throws error when using valid username but invalid password', (done) => {
+  //     expect( () => {
+  //       store.authenticate(testUser1.username, 'invalidPassword')
+  //       .then(done)
+  //       .catch((err) => {
+  //         err ? done.fail(err) : done()
+  //       })
+  //     })
+  //   // }
+  })
   it('has index method', () => {
     expect(store.index).toBeDefined;
   });
@@ -90,5 +107,4 @@ describe('User Model', () => {
       const result = await store.show(testUser2.id)
     //   console.log(result)
       expect(result.username).toEqual(testUser2.username)
-  })
-});
+})

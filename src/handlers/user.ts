@@ -4,22 +4,28 @@ import { User, UserStore } from '../models/user';
 
 const store = new UserStore();
 
-const create = async (_req: express.Request, res: express.Response) => {
-  // const user = {
-  //     username : _req.body.username,
-  //     password : _req.body.password
-  // }
+const create = async (req: express.Request, res: express.Response) => {
+  const user: User = {
+    id: 0,
+    username: req.body.username,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    password_digest: req.body.password
+  }
 
-  const testUser = {
-    id: 1,
-    username: 'bob',
-    firstname: 'bob',
-    lastname: 'bobek',
-    password_digest: 'pass123',
-  };
   try {
-    const token = await store.create(testUser);
-    res.json(token);
+    // create user
+    await store.create(user);
+    // create user token
+    try {
+      const token = await store.authenticate(user.username, user.password_digest)
+      console.log('Token:')
+      console.log(token)
+      res.json(token);
+    } catch(err) {
+      res.status(500)
+      res.json(err)
+    }
   } catch (err) {
     res.status(400);
     res.json(err);

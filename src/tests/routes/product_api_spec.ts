@@ -77,7 +77,7 @@ describe('Product API', () => {
         })
 
     })
-    describe('POST /products', () => {
+    xdescribe('POST /products', () => {
         it('creates product when jwt token is provided', async (done) => {
             // sign in user to get JWT token
             // const store = new UserStore()

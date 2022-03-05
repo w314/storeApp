@@ -25,26 +25,36 @@ export type User = {
 // create Class representing table
 export class UserStore {
   // add authenticate method for sign-in
-  async authenticate(username: string, password: string): Promise<User | null> {
+  // returns jwt token if valid sign-in, null if user name is invalid, Error if password is incorrect
+  async authenticate(username: string, password: string): Promise<string | null> {
     try {
-      // get user's password from database
+      // get user from database
       const conn = await client.connect();
-      const sql = `SELECT password_digest FROM users WHERE userName = $1`;
+      const sql = `SELECT * FROM users WHERE userName = $1`;
       const result = await conn.query(sql, [username]);
       // disconnect from database
       conn.release();
       // if userName is valid and we got a password back
       if (result.rows.length) {
-        const user = result.rows[0];
-        // get user's password
+        const user: User = result.rows[0];
+        // compare user's password at sign-in with provided hashed version
+        // if password is valid send jwt token
         if (bcrypt.compareSync(password + pepper, user.password_digest)) {
-          return user;
+          // create JWT token and return it
+          // console.log(`password OK`)
+          return jsonwebtoken.sign(user, tokenSecret)         
+        }
+        // in case of invalid password throw error 
+        else {
+          // console.log('wrong password')
+          throw new Error(`Invalid password`)
         }
       }
-      // if userName is invalid
+      // if userName is invalid return null
       return null;
     } catch (err) {
-      throw new Error(`Could not authenticate user. Error: ${err}`);
+      console.log(`username was valid, but error at authentication: ${err}`)
+      throw new Error(`Could not authenticate user. ${err}`);
     }
   }
 

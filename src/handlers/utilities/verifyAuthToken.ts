@@ -15,7 +15,9 @@ const verifyAuthToken = (
   try {
     const authorizationHeader: string = req.headers.authorization as string;
     const token = authorizationHeader.split(' ')[1];
-    jsonwebtoken.verify(token, tokenSecret);
+    const verifyObj = jsonwebtoken.verify(token, tokenSecret);
+    console.log(`\nVERIFY OBJECT`)
+    console.log(verifyObj)
     next();
   } catch (err) {
     res.status(401);

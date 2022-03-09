@@ -88,7 +88,6 @@ describe('User Model', () => {
   //       })
   //     })
   //   // }
-  })
   it('has index method', () => {
     expect(store.index).toBeDefined;
   });
@@ -107,4 +106,5 @@ describe('User Model', () => {
       const result = await store.show(testUser2.id)
     //   console.log(result)
       expect(result.username).toEqual(testUser2.username)
+  })
 })

@@ -1,6 +1,7 @@
 NEXT:
-add create to user handler (need it to test POST /products endpoint)
+testing / endpoint now works, create user handler endpoint tests
 
+use postman to be sure if enpoint work 
 
 LATER:
 Test: add testing creation by running select queries

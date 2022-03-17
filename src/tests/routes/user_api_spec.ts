@@ -1,31 +1,30 @@
 import app from '../../server'
 import supertest, { agent as request } from 'supertest'
 
-const testUser1 = {
-    id: 1,
-    username: 'bob',
-    firstname: 'bob',
-    lastname: 'bobek',
-    password: '1234'
-}
+// const testUser1 = {
+//     id: 1,
+//     username: 'bob',
+//     firstname: 'bob',
+//     lastname: 'bobek',
+//     password: '1234'
+// }
 
 describe('API TEST TESTING GET/ endpoint', () => {
-    it('returns JWT token when creating new user'), (done: Function) => {
-        console.log('about to test main app page')
+    it('"Application Starting Page" displayed at project root', (done) => {
         request(app)
             .get('/')
             .expect(200)
-            // .expect('Content-Type', 'text/html; charset=utf-8')
+            .expect('Content-Type', 'text/html; charset=utf-8')
             .then((response) => {
-                console.log(response)
-                expect(response.text).toBe('Application starting page')
+                // console.log(response)
+                expect(response.text).toBe('Application Starting Page')
                 done()
             })
             .catch((Error) => {
                 Error ? fail() : done();
                 console.log('error')
             })
-    }
+    })
 })
 
 // describe('POST/users endpoint', () => {

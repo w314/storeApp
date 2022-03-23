@@ -36,9 +36,15 @@ export class UserStore {
       conn.release();
       // if userName is valid and we got a password back
       if (result.rows.length) {
+        // console.log(result.rows.length)
+        // for(let i = 0; i<result.rows.length; i++) {
+        //   console.log(result.rows[i])
+        // }
         const user: User = result.rows[0];
         // compare user's password at sign-in with provided hashed version
         // if password is valid send jwt token
+        // console.log(`User password coming from db after creation: ${user.password_digest}`)
+        // console.log(`User submitted this password: ${password}`)
         if (bcrypt.compareSync(password + pepper, user.password_digest)) {
           // create JWT token and return it
           // console.log(`password OK`)

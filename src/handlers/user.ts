@@ -8,7 +8,7 @@ const store = new UserStore();
 
 // create creates new user and returns a Json Web Token
 const create = async (req: express.Request, res: express.Response) => {
-  const user: User = {
+  const testUser: User = {
     id: 0,
     username: req.body.username,
     firstname: req.body.firstname,
@@ -18,10 +18,10 @@ const create = async (req: express.Request, res: express.Response) => {
 
   try {
     // create user
-    await store.create(user);
+    await store.create(testUser);
     // create user token
     try {
-      const token = await store.authenticate(user.username, user.password_digest)
+      const token = await store.authenticate(testUser.username, testUser.password_digest)
       // console.log('Token:')
       // console.log(token)
       res.json(token);
@@ -37,16 +37,36 @@ const create = async (req: express.Request, res: express.Response) => {
 
 // show requires a Json Web Token and displays the user data requested
 const show = async (req: express.Request, res: express.Response) => {
-  console.log(`IN USER HANDLER SHOW`)
   try {
+    // get user provided by verifyAuthToken middleware
+    const userInToken = res.locals.jwtObject
+    
+    // console.log(`USER IN TOKEN: ${JSON.stringify(userInToken, null, 4)}`)
+    // const idInToken = res.locals.jwtObject.id
+    // console.log(`ID in TOKEN: ${idInToken}`)
+
     // get user id from url
-    const id = parseInt(req.params.id)
-    console.log(`ID is: ${id}`)
+    const idInUrl = parseInt(req.params.id)
+    // console.log(`ID in URL: ${idInUrl}`)
     // get user data from url
-    const user = await store.show(id)
-    console.log('SENDING RESPONSE')
-    console.log(user)
-    res.json(user)
+
+    // if user id in URL and in Token is the same return user 
+    if (userInToken.id === idInUrl) {
+      res.json({
+          'username': userInToken.username,
+          'firstname': userInToken.firstname,
+          'lastname': userInToken.lastname,
+          'password_digest': userInToken.password_digest
+        })
+    } else {
+      // send 401 not authorized error
+      res.status(401)
+      res.send('Not authorized to view user')
+    }
+    // const user = await store.show(idInUrl)
+    // console.log('SENDING RESPONSE')
+    // console.log(user)
+    // res.json(user)
   } catch(err) {
     res.status(400)
     res.json(err)

@@ -12,15 +12,16 @@ const verifyAuthToken = (
   res: express.Response,
   next: express.NextFunction
 ) => {
-  console.log(`IN VERIFY AUTH TOKEN`)
   try {
+    // get token from authoraziation header
     const authorizationHeader: string = req.headers.authorization as string;
-    console.log(`HEADER: ${authorizationHeader}`)
+    // remove word "Bearer" from authorizationHeader string
     const token = authorizationHeader.slice(6);
-    console.log(`TOKEN: ${token}`)
-    const verifyObj = jsonwebtoken.verify(token, tokenSecret);
-    console.log(`\nVERIFY OBJECT`)
-    console.log(verifyObj)
+    // verify token and store its content    
+    const verifyObject = jsonwebtoken.verify(token, tokenSecret);
+    // to store object of jwt to be available for use in any next middleware
+    // or the route handler set res.locals.<variable name>
+    res.locals.jwtObject = verifyObject
     next();
   } catch (err) {
     console.log(`ERROR in VERIFY: ${err}`)

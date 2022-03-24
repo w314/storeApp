@@ -1,7 +1,6 @@
 NEXT:
-testing / endpoint now works, create user handler endpoint tests
 
-use postman to be sure if enpoint work 
+When creating deleting all users from users table in a beforeAll in testing user_api_spec, the user created gets id 3. If not using beforeAll tests fail. (?)
 
 LATER:
 Test: add testing creation by running select queries

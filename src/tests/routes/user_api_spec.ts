@@ -19,6 +19,7 @@ describe('User API testing', () => {
         console.log('RUNNING BEFOREALL')
         try {
             const conn = await client.connect()
+            // console.log(client)
             const sql = 'DELETE FROM users'
             await conn.query(sql)
             conn.release()
@@ -63,7 +64,7 @@ describe('User API testing', () => {
     })
     it('GET /users/id returns correct user', (done) => {
         request(app)
-        .get('/users/1')
+        .get('/users/3')
         // send token to endpoint
         .set('Authorization', 'Bearer' + token)
         .expect(200)

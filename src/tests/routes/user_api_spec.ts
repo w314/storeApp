@@ -1,14 +1,20 @@
 import app from '../../server'
 import { agent as request } from 'supertest'
 import client from '../../database'
+import jsonwebtoken from 'jsonwebtoken'
+import dotenv from 'dotenv'
 
-const testUser1 = {
-    id: 1,
+const testUser = {
+    id: 0,
     username: 'bob',
     firstname: 'bob',
     lastname: 'bobek',
     password: '1234'
 }
+
+// get tokenSecret from enviromental variables
+dotenv.config()
+const tokenSecret: string = process.env.TOKEN_SECRET as string
 
 let token = ''
 
@@ -47,7 +53,7 @@ describe('User API testing', () => {
     it('POST /users returns Json Web Token', (done) => {
         request(app)
         .post('/users')
-        .send(testUser1)
+        .send(testUser)
         .set('Accept', 'application/json')
         .expect('Content-Type', /json/)
         .expect(200)
@@ -55,6 +61,13 @@ describe('User API testing', () => {
             // save token to use in testing other endpoints
             token = response.body
             console.log(`TOKEN RECEIVED:\n ${token}`)
+
+            // get id of testUser created from token
+            const testUserObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(token, tokenSecret) as jsonwebtoken.JwtPayload
+            const testUserId = testUserObject.id
+            // update testUser object with correct id
+            testUser.id = testUserId
+            console.log(`TEST USER UPDATED ${JSON.stringify(testUser, null, 4)}`)
             done()
         })
         .catch((Error) => {
@@ -64,7 +77,8 @@ describe('User API testing', () => {
     })
     it('GET /users/id returns correct user', (done) => {
         request(app)
-        .get('/users/3')
+        .get(`/users/${testUser.id}`)
+        // .get(`/users/3`)
         // send token to endpoint
         .set('Authorization', 'Bearer' + token)
         .expect(200)

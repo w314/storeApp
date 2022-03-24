@@ -53,6 +53,7 @@ const show = async (req: express.Request, res: express.Response) => {
     // if user id in URL and in Token is the same return user 
     if (userInToken.id === idInUrl) {
       res.json({
+          'id': userInToken.id,
           'username': userInToken.username,
           'firstname': userInToken.firstname,
           'lastname': userInToken.lastname,

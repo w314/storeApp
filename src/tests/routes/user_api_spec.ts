@@ -22,7 +22,7 @@ describe('User API testing', () => {
 
     beforeAll( async () => {
         // clear user table
-        console.log('RUNNING BEFOREALL')
+        // console.log('RUNNING BEFOREALL')
         try {
             const conn = await client.connect()
             // console.log(client)
@@ -35,21 +35,21 @@ describe('User API testing', () => {
     })
     
 
-    it('"Application Starting Page" displayed at project root', (done) => {
-        request(app)
-        .get('/')
-        .expect(200)
-        .expect('Content-Type', 'text/html; charset=utf-8')
-        .then((response) => {
-            // console.log(response)
-            expect(response.text).toBe('Application Starting Page')
-            done()
-        })
-        .catch((Error) => {
-            Error ? fail() : done();
-            console.log('error')
-        })
-    })
+    // it('"Application Starting Page" displayed at project root', (done) => {
+    //     request(app)
+    //     .get('/')
+    //     .expect(200)
+    //     .expect('Content-Type', 'text/html; charset=utf-8')
+    //     .then((response) => {
+    //         // console.log(response)
+    //         expect(response.text).toBe('Application Starting Page')
+    //         done()
+    //     })
+    //     .catch((Error) => {
+    //         Error ? fail() : done();
+    //         console.log('error')
+    //     })
+    // })
     it('POST /users returns Json Web Token', (done) => {
         request(app)
         .post('/users')
@@ -60,14 +60,14 @@ describe('User API testing', () => {
         .then((response) => {
             // save token to use in testing other endpoints
             token = response.body
-            console.log(`TOKEN RECEIVED:\n ${token}`)
+            // console.log(`TOKEN RECEIVED:\n ${token}`)
 
             // get id of testUser created from token
             const testUserObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(token, tokenSecret) as jsonwebtoken.JwtPayload
             const testUserId = testUserObject.id
             // update testUser object with correct id
             testUser.id = testUserId
-            console.log(`TEST USER UPDATED ${JSON.stringify(testUser, null, 4)}`)
+            // console.log(`TEST USER UPDATED ${JSON.stringify(testUser, null, 4)}`)
             done()
         })
         .catch((Error) => {
@@ -75,7 +75,7 @@ describe('User API testing', () => {
             console.log(Error)
         })
     })
-    it('GET /users/id returns correct user', (done) => {
+    it('GET /users/id lets user see its own details', (done) => {
         request(app)
         .get(`/users/${testUser.id}`)
         // .get(`/users/3`)
@@ -84,15 +84,29 @@ describe('User API testing', () => {
         .expect(200)
         .expect('Content-Type', /json/)
         .then((response) => {
-            console.log(`RESPONSE:`)
-            console.log(response.body)
-            expect(response.body).toBeTruthy
+            // console.log(`RESPONSE:`)
+            // console.log(response.body)
+            expect(response.body.id = testUser.id)
             done()
         })
         .catch((err) => {
             console.log(`Error: ${err}`)
             done.fail()
         })
-
+    })
+    it('GET /users/id refuses to show users info of other users', (done) => {
+        request(app)
+        .get(`/users/0`)
+        // send token to endpoint
+        .set('Authorization', 'Bearer' + token)
+        .expect(401)
+        .end((err) => {
+            if (err) {
+                console.log(`Error: ${err}`)
+                done.fail()
+            } else {
+                done()
+            }
+        })
     })
 })

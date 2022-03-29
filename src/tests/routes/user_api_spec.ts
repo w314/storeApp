@@ -5,12 +5,23 @@ import jsonwebtoken from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { User, UserStore } from '../../models/user'
 
+const admin: User = {
+    id: 0,
+    username: 'admin',
+    firstname: 'Ed',
+    lastname: 'Mint',
+    password_digest: 'difficult',
+    user_type: 'admin'
+}
+
+
 const testUser = {
     id: 0,
     username: 'bob',
     firstname: 'bob',
     lastname: 'bobek',
-    password: '1234'
+    password: '1234',
+    user_type: 'regular'
 }
 
 // get tokenSecret from enviromental variables
@@ -32,15 +43,8 @@ describe('User API testing', () => {
             conn.release()
 
             // use user model to add one user to table
-            const firstUser: User = {
-                id: 0,
-                username: 'firstuser',
-                firstname: 'First',
-                lastname: 'Last',
-                password_digest: 'firstpass'
-            }
             const store = new UserStore()
-            await store.create(firstUser)
+            await store.create(admin)
         } catch(err) {
             console.log(`Error seting up user table. Error: ${err}`)
         }

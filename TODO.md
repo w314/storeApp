@@ -1,5 +1,5 @@
 NEXT:
-Add new test to check if test fails when userIdInToken != userIdInUrl in testing user api show
+Create index method in users handler - if there is none and create test for it.
 
 When creating deleting all users from users table in a beforeAll in testing user_api_spec, the user created gets id 3. If not using beforeAll tests fail. (?)
 

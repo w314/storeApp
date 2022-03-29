@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 // import type and model class
 import { User, UserStore } from '../models/user';
 // import verifyAuthToken
@@ -74,10 +74,25 @@ const show = async (req: express.Request, res: express.Response) => {
   }
 }
 
+// if valid token is provided returns list of users
+const index = async (req: express.Request, res: express.Response) => {
+  try {
+    // TODO check for token
+    // return user list
+    const users = await store.index() 
+    res.status(200)
+    res.json(users)
+  } catch(err) {
+    res.status(400)
+    res.json(err)
+  }
+}
+
+
 const userRoutes = (app: express.Application) => {
   app.post('/users', create);
   app.get('/users/:id', verifyAuthToken, show)
-  // app.get('/users/:id', show)
+  app.get('/users', index)
 };
 
 export default userRoutes;

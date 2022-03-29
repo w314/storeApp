@@ -17,13 +17,15 @@ const testUser1 = {
   firstname: 'bob',
   lastname: 'bobek',
   password_digest: 'secretPassword',
+  user_type: 'regular'
 };
 const testUser2 = {
     id: 2,
     username: 'testuser',
     firstname: 'test',
     lastname: 'user',
-    password_digest: 'userPass'
+    password_digest: 'userPass',
+    user_type: 'regular'
 }
 
 // test suite

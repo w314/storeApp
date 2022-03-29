@@ -20,6 +20,7 @@ export type User = {
   firstname: string;
   lastname: string;
   password_digest: string;
+  user_type: string;
 };
 
 // create Class representing table
@@ -110,13 +111,14 @@ export class UserStore {
       // connect to database
       const conn = await client.connect();
       // add user
-      const sql = `INSERT INTO users (userName, firstName, lastName, password_digest) 
-                VALUES ($1, $2, $3, $4) RETURNING *`;
+      const sql = `INSERT INTO users (userName, firstName, lastName, password_digest, user_type) 
+                VALUES ($1, $2, $3, $4, $5) RETURNING *`;
       const result = await conn.query(sql, [
         user.username,
         user.firstname,
         user.lastname,
         hash,
+        user.user_type
       ]);
       const createdUser = result.rows[0];
 

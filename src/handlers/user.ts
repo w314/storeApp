@@ -13,7 +13,8 @@ const create = async (req: express.Request, res: express.Response) => {
     username: req.body.username,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
-    password_digest: req.body.password
+    password_digest: req.body.password,
+    user_type: 'regular'
   }
 
   try {
@@ -57,7 +58,8 @@ const show = async (req: express.Request, res: express.Response) => {
           'username': userInToken.username,
           'firstname': userInToken.firstname,
           'lastname': userInToken.lastname,
-          'password_digest': userInToken.password_digest
+          'password_digest': userInToken.password_digest,
+          'user_type': userInToken.user_type
         })
     } else {
       // send 401 not authorized error

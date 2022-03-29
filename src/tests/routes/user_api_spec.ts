@@ -3,6 +3,7 @@ import { agent as request } from 'supertest'
 import client from '../../database'
 import jsonwebtoken from 'jsonwebtoken'
 import dotenv from 'dotenv'
+import { User, UserStore } from '../../models/user'
 
 const testUser = {
     id: 0,
@@ -21,16 +22,27 @@ let token = ''
 describe('User API testing', () => {
 
     beforeAll( async () => {
-        // clear user table
-        // console.log('RUNNING BEFOREALL')
+        // setup users table for testing
         try {
+            // clear user table
+            // (do manually as user model has no delete all users method)
             const conn = await client.connect()
-            // console.log(client)
-            const sql = 'DELETE FROM users'
-            await conn.query(sql)
+            const sqlDelete = 'DELETE FROM users'
+            await conn.query(sqlDelete)
             conn.release()
+
+            // use user model to add one user to table
+            const firstUser: User = {
+                id: 0,
+                username: 'firstuser',
+                firstname: 'First',
+                lastname: 'Last',
+                password_digest: 'firstpass'
+            }
+            const store = new UserStore()
+            await store.create(firstUser)
         } catch(err) {
-            console.log(`Error deleting content of user table. Error: ${err}`)
+            console.log(`Error seting up user table. Error: ${err}`)
         }
     })
     

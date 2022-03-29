@@ -121,4 +121,19 @@ describe('User API testing', () => {
             }
         })
     })
+    it('GET /users returns list of users', (done) => {
+        request(app)
+        .get('/users')
+        .expect(200)
+        .then((response) => {
+            // console.log(response.body)
+            expect(response.body.length).toEqual(2)
+            expect(response.body[1].username).toEqual(testUser.username)
+            done()
+        })
+        .catch((err) => {
+            console.log(err)
+            done.fail()
+        })
+    })
 })

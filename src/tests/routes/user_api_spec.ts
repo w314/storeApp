@@ -130,7 +130,7 @@ describe('User API testing', () => {
             }
         })
     })
-    it('GET/users/:id lets admin see any user\'s details', (done) => {
+    it('GET/users/id lets admin see any user\'s details', (done) => {
         request(app)
         .get(`/users/${testUser.id}`)
         .set('Authorization', 'Bearer' + adminToken)
@@ -140,7 +140,6 @@ describe('User API testing', () => {
             done()
         })
         .catch((err) => {
-            // console.log(err)
             done.fail(err)
         })
     })

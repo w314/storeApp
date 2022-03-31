@@ -51,7 +51,8 @@ const show = async (req: express.Request, res: express.Response) => {
     // console.log(`ID in URL: ${idInUrl}`)
     // get user data from url
 
-    // if user id in URL and in Token is the same return user 
+    // if user id in URL and in Token is the same
+    // return user info from token 
     if (userInToken.id === idInUrl) {
       res.json({
           'id': userInToken.id,
@@ -60,16 +61,18 @@ const show = async (req: express.Request, res: express.Response) => {
           'lastname': userInToken.lastname,
           'password_digest': userInToken.password_digest,
           'user_type': userInToken.user_type
-        })
+      })
+    } else if (userInToken.user_type === 'admin') {
+    // if the token is from an admin
+    // get user info from model and return it 
+      const user = await store.show(idInUrl)
+      res.json(user)
     } else {
+      // in all other cases
       // send 401 not authorized error
       res.status(401)
       res.send('Not authorized to view user')
     }
-    // const user = await store.show(idInUrl)
-    // console.log('SENDING RESPONSE')
-    // console.log(user)
-    // res.json(user)
   } catch(err) {
     res.status(400)
     res.json(err)

@@ -122,17 +122,13 @@ describe('User API testing', () => {
         .set('Authorization', 'Bearer' + testUserToken)
         .expect(401)
         .end((err) => {
-            if (err) {
-                console.log(`Error: ${err}`)
-                done.fail()
-            } else {
-                done()
-            }
+            err ? done.fail(err) : done()
         })
     })
     it('GET/users/id lets admin see any user\'s details', (done) => {
         request(app)
         .get(`/users/${testUser.id}`)
+        // send admin token
         .set('Authorization', 'Bearer' + adminToken)
         .expect(200)
         .then((response) => {
@@ -143,9 +139,11 @@ describe('User API testing', () => {
             done.fail(err)
         })
     })
-    it('GET /users returns list of users', (done) => {
+    it('GET /users returns list of users to admin user', (done) => {
         request(app)
         .get('/users')
+        // send admin token
+        .set('Authorization', 'Bearer' + adminToken)
         .expect(200)
         .then((response) => {
             // console.log(response.body)
@@ -156,6 +154,15 @@ describe('User API testing', () => {
         .catch((err) => {
             console.log(err)
             done.fail()
+        })
+    })
+    it('GET /users returns 401 status code if requested by regular user', (done) => {
+        request(app)
+        .get('/users')
+        .set('Authorization', 'Beare' + testUserToken)
+        .expect(401)
+        .end((err) => {
+            err ? done.fail(err) : done()
         })
     })
 })

@@ -159,7 +159,7 @@ describe('User API testing', () => {
     it('GET /users returns 401 status code if requested by regular user', (done) => {
         request(app)
         .get('/users')
-        .set('Authorization', 'Beare' + testUserToken)
+        .set('Authorization', 'Bearer' + testUserToken)
         .expect(401)
         .end((err) => {
             err ? done.fail(err) : done()

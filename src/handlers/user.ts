@@ -23,8 +23,6 @@ const create = async (req: express.Request, res: express.Response) => {
     // create user token
     try {
       const token = await store.authenticate(testUser.username, testUser.password_digest)
-      // console.log('Token:')
-      // console.log(token)
       res.json(token);
     } catch(err) {
       res.status(500)
@@ -42,14 +40,8 @@ const show = async (req: express.Request, res: express.Response) => {
     // get user provided by verifyAuthToken middleware
     const userInToken = res.locals.jwtObject
     
-    // console.log(`USER IN TOKEN: ${JSON.stringify(userInToken, null, 4)}`)
-    // const idInToken = res.locals.jwtObject.id
-    // console.log(`ID in TOKEN: ${idInToken}`)
-
     // get user id from url
     const idInUrl = parseInt(req.params.id)
-    // console.log(`ID in URL: ${idInUrl}`)
-    // get user data from url
 
     // if user id in URL and in Token is the same
     // return user info from token 
@@ -82,11 +74,21 @@ const show = async (req: express.Request, res: express.Response) => {
 // if valid token is provided returns list of users
 const index = async (req: express.Request, res: express.Response) => {
   try {
-    // TODO check for token
-    // return user list
-    const users = await store.index() 
-    res.status(200)
-    res.json(users)
+    // use token object provided with verifyAuthToken middleware
+    // to check user_type of user requesting users list
+    const user_type = res.locals.jwtObject.user_type
+    // console.log(JSON.stringify(res.locals.jwtObject, null, 4))
+    // user_type is admin return user list
+    if (user_type === 'admin') {
+      // return user list
+      const users = await store.index() 
+      res.status(200)
+      res.json(users)
+    } else {
+      // return status 401 if user_type is not admin
+      res.status(401)
+      res.json('Regular users are not allowed to see user list')
+    }
   } catch(err) {
     res.status(400)
     res.json(err)
@@ -97,7 +99,7 @@ const index = async (req: express.Request, res: express.Response) => {
 const userRoutes = (app: express.Application) => {
   app.post('/users', create);
   app.get('/users/:id', verifyAuthToken, show)
-  app.get('/users', index)
+  app.get('/users', verifyAuthToken, index)
 };
 
 export default userRoutes;

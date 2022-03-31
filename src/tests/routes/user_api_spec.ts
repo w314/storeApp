@@ -28,7 +28,8 @@ const testUser = {
 dotenv.config()
 const tokenSecret: string = process.env.TOKEN_SECRET as string
 
-let token = ''
+let adminToken = ''
+let testUserToken = ''
 
 describe('User API testing', () => {
 
@@ -42,9 +43,13 @@ describe('User API testing', () => {
             await conn.query(sqlDelete)
             conn.release()
 
-            // use user model to add one user to table
+            // use user model to add admin user to table
             const store = new UserStore()
             await store.create(admin)
+
+            // get token for admin user
+            adminToken = await store.authenticate(admin.username, admin.password_digest) as string
+
         } catch(err) {
             console.log(`Error seting up user table. Error: ${err}`)
         }
@@ -75,11 +80,11 @@ describe('User API testing', () => {
         .expect(200)
         .then((response) => {
             // save token to use in testing other endpoints
-            token = response.body
+            testUserToken = response.body
             // console.log(`TOKEN RECEIVED:\n ${token}`)
 
             // get id of testUser created from token
-            const testUserObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(token, tokenSecret) as jsonwebtoken.JwtPayload
+        const testUserObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(testUserToken, tokenSecret) as jsonwebtoken.JwtPayload
             const testUserId = testUserObject.id
             // update testUser object with correct id
             testUser.id = testUserId
@@ -96,7 +101,7 @@ describe('User API testing', () => {
         .get(`/users/${testUser.id}`)
         // .get(`/users/3`)
         // send token to endpoint
-        .set('Authorization', 'Bearer' + token)
+        .set('Authorization', 'Bearer' + testUserToken)
         .expect(200)
         .expect('Content-Type', /json/)
         .then((response) => {
@@ -114,7 +119,7 @@ describe('User API testing', () => {
         request(app)
         .get(`/users/0`)
         // send token to endpoint
-        .set('Authorization', 'Bearer' + token)
+        .set('Authorization', 'Bearer' + testUserToken)
         .expect(401)
         .end((err) => {
             if (err) {
@@ -123,6 +128,20 @@ describe('User API testing', () => {
             } else {
                 done()
             }
+        })
+    })
+    it('GET/users/:id lets admin see any user\'s details', (done) => {
+        request(app)
+        .get(`/users/${testUser.id}`)
+        .set('Authorization', 'Bearer' + adminToken)
+        .expect(200)
+        .then((response) => {
+            expect(response.body.username).toEqual(testUser.username)
+            done()
+        })
+        .catch((err) => {
+            // console.log(err)
+            done.fail(err)
         })
     })
     it('GET /users returns list of users', (done) => {

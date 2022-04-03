@@ -1,123 +1,115 @@
-// // import supertest to make http requests to server
-// import { agent as request } from 'supertest'
-// // import server to test its endpoints
-// import app from '../../server'
-// // import client to set up database for testing
-// import client from '../../database'
-// // import Product type
-// import { Product } from '../../models/product'
-// // import user model to sign in user for testing product creation
-// import { User, UserStore } from '../../models/user'
+// import supertest to make http requests to server
+import { agent as request } from 'supertest'
+// import server to test its endpoints
+import app from '../../server'
+// import client to set up database for testing
+import client from '../../database'
+// import Product type
+import { Product, ProductStore } from '../../models/product'
+// import user model to sign in user for testing product creation
+import { User, UserStore } from '../../models/user'
+import userRoutes from '../../handlers/user'
+import productRoutes from '../../handlers/product'
 
-// // using id 2 & 3 for products as product wiht id 1 was already created during 
-// // product model testing
-// const testProducts: Product[] = [
-//     {
-//         id: 2,
-//         name: 'testProduct1',
-//         price: 3.2
-//     },
-//     {   
-//         id: 3,
-//         name: 'testProduct2',
-//         price: 4.5
-//     }
-// ]
+describe('Product API Testing', () => {
 
+    const user = {
+        id: 0,
+        username: 'testuser',
+        firstname: 'test',
+        lastname: 'user',
+        password_digest: 'userPass',
+        user_type: 'regular'
+    }
 
-// const setupDatabase = async(products:Product[]) => {
-//     // connect to database
-//     const conn = await client.connect()
-//     // delete all rows from products table
-//     const sqlDeleteAll = `DELETE FROM products`
-//     await conn.query(sqlDeleteAll)
-//     // add test products to database
-//     for(let i = 0; i < products.length; i++) {
-//         const sql = `INSERT INTO products (name, price) VALUES ($1, $2)`
-//         conn.query(sql,[products[i].name, products[i].price])
-//     }
-//     // disconnect from database
-//     conn.release()
-// }
+    let userToken = ''
+
+    const testProducts: Product[] = [
+    {
+        id: 0,
+        name: 'testProduct1',
+        price: 3.2
+    },
+    {   
+        id: 0,
+        name: 'testProduct2',
+        price: 4.5
+    }
+]
 
 
-// // describe('Product API', () => {
 
-// //     beforeAll(() => {
-// //         setupDatabase(testProducts)
-// //     })
+    beforeAll( async () => {
+        // setup database
+    
+        // clean user and product tables
+        const conn = await client.connect()
+        const sqlCleanUserTable = 'DELETE FROM users'
+        await conn.query(sqlCleanUserTable)
+        const sqlCleanProductTable = 'DELETE FROM products'
+        await conn.query(sqlCleanProductTable)
+        conn.release()
 
-// //     describe('GET/products', () => {
-// //         it('shows list of products', (done) => {
-// //             request(app)
-// //                 .get('/products')
-// //                 .expect(200)
-// //                 .then((response) => {
-// //                     // console.log(response)
-// //                     expect(response.body).toEqual(testProducts)
-// //                     done()
-// //                 })
-// //                 .catch((Error) => {
-// //                     Error ? done.fail(Error) : done()
-// //                 })
-// //         })
-// //     })
-// //     describe('GET/products/id', () => {
-// //         it('shows product with specific id', (done) => {
-// //             request(app)
-// //                 .get('/products/2')
-// //                 .expect(200)
-// //                 .then((response) => {
-// //                     expect(response.body).toEqual(testProducts[0])
-// //                     done()
-// //                 })
-// //                 .catch((Error) => {
-// //                     Error ? done.fail(Error) : done()
-// //                 })
-// //         })
+        // add user to to use for product creation
+        const userStore = new UserStore()
+        await userStore.create(user)
+        // get token for user
+        userToken = await userStore.authenticate(user.username, user.password_digest) as string
 
-// //     })
-// //     xdescribe('POST /products', () => {
-// //         it('creates product when jwt token is provided', async (done) => {
-// //             // sign in user to get JWT token
-// //             // const store = new UserStore()
-// //             const user: User = {
-// //                 id: 0,
-// //                 username: 'bigbird',
-// //                 firstname: 'big',
-// //                 lastname: 'bird',
-// //                 password_digest: 'secretChirp'
-// //             }
-// //             let token = ''
-
-// //             await request(app)
-// //             .post('/users')
-// //             .send(user)
-// //             .then((Response) => {
-// //                 token = Response.text
-// //             })
-
-// //             console.log(`token:`)
-// //             console.log(token)
-            
-// //             // product to create
-// //             const product: Product = {
-// //                 id: 0,
-// //                 name: 'test',
-// //                 price: 11.3
-// //             }
-
-// //             request(app)
-// //             .post('/products')
-// //             .set('Authorization', `${token}`)
-// //             .send(product)
-// //             .expect(200)
-// //             .then((Response) => {
-// //                 console.log('API response')
-// //                 console.log(Response)
-// //             })
-
-
-// //         })
-// //     })    
-// // })
+        // add first product to product table
+        const productStore = new ProductStore()
+        await productStore.create(testProducts[0])
+    })
+    it('POST /products creates product if JWT token is provided', (done) => {
+        request(app)
+        .post('/products')
+        .send(testProducts[1])
+        .set('Authorization', 'Bearer' + userToken)
+        .expect(200)
+        .then((response) => {
+            // set correct id for created product
+            testProducts[1].id = response.body.id
+            // created products name should match with name of testProduct
+            expect(response.body.name).toEqual(testProducts[1].name)
+            done()
+        })
+        .catch((err) => {
+            done.fail(err)
+        })
+    })
+    it('POST /products send 401 code if trying to create product without token', (done) => {
+        request(app)
+        .post('/users')
+        .send(testProducts[1])
+        .expect(401)
+        .end((err) => {
+            err ? done.fail(err) : done()
+        })  
+    })
+    it('GET /products/id returns product with requested id', (done) => {
+        request(app)
+            .get(`/products/${testProducts[1].id}`)
+            .expect(200)
+            .then((response) => {
+                // console.log(response)
+                expect(response.body).toEqual(testProducts[1])
+                done()
+            })
+            .catch((Error) => {
+                Error ? done.fail(Error) : done()
+            })
+    })
+    it('GET /products returns list of products', (done) => {
+        request(app)
+        .get('/products')
+        .expect(200)
+        .then((response) => {
+            expect(response.body.length).toEqual(2)
+            expect(response.body[1].price).toEqual(testProducts[1].price)
+            done()
+        })
+        .catch((err) => {
+            err ? done.fail(err) : done()
+        })
+    })
+})

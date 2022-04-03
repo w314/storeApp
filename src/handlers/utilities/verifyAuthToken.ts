@@ -12,9 +12,11 @@ const verifyAuthToken = (
   res: express.Response,
   next: express.NextFunction
 ) => {
+  // console.log(`IN VERIFYAUTHTOKEN`)
   try {
     // get token from authoraziation header
     const authorizationHeader: string = req.headers.authorization as string;
+    // console.log(`AUTH HEADER:\n${authorizationHeader}`)
     // remove word "Bearer" from authorizationHeader string
     const token = authorizationHeader.slice(6);
     // verify token and store its content    

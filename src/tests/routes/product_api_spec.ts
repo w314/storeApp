@@ -79,7 +79,7 @@ describe('Product API Testing', () => {
     })
     it('POST /products send 401 code if trying to create product without token', (done) => {
         request(app)
-        .post('/users')
+        .post('/products')
         .send(testProducts[1])
         .expect(401)
         .end((err) => {
@@ -92,7 +92,8 @@ describe('Product API Testing', () => {
             .expect(200)
             .then((response) => {
                 // console.log(response)
-                expect(response.body).toEqual(testProducts[1])
+                expect(response.body).toEqual(testProducts[1
+                ])
                 done()
             })
             .catch((Error) => {

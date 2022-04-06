@@ -37,9 +37,10 @@ const create = async (req: express.Request, res: express.Response) => {
   try {
     // console.log(_req.body);
     const product = {
-      id: req.body.id,
+      product_id: req.body.product_id,
       name: req.body.name,
       price: req.body.price,
+      category_id: req.body.category_id
     };
     const productCreated = await store.create(product);
     res.json(productCreated);

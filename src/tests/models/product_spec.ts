@@ -3,15 +3,17 @@ import { Product, ProductStore } from '../../models/product';
 
 const store = new ProductStore();
 const product = {
-  id: 1,
+  product_id: 1,
   name: 'bob',
   price: 9.99,
+  category_id: 0
 };
 const newProductName = 'bobek';
 const updatedProduct = {
-  id: product.id,
+  product_id: product.product_id,
   name: newProductName,
   price: product.price,
+  category_id: product.category_id
 };
 describe('Product Model', () => {
   it('has a create method', () => {
@@ -41,7 +43,7 @@ describe('Product Model', () => {
     expect(store.show).toBeDefined();
   });
   it('shows product', async () => {
-    const result = await store.show(product.id);
+    const result = await store.show(product.product_id);
     expect(result).toEqual(updatedProduct);
   });
   it('has a delete method', () => {

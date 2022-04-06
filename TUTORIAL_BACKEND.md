@@ -8,6 +8,7 @@ Work Flow
 - Create Handlers
 <br>Each model file will have its handler file. This file will have all the handler functions associated with the REST-ful routes regarding that model.
 - Import handlers to server file
+- Test api endpoints
 
 
 ## Products
@@ -23,7 +24,11 @@ db-migrate create products-table --sql-file
 
 2. Add up migration sql:
 ```sql
-CREATE TABLE products (name VARCHAR(100), price float, id SERIAL PRIMARY KEY);
+CREATE TABLE products (
+  name VARCHAR(100), 
+  price float, 
+  id SERIAL PRIMARY KEY
+);
 ```
 
 3. App down migration sql:
@@ -272,3 +277,58 @@ touch src/handlers/user.ts
 ```
 
 ### 5. Import User Handlers to `server.ts`
+
+
+## To modify already created endpoints
+
+>Add category property to product.
+
+### 1. Cretae migration for categories table
+```bash
+db-migrate create categories-table --sql-file
+```
+- up migration
+
+```sql
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100)
+);
+```
+
+- down migration
+```sql
+DROP TABLE IF EXISTS categories;
+```
+
+### 2. Modify migration of products table
+```sql
+CREATE TABLE products (
+    name VARCHAR(100), 
+    price float, 
+    product_id SERIAL PRIMARY KEY,
+    category_id INT,
+    CONSTRAINT fk_category
+        FOREIGN KEY(category_id)
+            REFERENCES categories(category_id)
+            ON DELETE SET NULL
+);
+```
+- migrations are run in creation order
+- to be able to run without error category table migration has to be run before product table migration
+- to do that one can change the date in the name of the migration file
+- it's probably enough to change the name of the `.js` file, if the up and down migration file names are also changed, their names have to be updated within the `.js` file
+
+### 3. Update Product Model, Handler and their tests
+- Update Product type in product model
+- Update product model code
+- Update product handler
+- update model tests (test products used and other errors)
+- update api endpoint test (test products used and other errors)
+
+
+
+1. Create categories model
+1. Modify products model
+1. Modify products handler
+1. Add new tests

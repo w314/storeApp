@@ -26,14 +26,16 @@ describe('Product API Testing', () => {
 
     const testProducts: Product[] = [
     {
-        id: 0,
+        product_id: 0,
         name: 'testProduct1',
-        price: 3.2
+        price: 3.2,
+        category_id: 0
     },
     {   
-        id: 0,
+        product_id: 0,
         name: 'testProduct2',
-        price: 4.5
+        price: 4.5,
+        category_id: 0
     }
 ]
 
@@ -68,7 +70,7 @@ describe('Product API Testing', () => {
         .expect(200)
         .then((response) => {
             // set correct id for created product
-            testProducts[1].id = response.body.id
+            testProducts[1].product_id = response.body.id
             // created products name should match with name of testProduct
             expect(response.body.name).toEqual(testProducts[1].name)
             done()
@@ -88,7 +90,7 @@ describe('Product API Testing', () => {
     })
     it('GET /products/id returns product with requested id', (done) => {
         request(app)
-            .get(`/products/${testProducts[1].id}`)
+            .get(`/products/${testProducts[1].product_id}`)
             .expect(200)
             .then((response) => {
                 // console.log(response)

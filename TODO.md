@@ -1,6 +1,6 @@
 NEXT:
-user enpoints are done, admin branch merged back to master
-work on product endpoints
+required product endpoints are done
+create product category
 
 
 LATER:

@@ -6,9 +6,10 @@ import client from '../database';
 
 // creating a TypeScipt type for our table items
 export type Product = {
-  id: number;
+  product_id: number;
   name: string;
   price: number;
+  category_id: number;
 };
 
 /*
@@ -69,12 +70,13 @@ export class ProductStore {
     try {
       const conn = await client.connect();
       const sql = `UPDATE products 
-            SET name=($2), price=($3) 
+            SET name=($2), price=($3), category_id=($4) 
             WHERE id=($1) RETURNING *`;
       const result = await conn.query(sql, [
-        product.id,
+        product.product_id,
         product.name,
         product.price,
+        product.category_id
       ]);
       const updatedProduct = result.rows[0];
       conn.release();
@@ -90,7 +92,7 @@ export class ProductStore {
     try {
       const conn = await client.connect();
       const sql = `DELETE FROM products WHERE id=($1)`;
-      await conn.query(sql, [product.id]);
+      await conn.query(sql, [product.product_id]);
       conn.release();
       return product;
     } catch (err) {

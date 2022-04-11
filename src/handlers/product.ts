@@ -42,7 +42,9 @@ const create = async (req: express.Request, res: express.Response) => {
       price: req.body.price,
       category_id: req.body.category_id
     };
+    // console.log(`PRODUCT IN REQ:\n ${JSON.stringify(product, null, 4)}`)
     const productCreated = await store.create(product);
+    // console.log(JSON.stringify(productCreated, null, 4))
     res.json(productCreated);
   } catch (err) {
     res.status(400);

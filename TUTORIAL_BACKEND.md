@@ -328,6 +328,7 @@ CREATE TABLE products (
 
 
 
+
 1. Create categories model
 1. Modify products model
 1. Modify products handler

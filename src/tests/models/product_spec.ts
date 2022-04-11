@@ -1,12 +1,14 @@
 // import class to test and the types used
 import { Product, ProductStore } from '../../models/product';
+// import category model to create categories in test database
+import { Category, CategoryStore } from '../../models/category'
 
 const store = new ProductStore();
 const product = {
   product_id: 1,
   name: 'bob',
   price: 9.99,
-  category_id: 0
+  category_id: 1
 };
 const newProductName = 'bobek';
 const updatedProduct = {
@@ -16,6 +18,12 @@ const updatedProduct = {
   category_id: product.category_id
 };
 describe('Product Model', () => {
+  
+  beforeAll( async() => {
+    const categoryStore = new CategoryStore()
+    await categoryStore.create('Books')
+  })
+
   it('has a create method', () => {
     expect(store.create).toBeDefined();
   });

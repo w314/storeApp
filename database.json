@@ -3,6 +3,7 @@
   "dev": {
     "driver": "pg",
     "host": "127.0.0.1",
+    "port": 5555,
     "database": "store_app_db",
     "user": "store_app_user",
     "password": "storeSecret"
@@ -10,6 +11,7 @@
   "test": {
     "driver": "pg",
     "host": "127.0.0.1",
+    "port": 5555,
     "database": "store_app_db_test",
     "user": "store_app_user",
     "password": "storeSecret"

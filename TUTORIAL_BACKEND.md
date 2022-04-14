@@ -333,7 +333,7 @@ CREATE TABLE products (
 
 ## TO INCLUDE INTO TUTORIAL
 
-- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name>` <br> instead of <br>`DELETE FROM <table_name>`, as `TRUNCATE` resets primary key numbers, while `DELETE` does not
+- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name> CASCADE` <br> instead of <br>`DELETE FROM <table_name>`<br>`TRUNCATE` resets primary key numbers, while `DELETE` does not<br>`CASCADE` is needed if the table is used as a foreign key in another table
 
 
 ## Add orders
@@ -349,10 +349,19 @@ CREATE TYPE ordertype AS ENUM ('active', 'completed');
 CREATE TABLE orders (
   order_id SERIAL PRIMARY KEY,
   user_id INT,
-  order_type ordertype
+  order_type ordertype,
+  CONSTRAINT fk_user
+    FOREIGN KEY(user_id)
+      REFERENCES users(user_id)
+      ON DELETE SET NULL
 );
 ```
 
 - add down migration
+```sql
+DROP TYPE IF EXISTS ordertype CASCADE;
+DROP TABLE IF EXISTS orders;
+```
+
 1. Create Model
 1. 

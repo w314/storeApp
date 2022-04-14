@@ -39,7 +39,7 @@ describe('User API testing', () => {
             // clear user table
             // (do manually as user model has no delete all users method)
             const conn = await client.connect()
-            const sqlDelete = 'TRUNCATE users'
+            const sqlDelete = 'TRUNCATE users CASCADE'
             await conn.query(sqlDelete)
             conn.release()
 

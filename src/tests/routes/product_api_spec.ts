@@ -47,9 +47,9 @@ describe('Product API Testing', () => {
         // connect to database
         const conn = await client.connect()
         // clear user table
-        await conn.query('TRUNCATE users')
+        await conn.query('TRUNCATE users CASCADE')
         // clear products table
-        await conn.query('TRUNCATE products')
+        await conn.query('TRUNCATE products CASCADE')
         // clear categories table
         await conn.query('TRUNCATE categories CASCADE')
         // disconnect from database

@@ -6,7 +6,7 @@ import dotenv from 'dotenv'
 import { User, UserStore } from '../../models/user'
 
 const admin: User = {
-    id: 0,
+    user_id: 0,
     username: 'admin',
     firstname: 'Ed',
     lastname: 'Mint',
@@ -16,7 +16,7 @@ const admin: User = {
 
 
 const testUser = {
-    id: 0,
+    user_id: 0,
     username: 'bob',
     firstname: 'bob',
     lastname: 'bobek',
@@ -85,9 +85,9 @@ describe('User API testing', () => {
 
             // get id of testUser created from token
         const testUserObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(testUserToken, tokenSecret) as jsonwebtoken.JwtPayload
-            const testUserId = testUserObject.id
+            const testUserId = testUserObject.user_id
             // update testUser object with correct id
-            testUser.id = testUserId
+            testUser.user_id = testUserId
             // console.log(`TEST USER UPDATED ${JSON.stringify(testUser, null, 4)}`)
             done()
         })
@@ -98,7 +98,7 @@ describe('User API testing', () => {
     })
     it('GET /users/id lets user see its own details', (done) => {
         request(app)
-        .get(`/users/${testUser.id}`)
+        .get(`/users/${testUser.user_id}`)
         // .get(`/users/3`)
         // send token to endpoint
         .set('Authorization', 'Bearer' + testUserToken)
@@ -107,7 +107,7 @@ describe('User API testing', () => {
         .then((response) => {
             // console.log(`RESPONSE:`)
             // console.log(response.body)
-            expect(response.body.id = testUser.id)
+            expect(response.body.user_id = testUser.user_id)
             done()
         })
         .catch((err) => {
@@ -128,7 +128,7 @@ describe('User API testing', () => {
     it('GET/users/id lets admin see any user\'s details', (done) => {
         // console.log(`ADMIN TOKEN: \n ${adminToken}`)
         request(app)
-        .get(`/users/${testUser.id}`)
+        .get(`/users/${testUser.user_id}`)
         // send admin token
         .set('Authorization', 'Bearer' + adminToken)
         .expect(200)

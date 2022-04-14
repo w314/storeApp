@@ -16,7 +16,7 @@ import { Category, CategoryStore } from '../../models/category'
 describe('Product API Testing', () => {
 
     const user = {
-        id: 0,
+        user_id: 0,
         username: 'testuser',
         firstname: 'test',
         lastname: 'user',

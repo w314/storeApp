@@ -15,7 +15,7 @@ const tokenSecret: string = process.env.TOKEN_SECRET as string;
 
 // create typescript type for user
 export type User = {
-  id: number;
+  user_id: number;
   username: string;
   firstname: string;
   lastname: string;
@@ -90,7 +90,7 @@ export class UserStore {
       // connect to database
       const conn = await client.connect()
       // get user
-      const sql = `SELECT * FROM users WHERE id = $1`
+      const sql = `SELECT * FROM users WHERE user_id = $1`
       const result = await conn.query(sql, [userId])
       // disconnect from database
       conn.release()

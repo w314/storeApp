@@ -12,7 +12,7 @@ const pepper = process.env.BCRYPT_PASSWORD;
 const tokenSecret: string = process.env.TOKEN_SECRET as string
 const store = new UserStore();
 const testUser1 = {
-  id: 1,
+  user_id: 1,
   username: 'bob',
   firstname: 'bob',
   lastname: 'bobek',
@@ -20,7 +20,7 @@ const testUser1 = {
   user_type: 'regular'
 };
 const testUser2 = {
-    id: 2,
+    user_id: 2,
     username: 'testuser',
     firstname: 'test',
     lastname: 'user',
@@ -105,7 +105,7 @@ describe('User Model', () => {
       expect(store.show).toBeDefined
   })
   it('shows requested user', async () => {
-      const result = await store.show(testUser2.id)
+      const result = await store.show(testUser2.user_id)
     //   console.log(result)
       expect(result.username).toEqual(testUser2.username)
   })

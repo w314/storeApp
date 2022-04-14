@@ -9,7 +9,7 @@ const store = new UserStore();
 // create creates new user and returns a Json Web Token
 const create = async (req: express.Request, res: express.Response) => {
   const testUser: User = {
-    id: 0,
+    user_id: 0,
     username: req.body.username,
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -45,9 +45,9 @@ const show = async (req: express.Request, res: express.Response) => {
 
     // if user id in URL and in Token is the same
     // return user info from token 
-    if (userInToken.id === idInUrl) {
+    if (userInToken.user_id === idInUrl) {
       res.json({
-          'id': userInToken.id,
+          'user_id': userInToken.user_id,
           'username': userInToken.username,
           'firstname': userInToken.firstname,
           'lastname': userInToken.lastname,

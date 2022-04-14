@@ -5,6 +5,6 @@ CREATE TABLE users (
     firstname VARCHAR(100), 
     lastname VARCHAR(100), 
     password_digest VARCHAR, 
-    id SERIAL PRIMARY KEY,
+    user_id SERIAL PRIMARY KEY,
     user_type usertype
 );

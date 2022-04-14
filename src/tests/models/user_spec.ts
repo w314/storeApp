@@ -49,7 +49,7 @@ describe('User Model', () => {
   });
   it('can create user', async () => {
     const result = await store.create(testUser1);
-    console.log(result)
+    // console.log(result)
     // console.log(testUser1)
     // use bcrypt to test if hashed password in result is the hash of the password provided
     expect(

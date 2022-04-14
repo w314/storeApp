@@ -373,3 +373,30 @@ DROP TABLE IF EXISTS orders;
 - create orderRoutes: assign methods to endpoints
 - export orderRoutes
 - in `server.ts` file call orderRoutes
+
+
+### add order_products table
+#### 1. create migration files
+```bash
+db-migrate create order_products-table --sql-file
+```
+- up migration
+```sql
+CREATE TABLE order_products (
+  order_id INT,
+  product_id INT,
+  quantity INT,
+  CONSTRAINT fk_order
+    FOREIGN KEY(order_id)
+      REFERENCES orders(order_id)
+      ON DELETE SET NULL,
+  CONSTRAINT fk_product
+    FOREIGN KEY(product_id)
+      REFERENCES product(product_id)
+      ON DELETE SET NULL
+);
+```
+- down migration
+```sql
+DROP TABLE  IF EXISTS order_products;
+```

@@ -39,7 +39,7 @@ describe('User API testing', () => {
             // clear user table
             // (do manually as user model has no delete all users method)
             const conn = await client.connect()
-            const sqlDelete = 'DELETE FROM users'
+            const sqlDelete = 'TRUNCATE users'
             await conn.query(sqlDelete)
             conn.release()
 
@@ -126,6 +126,7 @@ describe('User API testing', () => {
         })
     })
     it('GET/users/id lets admin see any user\'s details', (done) => {
+        // console.log(`ADMIN TOKEN: \n ${adminToken}`)
         request(app)
         .get(`/users/${testUser.id}`)
         // send admin token

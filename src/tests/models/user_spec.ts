@@ -5,6 +5,8 @@ import bcrypt from 'bcrypt';
 // import dotenv to use enviromental variables
 import dotenv from 'dotenv';
 import jsonwebtoken, { Jwt } from 'jsonwebtoken'
+// import database client
+import client from './../../database'
 
 // initialize enviromental variables
 dotenv.config();
@@ -30,12 +32,24 @@ const testUser2 = {
 
 // test suite
 describe('User Model', () => {
+
+  beforeAll( async () => {
+    // prepare database for testing
+    const conn = await client.connect()
+    // empty users tabel
+    await conn.query(`TRUNCATE users RESTART IDENTITY CASCADE`)
+    // const result = await conn.query('SELECT * FROM users')
+    // console.log(result.rows)
+    conn.release()
+  })
+
+
   it('has create method', () => {
     expect(store.create).toBeDefined;
   });
   it('can create user', async () => {
     const result = await store.create(testUser1);
-    // console.log(result)
+    console.log(result)
     // console.log(testUser1)
     // use bcrypt to test if hashed password in result is the hash of the password provided
     expect(
@@ -98,6 +112,7 @@ describe('User Model', () => {
     await store.create(testUser2)
     // get list of users
     const result = await store.index();
+    // console.log(result)
     expect(result.length).toEqual(2)
     expect(result[1].username).toEqual(testUser2.username);
   });
@@ -105,8 +120,9 @@ describe('User Model', () => {
       expect(store.show).toBeDefined
   })
   it('shows requested user', async () => {
+    // console.log(JSON.stringify(testUser2, null, 4))
       const result = await store.show(testUser2.user_id)
-    //   console.log(result)
+        // console.log(result)
       expect(result.username).toEqual(testUser2.username)
   })
 })

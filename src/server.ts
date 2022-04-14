@@ -4,6 +4,7 @@ import userRoutes from './handlers/user';
 import bodyParser from 'body-parser';
 // import morgan, a HTTP request logging middleware
 import morgan from 'morgan'
+import orderRoutes from './handlers/order';
 
 const app: express.Application = express();
 const port = 3000;
@@ -20,6 +21,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 
 productRoutes(app);
 userRoutes(app);
+orderRoutes(app);
 
 // start server
 app.listen(port, () => {

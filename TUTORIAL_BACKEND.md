@@ -333,7 +333,7 @@ CREATE TABLE products (
 
 ## TO INCLUDE INTO TUTORIAL
 
-- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name> CASCADE` <br> instead of <br>`DELETE FROM <table_name>`<br>`TRUNCATE` resets primary key numbers, while `DELETE` does not<br>`CASCADE` is needed if the table is used as a foreign key in another table
+- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name> CASCADE` <br> instead of <br>`DELETE FROM <table_name>`<br>`TRUNCATE` resets primary key numbers, while `DELETE` does not<br>`CASCADE` is needed if the table is used as a foreign key in another table 
 
 
 ## Add orders
@@ -363,5 +363,13 @@ DROP TYPE IF EXISTS ordertype CASCADE;
 DROP TABLE IF EXISTS orders;
 ```
 
-1. Create Model
-1. 
+### 2. Model for Orders
+- create Order type
+- create OrderStore class and add methods
+
+
+### 3. Handler for Orders
+- add methods
+- create orderRoutes: assign methods to endpoints
+- export orderRoutes
+- in `server.ts` file call orderRoutes

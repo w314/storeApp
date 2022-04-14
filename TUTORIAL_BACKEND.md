@@ -319,7 +319,11 @@ CREATE TABLE products (
 - to do that one can change the date in the name of the migration file
 - it's probably enough to change the name of the `.js` file, if the up and down migration file names are also changed, their names have to be updated within the `.js` file
 
-### 3. Update Product Model, Handler and their tests
+
+### 3. Create categories model
+- add model to be able to create categories
+
+### 4. Update Product Model, Handler and their tests
 - Update Product type in product model
 - Update product model code
 - Update product handler
@@ -327,9 +331,6 @@ CREATE TABLE products (
 - update api endpoint test (test products used and other errors)
 
 
+TO INCLUDE INTO TUTORIAL
 
-
-1. Create categories model
-1. Modify products model
-1. Modify products handler
-1. Add new tests
+- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name>` <br> instead of <br>`DELETE FROM <table_name>`, as `TRUNCATE` resets primary key numbers, while `DELETE` does not

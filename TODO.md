@@ -1,6 +1,5 @@
 NEXT:
-product_category is updated everywhere (in theory)
-products api endpoint tests do not run as in the first test it creates and updates the id of the product created, if only that test is run, but if all of them run, this test fails, and the id is not updated and other tests fail because of that
+FIX: empty tables before product model test
 
 LATER:
 Test: add testing creation by running select queries

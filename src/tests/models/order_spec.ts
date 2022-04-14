@@ -18,8 +18,8 @@ describe('Order Model', () => {
         // prepare database for testing
         const conn = await client.connect()
         // empty tables in database
-        await conn.query(`TRUNCATE orders CASCADE;`)
-        await conn.query(`TRUNCATE users CASCADE`)
+        await conn.query(`TRUNCATE orders RESTART IDENTITY CASCADE;`)
+        await conn.query(`TRUNCATE users RESTART IDENTITY CASCADE`)
         // add user to users table
         await conn.query(`INSERT INTO users 
             (username, firstname, lastname, user_type)

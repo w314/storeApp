@@ -331,6 +331,28 @@ CREATE TABLE products (
 - update api endpoint test (test products used and other errors)
 
 
-TO INCLUDE INTO TUTORIAL
+## TO INCLUDE INTO TUTORIAL
 
 - when preapring tables for tests, <br> use <br>`TRUNCATE <table_name>` <br> instead of <br>`DELETE FROM <table_name>`, as `TRUNCATE` resets primary key numbers, while `DELETE` does not
+
+
+## Add orders
+
+### 1. Add migration
+- create sql files
+```bash
+db-migrate create orders-table --sql-file
+```
+- add up migration
+```sql
+CREATE TYPE ordertype AS ENUM ('active', 'completed');
+CREATE TABLE orders (
+  order_id SERIAL PRIMARY KEY,
+  user_id INT,
+  order_type ordertype
+);
+```
+
+- add down migration
+1. Create Model
+1. 

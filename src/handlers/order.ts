@@ -18,6 +18,7 @@ const create = async (req:express.Request, res:express.Response) => {
     } catch (err) {
         res.status(500)
         res.json(err)
+        
     }
 
 }

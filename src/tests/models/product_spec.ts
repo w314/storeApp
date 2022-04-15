@@ -2,24 +2,35 @@
 import { Product, ProductStore } from '../../models/product';
 // import category model to create categories in test database
 import { Category, CategoryStore } from '../../models/category'
+// import client to preapre database
+import client from '../../database'
 
-const store = new ProductStore();
-const product = {
-  product_id: 1,
-  name: 'bob',
-  price: 9.99,
-  category_id: 1
-};
-const newProductName = 'bobek';
-const updatedProduct = {
-  product_id: product.product_id,
-  name: newProductName,
-  price: product.price,
-  category_id: product.category_id
-};
 describe('Product Model', () => {
-  
-  beforeAll( async() => {
+
+  const store = new ProductStore();
+  const product = {
+    product_id: 1,
+    name: 'bob',
+    price: 9.99,
+    category_id: 1
+  };
+  const newProductName = 'bobek';
+  const updatedProduct = {
+    product_id: product.product_id,
+    name: newProductName,
+    price: product.price,
+    category_id: product.category_id
+  };
+
+
+  beforeAll( async () => {
+    // prepare database
+    const conn = await client.connect()
+    // clear tables
+    await conn.query(`TRUNCATE categories RESTART IDENTITY CASCADE`)
+    await conn.query(`TRUNCATE products RESTART IDENTITY CASCADE`)
+
+    // add category to use for product
     const categoryStore = new CategoryStore()
     await categoryStore.create('Books')
   })

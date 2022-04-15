@@ -1,5 +1,5 @@
 NEXT:
-FIX: empty tables before product model test
+FIX: create add order mehtod in order handler
 
 LATER:
 Test: add testing creation by running select queries

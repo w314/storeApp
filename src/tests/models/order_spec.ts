@@ -53,9 +53,9 @@ describe('Order Model', () => {
 
         // add testProduct
         await conn.query(`INSERT INTO products
-            (name, category_id)
-            VALUES ($1, $2)`,
-            [testProduct.name, testProduct.category_id])
+            (name, price, category_id )
+            VALUES ($1, $2, $3)`,
+            [testProduct.name, testProduct.price, testProduct.category_id])
 
         conn.release()
     })

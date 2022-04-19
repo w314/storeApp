@@ -21,12 +21,13 @@ describe('Order Model', () => {
         category_name: 'testCategory'
     }
     
-    const testProduct: Product = {
-        product_id: 1,
-        name: 'testProduct',
-        price: 9.98,
-        category_id: 1
-    }
+    const testProducts: Product[] = [
+        { product_id: 1, name: 'testProduct1', price: 9.98, category_id: 1 },
+        { product_id: 2, name: 'testProduct2', price: 7, category_id: 1 },
+        { product_id: 3, name: 'testProduct3', price: 92.98, category_id: 1 }
+    ]    
+
+    const activeOrderId = 1;
 
     const orderStore = new OrderStore()
 
@@ -51,12 +52,13 @@ describe('Order Model', () => {
             VALUES ($1)`,
             [testCategory.category_name])
 
-        // add testProduct
-        await conn.query(`INSERT INTO products
+        // add testProducts
+        for (let i = 0; i < testProducts.length; i++) {
+            await conn.query(`INSERT INTO products
             (name, price, category_id )
             VALUES ($1, $2, $3)`,
-            [testProduct.name, testProduct.price, testProduct.category_id])
-
+            [testProducts[i].name, testProducts[i].price, testProducts[i].category_id])
+        }
         conn.release()
     })
 
@@ -81,10 +83,25 @@ describe('Order Model', () => {
     })
 
     it('can add product to order', async () => {
-        await orderStore.addProduct(1, testProduct.product_id, 3)
+        // add first product to order
+        const quantity = 3
+        await orderStore.addProduct(activeOrderId, testProducts[0].product_id, quantity)
         const conn = await client.connect()
-        const result = await conn.query(`SELECT * FROM order_items`)
+        const result = await conn.query(`SELECT * FROM order_items WHERE order_id = ${activeOrderId}`)
         expect(result.rows.length).toEqual(1)
-        expect(result.rows[0].quantity).toEqual(3)
+        expect(result.rows[0].quantity).toEqual(quantity)
+    })
+
+    it('has activeOrder method', () => {
+        expect(orderStore.activeOrder).toBeDefined()
+    })
+
+    it('can show active order of user', async () => {
+        // add rest of products (all but the first added in 'can add product to order test') to active Order
+        for (let i = 1; i < testProducts.length; i++) {
+            await orderStore.addProduct(activeOrderId, testProducts[i].product_id, i+2)
+        }
+        const activeOrder = await orderStore.activeOrder(testUser.user_id)
+        expect(activeOrder.length).toEqual(testProducts.length)
     })
 })

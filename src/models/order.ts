@@ -35,4 +35,18 @@ export class OrderStore {
             throw new Error(`Could not add product to order. Error: ${err}`)
         }
     }
+
+    async activeOrder(userId: number) {
+        try {
+            const conn = await client.connect()
+            const sql = `SELECT * FROM order_items 
+                INNER JOIN orders ON orders.order_id = order_items.order_id
+                WHERE orders.user_id = $1 and orders.order_type = $2`
+            const result = await conn.query(sql, [userId, 'active'])
+            conn.release()
+            return result.rows
+        } catch(err) {
+            throw new Error(`Could not get active order. Error: ${err}`)
+        }
+    }
 }

@@ -1,9 +1,8 @@
 NEXT:
-ADD primary key to order_products table
-ADD NOT NULL to fields in tables
-ADD UNIQUE constraint whenever needed
+create index activeOrder methods in order model
+create order handler
 
-differences between references and constrain
+
 
 LATER:
 Test: add testing creation by running select queries

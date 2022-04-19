@@ -34,7 +34,7 @@ describe('Order Model', () => {
         // prepare database for testing
         const conn = await client.connect()
         // empty tables in database
-        await conn.query(`TRUNCATE order_products RESTART IDENTITY CASCADE`)
+        await conn.query(`TRUNCATE order_items RESTART IDENTITY CASCADE`)
         await conn.query(`TRUNCATE categories RESTART IDENTITY CASCADE`)
         await conn.query(`TRUNCATE orders RESTART IDENTITY CASCADE;`)
         await conn.query(`TRUNCATE users RESTART IDENTITY CASCADE`)
@@ -83,7 +83,7 @@ describe('Order Model', () => {
     it('can add product to order', async () => {
         await orderStore.addProduct(1, testProduct.product_id, 3)
         const conn = await client.connect()
-        const result = await conn.query(`SELECT * FROM order_products`)
+        const result = await conn.query(`SELECT * FROM order_items`)
         expect(result.rows.length).toEqual(1)
         expect(result.rows[0].quantity).toEqual(3)
     })

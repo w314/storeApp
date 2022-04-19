@@ -1,5 +1,9 @@
 NEXT:
-FIX: create add order mehtod in order handler
+ADD primary key to order_products table
+ADD NOT NULL to fields in tables
+ADD UNIQUE constraint whenever needed
+
+differences between references and constrain
 
 LATER:
 Test: add testing creation by running select queries

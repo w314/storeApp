@@ -26,7 +26,7 @@ export class OrderStore {
     async addProduct(orderId: number, productId: number, quantity: number) {
         try {
             const conn = await client.connect()
-            const sql = `INSERT INTO order_products (order_id, product_id, quantity) VALUES ($1, $2, $3)`
+            const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`
             const result = await conn.query(sql, [orderId, productId, quantity])
             conn.release()
             const orderProductAdded = result.rows[0]

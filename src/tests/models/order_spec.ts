@@ -41,9 +41,9 @@ describe('Order Model', () => {
   
         // add testUser
         await conn.query(`INSERT INTO users 
-            (username, firstname, lastname, user_type)
-            VALUES ($1, $2, $3, $4)`,
-            [testUser.username, testUser.firstname, testUser.lastname, testUser.user_type])
+            (username, firstname, lastname, password_digest, user_type)
+            VALUES ($1, $2, $3, $4, $5)`,
+            [testUser.username, testUser.firstname, testUser.lastname, testUser.password_digest, testUser.user_type])
 
         // add testCategory
         await conn.query(`INSERT INTO categories

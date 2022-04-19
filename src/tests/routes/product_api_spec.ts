@@ -10,6 +10,7 @@ import { Product, ProductStore } from '../../models/product'
 import { User, UserStore } from '../../models/user'
 // import category model to create categories for products
 import { Category, CategoryStore } from '../../models/category'
+import dbCleaner from '../utilities/dbCleaner'
 // import userRoutes from '../../handlers/user'
 // import productRoutes from '../../handlers/product'
 
@@ -54,6 +55,7 @@ describe('Product API Testing', () => {
         await conn.query('TRUNCATE categories CASCADE')
         // disconnect from database
         conn.release()
+        // dbCleaner()
 
         // add user to to use for product creation
         const userStore = new UserStore()

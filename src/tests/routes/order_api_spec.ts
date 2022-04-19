@@ -4,15 +4,15 @@ import dbCleaner from '../utilities/dbCleaner'
 
 describe('Order API Testing', () => {
 
-    beforeAll( () => {
+    beforeAll( async () => {
         // prepare database for testing
 
         // empty tables
-        dbCleaner()
+        await dbCleaner()
 
     })
     it('GET /orders/:userId/active return active order of user', async () => {
-        request(app)
-        .get('/orders/1')
+        // request(app)
+        // .get('/orders/1')
     })
 })

@@ -3,6 +3,7 @@ import client from '../../database'
 
 
 const dbCleaner = async () => {
+
     const tables = [
         'users',
         'categories',
@@ -11,15 +12,11 @@ const dbCleaner = async () => {
         'order_items'
     ]
     
-    // clean database for testing
+    // empty database tables
     const conn = await client.connect()
-    // empty tables
     for (let i = 0; i < tables.length; i++) {
-        await conn.query(`TRUNCATE ${tables[i]} CASCADE`)
+        await conn.query(`TRUNCATE ${tables[i]} RESTART IDENTITY CASCADE`)
     }
-    // for (let table in tables) {
-    //     await conn.query(`TRUNCATE ${table} CASCADE`)
-    // }
     conn.release()
 }
 

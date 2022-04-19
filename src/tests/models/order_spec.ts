@@ -4,6 +4,7 @@ import client from './../../database'
 import { Category } from '../../models/category'
 import { Product } from '../../models/product'
 import { User } from '../../models/user'
+import dbCleaner from '../utilities/dbCleaner'
 
 describe('Order Model', () => {
 
@@ -33,13 +34,11 @@ describe('Order Model', () => {
 
     beforeAll( async () => {
         // prepare database for testing
-        const conn = await client.connect()
+
         // empty tables in database
-        await conn.query(`TRUNCATE order_items RESTART IDENTITY CASCADE`)
-        await conn.query(`TRUNCATE categories RESTART IDENTITY CASCADE`)
-        await conn.query(`TRUNCATE orders RESTART IDENTITY CASCADE;`)
-        await conn.query(`TRUNCATE users RESTART IDENTITY CASCADE`)
-  
+        await dbCleaner()
+
+        const conn = await client.connect()
         // add testUser
         await conn.query(`INSERT INTO users 
             (username, firstname, lastname, password_digest, user_type)
@@ -119,7 +118,7 @@ describe('Order Model', () => {
             await orderStore.create(testUser.user_id)
             // update order_status to complete
             const sql = `UPDATE orders SET order_status = $1 WHERE order_id = $2`
-            await conn.query(sql, ['completed', i])
+             await conn.query(sql, ['completed', i])
             for (let j = 0; j < testProducts.length; j++) {
                 await orderStore.addProduct(i, testProducts[j].product_id, i +j)
             }

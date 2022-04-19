@@ -45,17 +45,9 @@ describe('Product API Testing', () => {
 
     beforeAll( async () => {
         // setup database
-        // connect to database
-        const conn = await client.connect()
-        // clear user table
-        await conn.query('TRUNCATE users CASCADE')
-        // clear products table
-        await conn.query('TRUNCATE products CASCADE')
-        // clear categories table
-        await conn.query('TRUNCATE categories CASCADE')
-        // disconnect from database
-        conn.release()
-        // dbCleaner()
+
+        // empty tables
+        await dbCleaner()
 
         // add user to to use for product creation
         const userStore = new UserStore()

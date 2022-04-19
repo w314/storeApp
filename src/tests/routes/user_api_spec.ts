@@ -4,6 +4,7 @@ import client from '../../database'
 import jsonwebtoken from 'jsonwebtoken'
 import dotenv from 'dotenv'
 import { User, UserStore } from '../../models/user'
+import dbCleaner from '../utilities/dbCleaner'
 
 const admin: User = {
     user_id: 0,
@@ -34,15 +35,11 @@ let testUserToken = ''
 describe('User API testing', () => {
 
     beforeAll( async () => {
-        // setup users table for testing
+        // setup database for testing
         try {
-            // clear user table
-            // (do manually as user model has no delete all users method)
-            const conn = await client.connect()
-            const sqlDelete = 'TRUNCATE users CASCADE'
-            await conn.query(sqlDelete)
-            conn.release()
-
+            // clear tables
+            await dbCleaner()
+            
             // use user model to add admin user to table
             const store = new UserStore()
             await store.create(admin)

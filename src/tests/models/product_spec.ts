@@ -4,6 +4,7 @@ import { Product, ProductStore } from '../../models/product';
 import { Category, CategoryStore } from '../../models/category'
 // import client to preapre database
 import client from '../../database'
+import dbCleaner from '../utilities/dbCleaner';
 
 describe('Product Model', () => {
 
@@ -25,20 +26,24 @@ describe('Product Model', () => {
 
   beforeAll( async () => {
     // prepare database
-    const conn = await client.connect()
+
     // clear tables
-    await conn.query(`TRUNCATE categories RESTART IDENTITY CASCADE`)
-    await conn.query(`TRUNCATE products RESTART IDENTITY CASCADE`)
+    await dbCleaner()
 
     // add category to use for product
     const categoryStore = new CategoryStore()
     await categoryStore.create('Books')
   })
-
+// prepare database
+    // const conn = await client.connect()
+    // // clear tables
+    // await conn.query(`TRUNCATE categories RESTART IDENTITY CASCADE`)
+    
   it('has a create method', () => {
     expect(store.create).toBeDefined();
   });
   it('can create new product', async () => {
+    // console.log(JSON.stringify(product, null, 4))
     const result = await store.create(product);
     expect(result).toEqual(product);
   });

@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import jsonwebtoken, { Jwt } from 'jsonwebtoken'
 // import database client
 import client from './../../database'
+import dbCleaner from '../utilities/dbCleaner';
 
 // initialize enviromental variables
 dotenv.config();
@@ -35,12 +36,9 @@ describe('User Model', () => {
 
   beforeAll( async () => {
     // prepare database for testing
-    const conn = await client.connect()
-    // empty users tabel
-    await conn.query(`TRUNCATE users RESTART IDENTITY CASCADE`)
-    // const result = await conn.query('SELECT * FROM users')
-    // console.log(result.rows)
-    conn.release()
+
+    // empty tables
+    await dbCleaner()
   })
 
 

@@ -1,6 +1,6 @@
 NEXT:
-create index activeOrder methods in order model
-create order handler
+finish using dbSetup class in all tests (user_spec is done)
+create order handler for active order and order lists and their tests
 
 
 

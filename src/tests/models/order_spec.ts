@@ -59,6 +59,8 @@ describe('Order Model', () => {
             [testProducts[i].name, testProducts[i].price, testProducts[i].category_id])
         }
         conn.release()
+
+        // await dbSetup()
     })
 
 

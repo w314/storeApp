@@ -104,4 +104,30 @@ describe('Order Model', () => {
         const activeOrder = await orderStore.activeOrder(testUser.user_id)
         expect(activeOrder.length).toEqual(testProducts.length)
     })
+
+    it('has orderList method', () => {
+        expect(orderStore.orderList).toBeDefined()
+    })
+
+    it('can show list of past orders of user', async () => {
+        // create past orders for testUser
+        // using variable i as orderId
+        const conn = await client.connect()
+        const completedOrders = 3
+        const startingIndex = 2
+        for(let i = startingIndex; i < startingIndex + completedOrders; i++) {
+            await orderStore.create(testUser.user_id)
+            // update order_status to complete
+            const sql = `UPDATE orders SET order_status = $1 WHERE order_id = $2`
+            await conn.query(sql, ['completed', i])
+            for (let j = 0; j < testProducts.length; j++) {
+                await orderStore.addProduct(i, testProducts[j].product_id, i +j)
+            }
+        }
+        conn.release()
+        // test list of past order of user
+        const result = await orderStore.orderList(testUser.user_id)
+        expect(result.length).toEqual(completedOrders * testProducts.length)
+
+    })
 })

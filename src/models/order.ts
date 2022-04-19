@@ -7,6 +7,13 @@ export type Order = {
     order_status: string
 }
 
+export type OrderItem = {
+    item_id: number,
+    order_id: number,
+    product_id: number,
+    quantity: number
+}
+
 export class OrderStore {
 
     async create(userId: number ) {

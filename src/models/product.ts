@@ -87,16 +87,17 @@ export class ProductStore {
       );
     }
   }
-  // DELETE
-  async delete(product: Product): Promise<Product> {
-    try {
-      const conn = await client.connect();
-      const sql = `DELETE FROM products WHERE product_id=($1)`;
-      await conn.query(sql, [product.product_id]);
-      conn.release();
-      return product;
-    } catch (err) {
-      throw new Error(`Cannot delete prodcut ${product.name}. Error: ${err}`);
-    }
-  }
+  // // delet doesn't work because of foreign key on delete restrict constraint
+  // // DELETE
+  // async delete(product: Product): Promise<Product> {
+  //   try {
+  //     const conn = await client.connect();
+  //     const sql = `DELETE FROM products WHERE product_id=($1)`;
+  //     await conn.query(sql, [product.product_id]);
+  //     conn.release();
+  //     return product;
+  //   } catch (err) {
+  //     throw new Error(`Cannot delete prodcut ${product.name}. Error: ${err}`);
+  //   }
+  // }
 }

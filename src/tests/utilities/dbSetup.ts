@@ -101,21 +101,21 @@ export class DbSetup {
             [this.products[i].name, this.products[i].price, this.products[i].category_id])
         }
 
-        // // add orders
-        // for (let i = 0; i < orders.length; i++) {
-        //     await conn.query(`INSERT INTO orders
-        //     (user_id, order_status)
-        //     VALUES ($1, $2)`,
-        //     [orders[i].user_id, orders[i].order_status])
-        // }
+        // add orders
+        for (let i = 0; i < this.orders.length; i++) {
+            await conn.query(`INSERT INTO orders
+            (user_id, order_status)
+            VALUES ($1, $2)`,
+            [this.orders[i].user_id, this.orders[i].order_status])
+        }
 
-        // // add order_items
-        // for (let i = 0; i < orderItems.length; i++) {
-        //     await conn.query(`INSERT INTO order_items
-        //     (order_id, product_id, quantity)
-        //     VALUES ($1, $2, $3)`,
-        //     [orderItems[i].order_id, orderItems[i].product_id, orderItems[i].quantity])
-        // }
+        // add order_items
+        for (let i = 0; i < this.orderItems.length; i++) {
+            await conn.query(`INSERT INTO order_items
+            (order_id, product_id, quantity)
+            VALUES ($1, $2, $3)`,
+            [this.orderItems[i].order_id, this.orderItems[i].product_id, this.orderItems[i].quantity])
+        }
 
         conn.release()  
     }

@@ -5,8 +5,9 @@ import { Category } from '../../models/category'
 import { Product } from '../../models/product'
 import { User } from '../../models/user'
 import dbCleaner from '../utilities/dbCleaner'
+import { DbSetup } from '../utilities/dbSetup'
 
-describe('Order Model', () => {
+fdescribe('Order Model', () => {
 
     const testUser: User = {
         user_id: 1,
@@ -30,37 +31,39 @@ describe('Order Model', () => {
 
     const activeOrderId = 1;
 
+    const dbSetup = new DbSetup()
     const orderStore = new OrderStore()
 
     beforeAll( async () => {
         // prepare database for testing
+        await dbSetup.setup()
 
-        // empty tables in database
-        await dbCleaner()
+        // // empty tables in database
+        // await dbCleaner()
 
-        const conn = await client.connect()
-        // add testUser
-        await conn.query(`INSERT INTO users 
-            (username, firstname, lastname, password_digest, user_type)
-            VALUES ($1, $2, $3, $4, $5)`,
-            [testUser.username, testUser.firstname, testUser.lastname, testUser.password_digest, testUser.user_type])
+        // const conn = await client.connect()
+        // // add testUser
+        // await conn.query(`INSERT INTO users 
+        //     (username, firstname, lastname, password_digest, user_type)
+        //     VALUES ($1, $2, $3, $4, $5)`,
+        //     [testUser.username, testUser.firstname, testUser.lastname, testUser.password_digest, testUser.user_type])
 
-        // add testCategory
-        await conn.query(`INSERT INTO categories
-            (category_name)
-            VALUES ($1)`,
-            [testCategory.category_name])
+        // // add testCategory
+        // await conn.query(`INSERT INTO categories
+        //     (category_name)
+        //     VALUES ($1)`,
+        //     [testCategory.category_name])
 
-        // add testProducts
-        for (let i = 0; i < testProducts.length; i++) {
-            await conn.query(`INSERT INTO products
-            (name, price, category_id )
-            VALUES ($1, $2, $3)`,
-            [testProducts[i].name, testProducts[i].price, testProducts[i].category_id])
-        }
-        conn.release()
+        // // add testProducts
+        // for (let i = 0; i < testProducts.length; i++) {
+        //     await conn.query(`INSERT INTO products
+        //     (name, price, category_id )
+        //     VALUES ($1, $2, $3)`,
+        //     [testProducts[i].name, testProducts[i].price, testProducts[i].category_id])
+        // }
+        // conn.release()
 
-        // await dbSetup()
+        // // await dbSetup()
     })
 
 

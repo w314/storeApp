@@ -16,7 +16,7 @@ const pepper = process.env.BCRYPT_PASSWORD;
 const tokenSecret: string = process.env.TOKEN_SECRET as string
 
 
-fdescribe('User Model', () => {
+describe('User Model', () => {
 
   const store = new UserStore();
 

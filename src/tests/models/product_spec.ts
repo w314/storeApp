@@ -4,7 +4,7 @@ import { Product, ProductStore } from '../../models/product';
 // import client to preapre database
 import { DbSetup } from '../utilities/dbSetup'
 
-fdescribe('Product Model', () => {
+describe('Product Model', () => {
 
   const dbSetup = new DbSetup()
   const store = new ProductStore();

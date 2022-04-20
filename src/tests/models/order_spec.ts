@@ -3,7 +3,7 @@ import { Order, OrderStore } from './../../models/order'
 import client from './../../database'
 import { DbSetup } from '../utilities/dbSetup'
 
-fdescribe('Order Model', () => {
+describe('Order Model', () => {
 
     const dbSetup = new DbSetup()
     const orderStore = new OrderStore()

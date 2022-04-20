@@ -3,6 +3,10 @@ import { User } from '../../models/user'
 import { Category } from '../../models/category'
 import { Product } from '../../models/product'
 import { Order, OrderItem } from '../../models/order'
+// for hashing password when creating new users
+import dotenv from 'dotenv'
+import bcrypt from 'bcrypt'
+
 
 export class DbSetup {
 
@@ -57,68 +61,84 @@ export class DbSetup {
         { item_id: 14, order_id: 5, product_id: 1, quantity: 1 },
     ]
 
+    // variables for testing purposes
     firstUserCompletedOrders = 3
-
+    admin: User = this.users[0] // administrator
+    user: User = this.users[1]  // regular user
 
     setup = async () => {
 
-        const conn = await client.connect()
+        try {
+            const conn = await client.connect()
 
-        // empty tables
-        const tables = [
-            'users',
-            'categories',
-            'products',
-            'orders',
-            'order_items'
-        ]
-        
-        // empty database tables
-        for (let i = 0; i < tables.length; i++) {
-            await conn.query(`TRUNCATE ${tables[i]} RESTART IDENTITY CASCADE`)
-        }
-        
-        // add categories
-        for (let i = 0; i < this.categories.length; i++) {
-            await conn.query(`INSERT INTO categories 
-                (category_name)
-                VALUES ($1)`,
-                [this.categories[i].category_name])
-        }
-        
-        // add users
-        for (let i = 0; i < this.users.length; i++) {
-            await conn.query(`INSERT INTO users 
-                (username, firstname, lastname, password_digest, user_type)
-                VALUES ($1, $2, $3, $4, $5)`,
-                [this.users[i].username, this.users[i].firstname, this.users[i].lastname, this.users[i].password_digest, this.users[i].user_type])
+            // empty tables
+            const tables = [
+                'users',
+                'categories',
+                'products',
+                'orders',
+                'order_items'
+            ]
+            
+            // empty database tables
+            for (let i = 0; i < tables.length; i++) {
+                await conn.query(`TRUNCATE ${tables[i]} RESTART IDENTITY CASCADE`)
+            }
+            
+            // add categories
+            for (let i = 0; i < this.categories.length; i++) {
+                await conn.query(`INSERT INTO categories 
+                    (category_name)
+                    VALUES ($1)`,
+                    [this.categories[i].category_name])
+            }
+            
+            // add users
+            dotenv.config()
+            const pepper: string = process.env.BCRYPT_PASSWORD as string
+            const saltRounds: string = process.env.SALT_ROUNDS as string
+            const tokenSecret: string = process.env.TOKEN_SECRET as string
+            for (let i = 0; i < this.users.length; i++) {
+                const hash = bcrypt.hashSync(
+                    this.users[i].password_digest + pepper,
+                    parseInt(saltRounds)
+                )
+                await conn.query(`INSERT INTO users 
+                    (username, firstname, lastname, password_digest, user_type)
+                    VALUES ($1, $2, $3, $4, $5)`,
+                    [this.users[i].username, this.users[i].firstname, this.users[i].lastname, hash, this.users[i].user_type])
+            }
+    
+    
+            // add products
+            for (let i = 0; i < this.products.length; i++) {
+                await conn.query(`INSERT INTO products
+                (name, price, category_id )
+                VALUES ($1, $2, $3)`,
+                [this.products[i].name, this.products[i].price, this.products[i].category_id])
+            }
+    
+            // add orders
+            for (let i = 0; i < this.orders.length; i++) {
+                await conn.query(`INSERT INTO orders
+                (user_id, order_status)
+                VALUES ($1, $2)`,
+                [this.orders[i].user_id, this.orders[i].order_status])
+            }
+    
+            // add order_items
+            for (let i = 0; i < this.orderItems.length; i++) {
+                await conn.query(`INSERT INTO order_items
+                (order_id, product_id, quantity)
+                VALUES ($1, $2, $3)`,
+                [this.orderItems[i].order_id, this.orderItems[i].product_id, this.orderItems[i].quantity])
+            }
+    
+            conn.release()      
+
+        } catch (err) {
+            throw new Error(`Error setting up database for testing. Error: ${err}`)
         }
 
-
-        // add products
-        for (let i = 0; i < this.products.length; i++) {
-            await conn.query(`INSERT INTO products
-            (name, price, category_id )
-            VALUES ($1, $2, $3)`,
-            [this.products[i].name, this.products[i].price, this.products[i].category_id])
-        }
-
-        // add orders
-        for (let i = 0; i < this.orders.length; i++) {
-            await conn.query(`INSERT INTO orders
-            (user_id, order_status)
-            VALUES ($1, $2)`,
-            [this.orders[i].user_id, this.orders[i].order_status])
-        }
-
-        // add order_items
-        for (let i = 0; i < this.orderItems.length; i++) {
-            await conn.query(`INSERT INTO order_items
-            (order_id, product_id, quantity)
-            VALUES ($1, $2, $3)`,
-            [this.orderItems[i].order_id, this.orderItems[i].product_id, this.orderItems[i].quantity])
-        }
-
-        conn.release()  
     }
 }

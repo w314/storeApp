@@ -2,7 +2,7 @@ import { agent as request } from 'supertest'
 import app from '../../server'
 import dbCleaner from '../utilities/dbCleaner'
 
-describe('Order API Testing', () => {
+xdescribe('Order API Testing', () => {
 
     beforeAll( async () => {
         // prepare database for testing

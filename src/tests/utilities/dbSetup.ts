@@ -93,13 +93,13 @@ export class DbSetup {
         }
 
 
-        // // add products
-        // for (let i = 0; i < products.length; i++) {
-        //     await conn.query(`INSERT INTO products
-        //     (name, price, category_id )
-        //     VALUES ($1, $2, $3)`,
-        //     [products[i].name, products[i].price, products[i].category_id])
-        // }
+        // add products
+        for (let i = 0; i < this.products.length; i++) {
+            await conn.query(`INSERT INTO products
+            (name, price, category_id )
+            VALUES ($1, $2, $3)`,
+            [this.products[i].name, this.products[i].price, this.products[i].category_id])
+        }
 
         // // add orders
         // for (let i = 0; i < orders.length; i++) {

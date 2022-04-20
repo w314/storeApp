@@ -33,12 +33,7 @@ fdescribe('User Model', () => {
 
   beforeAll( async () => {
     // prepare database for testing
-
-    // empty tables
-    await dbCleaner()
-    // setup database
-    await dbSetup.setup()
- 
+    await dbSetup.setup() 
   })
 
 

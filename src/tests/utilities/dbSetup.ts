@@ -61,6 +61,20 @@ export class DbSetup {
     setup = async () => {
 
         const conn = await client.connect()
+
+        // empty tables
+        const tables = [
+            'users',
+            'categories',
+            'products',
+            'orders',
+            'order_items'
+        ]
+        
+        // empty database tables
+        for (let i = 0; i < tables.length; i++) {
+            await conn.query(`TRUNCATE ${tables[i]} RESTART IDENTITY CASCADE`)
+        }
         
         // add categories
         for (let i = 0; i < this.categories.length; i++) {

@@ -2,6 +2,8 @@ NEXT:
 finish using dbSetup class in all tests (user_spec is done)
 create order handler for active order and order lists and their tests
 
+ADD PRODUCT SHOULD NOT ADD PRODUCTS TO COMPLETED ORDERS
+
 
 
 LATER:

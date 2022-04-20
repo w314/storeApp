@@ -57,6 +57,8 @@ export class DbSetup {
         { item_id: 14, order_id: 5, product_id: 1, quantity: 1 },
     ]
 
+    firstUserCompletedOrders = 3
+
 
     setup = async () => {
 

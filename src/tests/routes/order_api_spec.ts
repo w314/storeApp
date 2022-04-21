@@ -1,18 +1,28 @@
 import { agent as request } from 'supertest'
 import app from '../../server'
-import dbCleaner from '../utilities/dbCleaner'
+import { DbSetup } from '../utilities/dbSetup'
 
-xdescribe('Order API Testing', () => {
+describe('Order API Testing', () => {
+
+    const dbSetup = new DbSetup()
 
     beforeAll( async () => {
         // prepare database for testing
-
-        // empty tables
-        await dbCleaner()
+        await dbSetup.setup()
 
     })
-    it('GET /orders/:userId/active return active order of user', async () => {
-        // request(app)
-        // .get('/orders/1')
+
+
+    it('GET /orders/:userId/active returns active order of user', (done) => {
+        request(app)
+        .get(`/orders/${dbSetup.activeOrder.user_id}/active`)
+        .expect(200)
+        .then((result) => {
+            expect(result.body.length).toEqual(dbSetup.activeOrderItems)
+            done()
+        })
+        .catch((err) => {
+            done.fail(err)
+        })
     })
 })

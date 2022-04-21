@@ -18,6 +18,9 @@ export class DbSetup {
           password_digest: '1234', user_type: 'regular' }
     ]
 
+    admin: User = this.users[0] // administrator
+    user: User = this.users[1]  // regular user
+
     categories: Category[] = [
         { category_id: 1, category_name: 'Books' },
         { category_id: 2, category_name: 'Electronics' },
@@ -42,7 +45,10 @@ export class DbSetup {
         { order_id: 3, user_id: 2, order_status: 'completed' },
         { order_id: 4, user_id: 2, order_status: 'completed' },
         { order_id: 5, user_id: 2, order_status: 'completed' },
+        { order_id: 6, user_id: this.admin.user_id, order_status: 'active'}
     ]
+
+    activeOrder = this.orders[5]
 
     orderItems: OrderItem[] = [
         { item_id: 1, order_id: 1, product_id: 2, quantity: 12 },
@@ -59,12 +65,14 @@ export class DbSetup {
         { item_id: 12, order_id: 5, product_id: 4, quantity: 4 },
         { item_id: 13, order_id: 5, product_id: 5, quantity: 3 },
         { item_id: 14, order_id: 5, product_id: 1, quantity: 1 },
+        { item_id: 15, order_id: this.activeOrder.order_id, product_id: 3, quantity: 2 },
+        { item_id: 16, order_id: this.activeOrder.order_id, product_id: 5, quantity: 7 },
     ]
+
+    activeOrderItems = 2
 
     // variables for testing purposes
     firstUserCompletedOrders = 3
-    admin: User = this.users[0] // administrator
-    user: User = this.users[1]  // regular user
 
     setup = async () => {
 

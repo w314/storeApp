@@ -38,7 +38,6 @@ const activeOrder = async (req: express.Request, res: express.Response) =>  {
 const orderList = async (req: express.Request, res: express.Response) => {
 
     const userId = parseInt(req.params.userId)
-
     try {
         const orderList = await orderStore.orderList(userId)
         res.json(orderList)

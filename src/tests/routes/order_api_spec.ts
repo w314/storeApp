@@ -34,6 +34,10 @@ describe('Order API Testing', () => {
         .expect(200)
         .then((result) => {
             expect(result.body.length).toEqual(dbSetup.numberOfItemsInCompletedOrdersOfUser)
+            done()
+        })
+        .catch((err) => {
+            done.fail(err)
         })
     })
 })

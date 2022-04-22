@@ -53,9 +53,10 @@ describe('Order Model', () => {
 
 
     // it('throws error if trying to add new item to completed order', async () => {
-    //     // try to add new item to a completed order
-    //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
-    //     expect
+    // //     // try to add new item to a completed order
+    // //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
+    //     // expect(function() {orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
+    //     expect(function() {orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
     // })
 
 

@@ -2,14 +2,17 @@ import client from '../../database'
 import { User } from '../../models/user'
 import { Category } from '../../models/category'
 import { Product } from '../../models/product'
-import { Order, OrderItem } from '../../models/order'
+import { Order, OrderItem, OrderStore } from '../../models/order'
 // for hashing password when creating new users
 import dotenv from 'dotenv'
 import bcrypt from 'bcrypt'
+import { userInfo } from 'os'
 
 
 export class DbSetup {
+    
 
+    // tables will be created with data in arrays below
 
     users: User[] = [
         { user_id: 1, username: 'admin', firstname: 'Ed', lastname: 'Mint', 
@@ -18,8 +21,17 @@ export class DbSetup {
           password_digest: '1234', user_type: 'regular' }
     ]
 
-    admin: User = this.users[0] // administrator
-    user: User = this.users[1]  // regular user
+    /*
+        Creates to users an admin and a regular. 
+        Uses admin user to create one active order
+        Regular user will only have completed orders.
+        Regular user can be used in tests to create active order.
+    */
+    // administrator
+    admin : User = this.users.filter(function(user) { return user.user_type == 'admin'})[0]
+    // regular user
+    user: User = this.users.filter(function(user) { return user.user_type == 'regular'})[0]
+
 
     categories: Category[] = [
         { category_id: 1, category_name: 'Books' },
@@ -48,7 +60,24 @@ export class DbSetup {
         { order_id: 6, user_id: this.admin.user_id, order_status: 'active'}
     ]
 
-    activeOrder = this.orders[5]
+
+    // the variables below are used in specs
+
+    // variable for an active order
+    activeOrder = this.orders.filter(function(order) { return order.order_status == 'active' })[0]
+    // variable for a completed order
+    completedOrder = this.orders.filter(function(order) { return order.order_status == 'completed' })[0]
+
+    // function to filter order id's of completed orders created by dbSetup.user
+    isCompletedByUser = (order: Order) => {
+        if ( order.order_status == 'completed' && order.user_id == this.user.user_id ) {
+            return order.order_id
+        }
+        return false
+    }
+    // set of orderId of completed orders created by dbSetup.user
+    completedOrderIdsOfUser = new Set(this.orders.filter(this.isCompletedByUser).map(order => order.order_id))
+    
 
     orderItems: OrderItem[] = [
         { item_id: 1, order_id: 1, product_id: 2, quantity: 12 },
@@ -69,11 +98,23 @@ export class DbSetup {
         { item_id: 16, order_id: this.activeOrder.order_id, product_id: 5, quantity: 7 },
     ]
 
-    activeOrderItems = 2
 
-    // variables for testing purposes
-    firstUserCompletedOrders = 3
+    // the variables below are used in specs
 
+    // count of all the items in the only active order in the dataset
+    numberOfItemsInActiveOrder = this.orderItems.reduce(
+        (total, currentItem) => 
+        currentItem.order_id == this.activeOrder.order_id ? total + 1 : total,
+        0)
+
+    // count of all items in all the order completed by the regular user (user)
+    numberOfItemsInCompletedOrdersOfUser = this.orderItems.reduce(
+        (total, currentItem) => 
+        this.completedOrderIdsOfUser.has(currentItem.order_id) ? total + 1 : total,
+        0)
+
+
+    // this function enter all data from arrays into the appropriate tables    
     setup = async () => {
 
         try {

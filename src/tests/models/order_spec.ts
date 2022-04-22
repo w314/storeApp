@@ -10,7 +10,7 @@ describe('Order Model', () => {
 
     const newOrder: Order = {
         order_id: dbSetup.orders.length + 1,
-        user_id: dbSetup.users[1].user_id,
+        user_id: dbSetup.user.user_id,
         order_status: 'active'
     } 
 
@@ -24,9 +24,10 @@ describe('Order Model', () => {
         expect(orderStore.create).toBeDefined()
     })
 
+
     it('can create order', async () => {
         // create order
-        await orderStore.create(newOrder.user_id)
+        await orderStore.create(newOrder)
         // check if order was created
         const conn = await client.connect()
         const result = await conn.query(`SELECT * FROM orders`)
@@ -35,25 +36,36 @@ describe('Order Model', () => {
         expect(result.rows.length).toEqual(dbSetup.orders.length + 1)
     })
 
+
     it('has addProduct method', () => {
         expect(orderStore.addProduct).toBeDefined()
     })
 
+
     it('can add product to active order', async () => {
-        // add new order_item to first order
-        const quantity = 3
-        await orderStore.addProduct(newOrder.order_id, dbSetup.products[0].product_id, quantity)
+        // add new order_item to newly created order
+        await orderStore.addProduct(newOrder.order_id, dbSetup.products[0].product_id, 4)
         const conn = await client.connect()
         const result = await conn.query(`SELECT * FROM order_items`)
         // there should be one more order_itmes
         expect(result.rows.length).toEqual(dbSetup.orderItems.length + 1)
     })
 
+
+    // it('throws error if trying to add new item to completed order', async () => {
+    //     // try to add new item to a completed order
+    //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
+    //     expect
+    // })
+
+
     it('has activeOrder method', () => {
         expect(orderStore.activeOrder).toBeDefined()
     })
 
+
     it('can show active order of user', async () => {
+        // test with order created in previouse tests by dbSetup. user with 1 item added
         const activeOrder = await orderStore.activeOrder(newOrder.user_id)
         expect(activeOrder.length).toEqual(1)
     })
@@ -63,7 +75,8 @@ describe('Order Model', () => {
     })
 
     it('can show list of past orders of user', async () => {
-        const result = await orderStore.orderList(dbSetup.users[0].user_id)
-        expect(result.length).toEqual(dbSetup.firstUserCompletedOrders)
+        // check for itesm in completed orders of dbSetup.user
+        const result = await orderStore.orderList(dbSetup.user.user_id)
+        expect(result.length).toEqual(dbSetup.numberOfItemsInCompletedOrdersOfUser)
     })
 })

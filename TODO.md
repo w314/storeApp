@@ -1,9 +1,12 @@
 NEXT:
-finish using dbSetup class in all tests (user_spec is done)
-create order handler for active order and order lists and their tests
+ADD new api endpoint /orders/:userId/active/:productId to add new product
 
-ADD PRODUCT SHOULD NOT ADD PRODUCTS TO COMPLETED ORDERS
 
+add test to check that model doesn't allow to add new item to completed order?
+
+find problem with orderList order handler, endpoint test fails.
+
+add test to order_api_spect to test that no item can be added to completed order
 
 
 LATER:

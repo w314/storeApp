@@ -16,11 +16,11 @@ export type OrderItem = {
 
 export class OrderStore {
 
-    async create(userId: number ) {
+    async create(order: Order ) {
         try {
             const conn = await client.connect()
             const sql = `INSERT INTO orders (user_id, order_status) VALUES ($1, $2)`
-            const result = await conn.query(sql, [userId, 'active'])
+            const result = await conn.query(sql, [order.user_id, order.order_status])
             conn.release()
             const ceatedOrder = result.rows[0]
             return ceatedOrder
@@ -32,12 +32,22 @@ export class OrderStore {
 
     async addProduct(orderId: number, productId: number, quantity: number) {
         try {
+            // check if order is 'active' should not add items to completed orders
             const conn = await client.connect()
-            const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`
-            const result = await conn.query(sql, [orderId, productId, quantity])
-            conn.release()
-            const orderProductAdded = result.rows[0]
-            return orderProductAdded
+            const sqlOrder = `SELECT order_status FROM orders WHERE order_id = $1`
+            const order = await (await (conn.query(sqlOrder, [orderId]))).rows[0]
+            if ( order.order_status == 'active') {
+                const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`            
+                const result = await conn.query(sql, [orderId, productId, quantity])
+                conn.release()
+                const orderProductAdded = result.rows[0]
+                return orderProductAdded        
+            }
+            // if order is completed throw error
+            else {
+                conn.release()
+                throw new Error(`Cannot add new item to completed order.`)
+            }
         } catch (err) {
             throw new Error(`Could not add product to order. Error: ${err}`)
         }
@@ -61,8 +71,8 @@ export class OrderStore {
         try {
             const conn = await client.connect()
             const sql = `SELECT * FROM order_items
-                INNER JOIN orders ON orders.order_id = order_items.order_id
-                WHERE orders.user_id = $1 AND orders.order_status = $2`
+            INNER JOIN orders ON orders.order_id = order_items.order_id
+            WHERE orders.user_id = $1 AND orders.order_status = $2`
             const result = await conn.query(sql, [userId, 'completed'])
             conn.release()
             return result.rows

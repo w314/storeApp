@@ -13,13 +13,14 @@ const create = async (req:express.Request, res:express.Response) => {
     }
     
     try {
-        const orderCreated = await orderStore.create(order.user_id)
+        const orderCreated = await orderStore.create(order)
         res.json(orderCreated)
     } catch (err) {
         res.status(500)
         res.json(err)
     }
 }
+
 
 const activeOrder = async (req: express.Request, res: express.Response) =>  {
 
@@ -38,7 +39,9 @@ const activeOrder = async (req: express.Request, res: express.Response) =>  {
 const orderList = async (req: express.Request, res: express.Response) => {
 
     const userId = parseInt(req.params.userId)
+   
     try {
+        console.log(`in order handler, in orderList, user id: ${userId}`)
         const orderList = await orderStore.orderList(userId)
         res.json(orderList)
     } catch (err) {
@@ -48,12 +51,27 @@ const orderList = async (req: express.Request, res: express.Response) => {
 }
 
 
+const addProduct = async (req: express.Request, res: express.Response) => {
+
+    // const orderItem: OrderItem = {
+    //     item_id: 
+    //     userId: req.params.user_id
+    // }
+    // const userId = req.params.userId
+    // const productId = req.params.productId
+    // const quantity = req.body.quantity
+
+
+
+}
 
 
 const orderRoutes = (app:express.Application) => {
     app.post('/orders', create)
     app.get('/orders/:userId/active', activeOrder)
-    app.get('orders/:userId', orderList)
+    app.get('/orders/:userId', orderList)
+    app.get('/orders/:userId/active/:productId', addProduct)
 }
+
 
 export default orderRoutes;

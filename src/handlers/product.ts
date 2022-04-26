@@ -17,7 +17,7 @@ const index = async (_req: express.Request, res: express.Response) => {
     res.json(products);
     // res.send('Products index route');
   } catch (err) {
-    res.status(400);
+    res.sendStatus(400);
     res.json(err);
   }
 };
@@ -28,7 +28,7 @@ const show = async (req: express.Request, res: express.Response) => {
     const product = await store.show(id)
     res.json(product)
   } catch (err) {
-    res.status(400);
+    res.sendStatus(400);
     res.json(err);
   }
 };
@@ -47,7 +47,7 @@ const create = async (req: express.Request, res: express.Response) => {
     // console.log(JSON.stringify(productCreated, null, 4))
     res.json(productCreated);
   } catch (err) {
-    res.status(400);
+    res.sendStatus(400);
     res.json(err);
   }
 };

@@ -1,5 +1,5 @@
 // import supertest from 'supertest'
-import { Order, OrderStore } from './../../models/order'
+import { Order, OrderItem, OrderStore } from './../../models/order'
 import client from './../../database'
 import { DbSetup } from '../utilities/dbSetup'
 
@@ -44,7 +44,13 @@ describe('Order Model', () => {
 
     it('can add product to active order', async () => {
         // add new order_item to newly created order
-        await orderStore.addProduct(newOrder.order_id, dbSetup.products[0].product_id, 4)
+        const orderItem: OrderItem = {
+            item_id: 0,
+            order_id: newOrder.order_id,
+            product_id: dbSetup.products[0].product_id,
+            quantity: 4
+        }
+        await orderStore.addProduct(orderItem)
         const conn = await client.connect()
         const result = await conn.query(`SELECT * FROM order_items`)
         // there should be one more order_itmes
@@ -52,11 +58,14 @@ describe('Order Model', () => {
     })
 
 
-    // it('throws error if trying to add new item to completed order', async () => {
-    // //     // try to add new item to a completed order
-    // //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
-    //     // expect(function() {orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
-    //     expect(function() {orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
+    // THIS DOES NOT WORK BELOW AND WHEN RUN GIVES ERROR MESSAGE EXPECTED HERE AT THE 
+    // 'can show active or of user' test
+    
+    // xit('throws error if trying to add new item to completed order', async () => {
+    //     // try to add new item to a completed order
+    //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
+    //     await expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
+    //     // expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
     // })
 
 

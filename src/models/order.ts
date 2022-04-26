@@ -29,16 +29,32 @@ export class OrderStore {
         }
     }
 
+    async isActiveOrder(orderId: number): Promise<boolean> {
+        console.log(`in MODEL, in isAcitveOrder, orderID: ${orderId}`)
+        try {
+            const conn = await client.connect()
+            const sql = `SELECT order_status FROM orders WHERE order_id = $1`
+            const result = await conn.query(sql, [orderId])
+            conn.release()
+            const isActiveOrder = result.rows[0]
+            console.log(`in MODEL, returning; ${isActiveOrder}`)
+            return isActiveOrder
+        } catch (err) {
+            console.log(err)
+            throw new Error(`Could not check order status. Error: ${err}`)
+        }
+    }
 
-    async addProduct(orderId: number, productId: number, quantity: number) {
+    // async addProduct(orderId: number, productId: number, quantity: number) {
+    async addProduct(orderItem: OrderItem): Promise<OrderItem> {
         try {
             // check if order is 'active' should not add items to completed orders
             const conn = await client.connect()
             const sqlOrder = `SELECT order_status FROM orders WHERE order_id = $1`
-            const order = await (await (conn.query(sqlOrder, [orderId]))).rows[0]
+            const order = await (await (conn.query(sqlOrder, [orderItem.order_id]))).rows[0]
             if ( order.order_status == 'active') {
                 const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`            
-                const result = await conn.query(sql, [orderId, productId, quantity])
+                const result = await conn.query(sql, [orderItem.order_id, orderItem.product_id, orderItem.quantity])
                 conn.release()
                 const orderProductAdded = result.rows[0]
                 return orderProductAdded        

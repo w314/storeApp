@@ -183,7 +183,8 @@ export class DbSetup {
                 [this.orderItems[i].order_id, this.orderItems[i].product_id, this.orderItems[i].quantity])
             }
     
-            conn.release()      
+            conn.release()     
+            return 
 
         } catch (err) {
             throw new Error(`Error setting up database for testing. Error: ${err}`)

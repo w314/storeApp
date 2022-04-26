@@ -29,7 +29,7 @@ const create = async (req: express.Request, res: express.Response) => {
       res.json(err)
     }
   } catch (err) {
-    res.status(400);
+    res.sendStatus(400);
     res.json(err);
   }
 };
@@ -66,7 +66,7 @@ const show = async (req: express.Request, res: express.Response) => {
       res.send('Not authorized to view user')
     }
   } catch(err) {
-    res.status(400)
+    res.sendStatus(400)
     res.json(err)
   }
 }
@@ -90,7 +90,7 @@ const index = async (req: express.Request, res: express.Response) => {
       res.json('Regular users are not allowed to see user list')
     }
   } catch(err) {
-    res.status(400)
+    res.sendStatus(400)
     res.json(err)
   }
 }

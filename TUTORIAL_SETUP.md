@@ -64,16 +64,20 @@ npx tsc --init
 ```javascript
 {
   "compilerOptions": {
+    /* Language and Environment */
     "target": "ES2020",                          
     "lib": ["ES2015", "DOM"], 
+    /* Modules */
     "module": "commonjs",                     
     "rootDir": "./src",   
-    "outDir": "./dist",                     
+    "outDir": "./dist",   
+    /* Interop Constraints */                  
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+    /* Type Checking */
     "strict": true,
     "noImplicitAny": true,                           
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
   },
 }
 ```
@@ -85,7 +89,9 @@ npx tsc --init
     "build": "npx tsc"
   },
   ```
-Running `npm start` should log "Hello World".
+- `build` will convert typescript to javascript and store the files under the `./dist` folder (set as the `outdir` in `tsconfig.json`) 
+- `start` will run build and start the application by using `node` to run the `./dist/server.js` file
+- Running `npm start` should log "Hello World".
 
 ## Add `eslint` and `prettier`
 

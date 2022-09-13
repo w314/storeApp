@@ -70,6 +70,7 @@ npx tsc --init
     /* Modules */
     "module": "commonjs",                     
     "rootDir": "./src",   
+    /* Emit */
     "outDir": "./dist",   
     /* Interop Constraints */                  
     "esModuleInterop": true,
@@ -91,7 +92,13 @@ npx tsc --init
   ```
 - `build` will convert typescript to javascript and store the files under the `./dist` folder (set as the `outdir` in `tsconfig.json`) 
 - `start` will run build and start the application by using `node` to run the `./dist/server.js` file
-- Running `npm start` should log "Hello World".
+- Running `npm start` logs "Hello World".
+
+4. Commit changes
+```bash
+git add .
+git commit -m 'chore: Add typescript to project'
+```
 
 ## Add `eslint` and `prettier`
 

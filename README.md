@@ -9,6 +9,7 @@ git clone https://github.com/w314/storeApp.git
 ### 2. Install dependencies
 <br>In the terminal, in the project root directory run:
 ```bash
+cd storeApp
 npm install
 ```
 ### 3. Add `.env` file

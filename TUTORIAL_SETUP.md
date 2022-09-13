@@ -2,31 +2,27 @@
 >Step by step instructions to set up the store app project
 
 ## Create project directory
-```shell
+```bash
 mkdir storeApp
 cd storeApp
 mkdir src
 mkdir dist
 mkdir src/models
+mkdir src/handlers
+mkdir src/tests
+touch src/server.ts
 echo "console.log('Hello World')" > src/server.ts
 ```
 
-- for handlers
-```bash
-mkdir src/handlers
-touch src/handlers product.ts
-```
-
-
 ## Initiate `node` app 
-```shell
+```bash
 npm init -y
 ```
 
 ## Setup `GIT` repository
 
 1. Initiate a git repository
-```shell
+```bash
 git init
 ```
 
@@ -42,7 +38,7 @@ dist
 3. Make initial commit
 ```shell
 git add .
-git commit -m 'Initial Setup'
+git commit -m 'feat: Initial Setup'
 ```
 4. Setup remote repository
 
@@ -59,11 +55,12 @@ npm i --save-dev typescript ts-node @types/node
 ```
 2. Add configuration files
 
- Add `typescript config` file to project root directory
+ Add `typescript configuration` file to project root directory
 ```bash
 npx tsc --init
 ```
-- set config file to (includes udacity project settings):
+- creates `tsconfig.json`
+- use settings below in `tsconfig.json`:
 ```javascript
 {
   "compilerOptions": {

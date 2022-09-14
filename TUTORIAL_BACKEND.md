@@ -13,6 +13,19 @@ Work Flow
 
 ## Products
 
+
+FROM SETUP
+
+Add variables to your `.env` file:
+```bash
+echo '
+POSTGRES_HOST=127.0.0.1
+POSTGRES_DB=store_app_db
+POSTGRES_USER=store_app_user
+POSTGRES_PASSWORD=storeSecret
+' > .env
+```
+
 ### 5. Add test script to `package.json`
 ```javascript
 "test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",

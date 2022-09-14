@@ -1,5 +1,12 @@
 # Store App Tutorial - Project Setup
->Step by step instructions to set up the store app project
+>Step by step instructions to set up a basic node application we will use to develop the store app project. The application will use:
+- typescipt
+- prettier
+- eslint
+- express
+- jasmine
+- dotenv
+
 
 ## Create project directory
 ```bash
@@ -38,7 +45,7 @@ dist
 3. Make initial commit
 ```shell
 git add .
-git commit -m 'feat: Initial Setup'
+git commit -m 'feat: Initial commit'
 ```
 4. Setup remote repository
 
@@ -161,7 +168,7 @@ npm run lint
 ```
 ```bash
 git add .
-git commit -m 'chore: Eslint and prettier added to project'
+git commit -m 'chore: Add Eslint and prettier to project'
 ```
 
 
@@ -179,24 +186,26 @@ npm i --save-dev tsc-watch
 ### 2. Create basic server
 
   Replace corrent content of  the `src/server.ts` file with:
-  ```typescript
-  import express from 'express'
-  
-  const app = express();
-  const port = 3000;  //can be any number > 1024
-  
-  // set up routes
-  app.get('/api', (req, res) => {
-    res.send('server working');
-  });
-  
-  // start the server
-  app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
-  });  
+```typescript
+import express from 'express'
 
-  export default app;
-  ```
+const app = express();
+const port = 3000;  //can be any number > 1024
+
+// middlewares
+
+// set up routes
+app.get('/api', (req, res) => {
+  res.send('server working');
+});
+
+// start the server
+app.listen(port, () => {
+  console.log(`Server started at http://localhost:${port}`);
+});  
+
+export default app;
+```
   - running `npm run start` logs: 
   `Server started at: localhost:3000`.
   - opening the browser at `localhost:3000` the page displays: `Server is working.`
@@ -217,7 +226,7 @@ npm run lint
 ```
 ```bash
 git add .
-git commit -m 'chore: Express added to project'
+git commit -m 'chore: Add Express to project'
 ```
 
 ## Add [Jasmine](https://jasmine.github.io/) for testing
@@ -342,52 +351,97 @@ npm run lint
 ```
 ```bash
 git add .
-git commit -m 'chore: Jasmine added to project'
+git commit -m 'chore: Add Jasmine to project'
+```
+
+## Add [morgan](https://www.npmjs.com/package/morgan)
+HTTP request logger middleware for node.js
+
+### 1. Install
+```bash
+# install morgan
+npm i morgan
+# install types for morgan
+npm i --save-dev @types/morgan
+```
+
+### 2. Use morgan in `server.ts` file
+```typescript
+// import morgan, an HTTP request logger middleware
+
+////After the `app` is declared under `middlewares` include:
+
+// log HTTP requests
+app.use(morgan('dev'))
 ```
 
 
+## Add [`body-parser](https://www.npmjs.com/package/body-parser)
+Node.js body parsing middleware.
+Parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
+
+### 1. Install
+```bash
+npm i body-parser
+```
+
+### 2. Usage
+To use `body-parser` edit the  `server.ts` file:
+```typescript
+// import bodyParser, an HTTP request body parser middleware
+import bodyParser from 'body-parser'
+
+//// after declaring the app include
+
+// parse the HTTP request body
+app.use(bodyParser.json())
+```
 
 
-### Add `dotenv` to handle environment variables
-1. Install
+## Add [dotenv](https://www.npmjs.com/package/dotenv) 
+Dotenv is a zero-dependency module that loads environment variables from a `.env` file into `process.env`. It gives us a way to store environment variables separate from code
+### 1. Install
 ```bash
 npm i dotenv
 ```
 
-2. Create .env file to store environment variables
+### 2. Create .env file 
+`.env` file will store the  environment variables
 ```bash
 touch .env
 ```
-Add variables to your `.env` file:
-```bash
-echo '
-POSTGRES_HOST=127.0.0.1
-POSTGRES_DB=store_app_db
-POSTGRES_USER=store_app_user
-POSTGRES_PASSWORD=storeSecret
-' > .env
-```
 
-3. Add `.env` file to `.gitignore` to keep sensitive information local
+### 3. Add `.env` file to `.gitignore`
+It will keep sensitive information local.
 ```bash
 echo ".env" >> .gitignore
 ```
-4. Initialize environment variables in your program
+### 4. Usage
+Store you environment variables in the `.env` file:
+```bash
+YOUR_VARIABLE=myvariable
+```
+If you want to use the environment variables stored in the `.env` file:
 ```typescript
+ //Initialize environment variables in your program
 dotenv.config()
 ```
 `dotenv.config()`  will create a javascript object called `process.env` which will have all the environment variables as properties.
 
 ```typescript
 //environment variables can be accessed like:
-process.env.POSTGRES_DB
+process.env.YOUR_VARIABLE
 // or
-const { POSTGRES_DB } = process.env;
+const { YOUR_VARIABLE } = process.env;
+```
+### 5. Commit changes
+```bash
+git add .
+git commit -m 'chore: Add dotenv to project'
 ```
 
-
-## Add `node-postgres`
-node-postgres is a collection of node.js modules for interfacing with your PostgreSQL database. It has support for callbacks, promises, async/await, connection pooling, prepared statements, cursors, streaming results, C/C++ bindings, rich type parsing, and more.
+## Add [node-postgres](https://node-postgres.com/)
+`node-postgres` is a collection of node.js modules for interfacing with a PostgreSQL database.
 
 ### 1. Install
 ```bash
@@ -473,23 +527,6 @@ import bodyParser from 'body-parser'
 
 // after declaring the app include
 app.use(bodyParser.json())
-```
-
-## Add [morgan](https://www.npmjs.com/package/morgan)
->HTTP request logger middleware for node.js
-
-### 1. Install
-```bash
-# install morgan
-npm i morgan
-# install types for morgan
-npm i --save-dev @types/morgan
-```
-
-### 2. Use morgan in `server.ts` file
-After the `app` is declared include line:
-```typescript
-app.use(morgan('dev'))
 ```
 
 ## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)

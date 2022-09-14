@@ -1,6 +1,7 @@
 import express from 'express';
 import productRoutes from './handlers/product';
 import userRoutes from './handlers/user';
+// import bodyParser, an HTTP request body parser middleware
 import bodyParser from 'body-parser';
 // import morgan, a HTTP request logging middleware
 import morgan from 'morgan'
@@ -9,10 +10,16 @@ import orderRoutes from './handlers/order';
 const app: express.Application = express();
 const port = 3000;
 
-// use HTTP request logging middleware, morgan
+
+// middlewares
+
+// log HTTP requests
 app.use(morgan('dev'))
-// use bodyParser middleware
+// parse HTTP request bodies
 app.use(bodyParser.json());
+
+
+// endpoints
 
 // set up endpoint
 app.get('/', (req: express.Request, res: express.Response) => {

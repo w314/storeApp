@@ -14,12 +14,12 @@ touch src/server.ts
 echo "console.log('Hello World')" > src/server.ts
 ```
 
-## Initiate `node` app 
+## Initiate [node](https://nodejs.org/en/) app 
 ```bash
 npm init -y
 ```
 
-## Setup `GIT` repository
+## Setup [GIT](https://git-scm.com/) repository
 
 1. Initiate a git repository
 ```bash
@@ -48,7 +48,7 @@ git push origin master
 ```
 
 
-## Add `typescript`
+## Add [typescript](https://www.typescriptlang.org/)
 1. Install 
 ```bash
 npm i --save-dev typescript ts-node @types/node
@@ -100,12 +100,12 @@ git add .
 git commit -m 'chore: Add typescript to project'
 ```
 
-## Add `eslint` and `prettier`
+## Add [eslint](https://eslint.org/) and [prettier](https://prettier.io/)
 
 ### 1. Install
 ```bash
 npm i --save-dev eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
-npm i --save-dev prettier eslint-config-pr ettier eslint-plugin-prettier
+npm i --save-dev prettier eslint-config-prettier eslint-plugin-prettier
 ```
 
 ### 2. Add configuration files
@@ -149,6 +149,12 @@ In project root directory:
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "lint": "eslint \"src/**/*.{js,ts}\"",
   },
+  ```
+
+  ### 4. Commit changes
+  ```bash
+  git add .
+  git commit -m 'chore: Eslint and prettier added to project'
   ```
 
   `npm run prettier` and `npm run lint` should run now.

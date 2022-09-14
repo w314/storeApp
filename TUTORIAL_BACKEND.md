@@ -13,6 +13,135 @@ Work Flow
 
 ## Products
 
+### 5. Add test script to `package.json`
+```javascript
+"test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
+
+```
+- `ENV=test` set the environment variable in `.env` file to test
+> in windows use `set ENV=test`
+- `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
+- `ENV=test jasmine-ts` runs the test, `ENV=test` part needed here again otherwise runs it on regular database
+-  `db-migrate db:drop test` clears the database after running the tests
+
+Tests can be run by
+- `npm run test`
+- `npm run test --silent` if we don't want to see the npm error messages
+### 5. Setup testing database
+- in `.env` file add
+```javascript
+POSTGRES_TEST_DB=store_app_db_test
+ENV=dev
+```
+Every time before running tests we will set `ENV` to `test`.
+
+- Create test database
+
+Start Postgres is termnal
+```bash
+psql -U postgres
+```
+Enter password for postgres user when `postgres=#` prompt appears.<br>
+Create database for application
+```sql
+CREATE DATABASE store_app_db_test;
+GRANT ALL PRIVILEGES ON DATABASE store_app_db_test TO store_app_user;
+```
+
+- Add connection to test database.The `database.ts` file should look like this now:
+```typescript
+import dotenv from 'dotenv'
+import { Pool } from 'pg'
+
+
+// intializing the environment variables
+dotenv.config()
+
+const {
+    POSTGRES_HOST,
+    POSTGRES_DB,
+    POSTGRES_TEST_DB,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
+    ENV
+} = process.env
+
+// declare client
+let client: Pool = new Pool();
+
+// connect and set client to  test database
+if(ENV ==='test') {
+    client = new Pool({
+        host: POSTGRES_HOST,
+        database: POSTGRES_TEST_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
+    })
+}
+
+// connect and set client to dev database
+if (ENV === 'dev') {
+    client = new Pool({
+        host: POSTGRES_HOST,
+        database: POSTGRES_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
+    })    
+}
+
+export default client;
+```
+- Add test database to `database.json` file for `db-migration`:
+```javascript
+
+{
+  "dev": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db",
+    "user": "store_app_user",
+    "password": "storeSecret"
+  },
+  "test": {
+    "driver": "pg",
+    "host": "127.0.0.1",
+    "database": "store_app_db_test",
+    "user": "store_app",
+    "password": "storeSecret"
+  }
+}
+```
+
+
+
+
+
+## Create the database and the user the app will use
+1. Start Postgres is termnal
+```bash
+psql -U postgres
+```
+Enter password for postgres user. When `postgres=#` prompt appears:
+2. Create user for application
+```sql
+CREATE USER store_app_user WITH PASSWORD 'storeSecret';
+```
+3. Create database for application
+```sql
+CREATE DATABASE store_app_db;
+GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
+```
+4. Test database
+Connect to the database:
+```bash
+\c store_app_db
+\dt
+```
+Outputs: "Did not find any relations."
+
+
+
+
 ### Product Migrations
 1. Create migration file
 ```bash

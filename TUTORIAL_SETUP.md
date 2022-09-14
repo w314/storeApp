@@ -151,19 +151,80 @@ In project root directory:
   },
   ```
 
-  ### 4. Commit changes
-  ```bash
-  git add .
-  git commit -m 'chore: Eslint and prettier added to project'
-  ```
+- `npm run prettier` and `npm run lint` should run now
 
-  `npm run prettier` and `npm run lint` should run now.
 
-## Add Jasmine for testing
-
-### 1. Install Jasmine
+### 4. Commit changes
 ```bash
-# install jasmine
+npm run prettier
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Eslint and prettier added to project'
+```
+
+
+
+## Add [Express](https://expressjs.com/)
+
+### 1. Install
+```bash
+npm i express
+npm i --save-dev @types/express
+npm i --save-dev tsc-watch
+```
+- `tsc-watch` will restart the server every time we save changes
+
+### 2. Create basic server
+
+  Replace corrent content of  the `src/server.ts` file with:
+  ```typescript
+  import express from 'express'
+  
+  const app = express();
+  const port = 3000;  //can be any number > 1024
+  
+  // set up routes
+  app.get('/api', (req, res) => {
+    res.send('server working');
+  });
+  
+  // start the server
+  app.listen(port, () => {
+    console.log(`Server started at http://localhost:${port}`);
+  });  
+
+  export default app;
+  ```
+  - running `npm run start` logs: 
+  `Server started at: localhost:3000`.
+  - opening the browser at `localhost:3000` the page displays: `Server is working.`
+
+### 3. Add `devStart` script to `package.json`
+
+Script `devStart` will be used during development as it uses `tsc-watch` to restart the server after every change in the application.
+
+  ```javascript
+  "devStart": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
+  ```
+  - running `npm run devStart` produces the same result as running `npm start` before
+
+### 4. Commit changes
+```bash
+npm run prettier
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Express added to project'
+```
+
+## Add [Jasmine](https://jasmine.github.io/) for testing
+
+### 1. Installation
+```bash
+# install jasmine and jasmine-spec-reporter
 npm i jasmine jasmine-spec-reporter
 # install type definitions for jasmine
 npm i --save-dev @types/jasmine
@@ -173,32 +234,30 @@ npm i --save-dev supertest
 # install type definitions for supertest
 npm i --save-dev @types/supertest
 ```
-
+- [jasmine-spec-reporter](https://www.npmjs.com/package/jasmine-spec-reporter) is a real time console spec reporter for `jasmine`
 - [supertest](https://www.npmjs.com/package/supertest) is a module for testing HTTP
 
-### 2. Create directory for tests
+### 2. Setup test directory
 ```bash
-# test directory
-mkdir src/tests
-# directory for jasmine-spec-reporter helpers
+# directory for jasmine-spec-reporter
 mkdir src/tests/helpers
-# file for jasmine-spec-reporter configuration
-touch src/tests/helpers/reporter.ts
 # directory for model tests
 mkdir src/tests/models
 # directory for API endpoint tests
 mkdir src/tests/routes
-# file for first spec
-touch src/tests/models/product_spec.ts
+# directory for utility tests
+mkdir src/tests/utilities
 ```
 
-### 3. Configure Jasmine & Jasmine Spec Reporter
-- for `Jasmine`
+### 3. Configuration
+
+#### `Jasmine`
+Run:
 ```bash
 npx jasmine init
 ```
-Creates `spec` directory and `jasmine.json` configuration file.
-In configuration file set:
+- Creates `spec` directory and `jasmine.json` configuration file.
+- In configuration file set:
 ```javascript
 {
   "spec_dir": "dist/tests",
@@ -211,9 +270,16 @@ In configuration file set:
   "stopSpecOnExpectationFailure": false,
   "random": false 
 }
+
 ```
 
-For `jasemine-spec-reporter` add content to `tests/helpers/reporter.ts`:
+#### `jasemine-spec-reporter`
+Create file: 
+```bash
+# file for jasmine-spec-reporter configuration
+touch src/tests/helpers/reporter.ts
+```
+With content:
 ```typescript
 import { DisplayProcessor, SpecReporter, StacktraceOption } from 'jasmine-spec-reporter'
 import SuiteInfo = jasmine.SuiteInfo
@@ -234,168 +300,52 @@ jasmine.getEnv().addReporter(
   })
 )
 ```
-### 4. Add test script to `package.json`
+### 4. Create spec file for server.ts
+Create spec file:
+```bash
+# file for first spec
+touch src/tests/server_spec.ts
+```
+With content:
+```typescript
+import { agent as request } from 'supertest';
+import app from '../server';
+
+describe('GET /', () => {
+  it('responds with: Server is working.', (done) => {
+    request(app)
+      .get('/')
+      .expect(200)
+      .expect('Content-Type', 'text/html; charset=utf-8')
+      .then((response) => {
+        expect(response.text).toBe('Server is working.');
+        done();
+      })
+      .catch((Error) => {
+        Error ? done.fail(Error) : done();
+      });
+  });
+});
+```
+
+### 5. Add test script to `package.json`
 ```javascript
 "jasmine": "jasmine",
-"test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
-
+"test": "npm run build && npm run jasmine",
 ```
-- `ENV=test` set the environment variable in `.env` file to test
-> in windows use `set ENV=test`
-- `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
-- `ENV=test jasmine-ts` runs the test, `ENV=test` part needed here again otherwise runs it on regular database
--  `db-migrate db:drop test` clears the database after running the tests
+- running `npm run test` builds the project and succesfully runs the one spec we created
 
-Tests can be run by
-- `npm run test`
-- `npm run test --silent` if we don't want to see the npm error messages
-### 5. Setup testing database
-- in `.env` file add
-```javascript
-POSTGRES_TEST_DB=store_app_db_test
-ENV=dev
-```
-Every time before running tests we will set `ENV` to `test`.
-
-- Create test database
-
-Start Postgres is termnal
+### 6. Commit changes
 ```bash
-psql -U postgres
+npm run prettier
+npm run lint
 ```
-Enter password for postgres user when `postgres=#` prompt appears.<br>
-Create database for application
-```sql
-CREATE DATABASE store_app_db_test;
-GRANT ALL PRIVILEGES ON DATABASE store_app_db_test TO store_app_user;
-```
-
-- Add connection to test database.The `database.ts` file should look like this now:
-```typescript
-import dotenv from 'dotenv'
-import { Pool } from 'pg'
-
-
-// intializing the environment variables
-dotenv.config()
-
-const {
-    POSTGRES_HOST,
-    POSTGRES_DB,
-    POSTGRES_TEST_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
-    ENV
-} = process.env
-
-// declare client
-let client: Pool = new Pool();
-
-// connect and set client to  test database
-if(ENV ==='test') {
-    client = new Pool({
-        host: POSTGRES_HOST,
-        database: POSTGRES_TEST_DB,
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
-    })
-}
-
-// connect and set client to dev database
-if (ENV === 'dev') {
-    client = new Pool({
-        host: POSTGRES_HOST,
-        database: POSTGRES_DB,
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
-    })    
-}
-
-export default client;
-```
-- Add test database to `database.json` file for `db-migration`:
-```javascript
-
-{
-  "dev": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db",
-    "user": "store_app_user",
-    "password": "storeSecret"
-  },
-  "test": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db_test",
-    "user": "store_app",
-    "password": "storeSecret"
-  }
-}
-```
-
-
-
-## Add `express`
-
-### 1. Install
 ```bash
-npm i express
-npm i --save-dev @types/express
-npm i --save-dev tsc-watch
+git add .
+git commit -m 'chore: Jasmine added to project'
 ```
-- `tsc-watch` will restart the server every time we save changes
-
-2. Add script to `package.json`
-  ```javascript
-  "devStart": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
-  ```
-  Running `npm run devStart` should output "Hello World" to the console.
-
-3. Create basic server
-
-  Replace corrent content of  the `src/server.ts` file with:
-  ```typescript
-  import express from 'express'
-  
-  const app = express();
-  const port = 3000;  //can be any number > 1024
-  
-  // set up routes
-  app.get('/api', (req, res) => {
-    res.send('server working');
-  });
-  
-  // start the server
-  app.listen(port, () => {
-    console.log(`Server started at http://localhost:${port}`);
-  });  
-  ```
-Starting server with `npm run devStart`, opening th e browser at `localhost:3000` the page should display: "Application Starting Page"
 
 
-## Create the database and the user the app will use
-1. Start Postgres is termnal
-```bash
-psql -U postgres
-```
-Enter password for postgres user. When `postgres=#` prompt appears:
-2. Create user for application
-```sql
-CREATE USER store_app_user WITH PASSWORD 'storeSecret';
-```
-3. Create database for application
-```sql
-CREATE DATABASE store_app_db;
-GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
-```
-4. Test database
-Connect to the database:
-```bash
-\c store_app_db
-\dt
-```
-Outputs: "Did not find any relations."
 
 
 ### Add `dotenv` to handle environment variables

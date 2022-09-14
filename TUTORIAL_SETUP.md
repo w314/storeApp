@@ -368,13 +368,24 @@ npm i --save-dev @types/morgan
 ### 2. Use morgan in `server.ts` file
 ```typescript
 // import morgan, an HTTP request logger middleware
+import morgan from 'morgan';
 
-////After the `app` is declared under `middlewares` include:
+/*After the `app` is declared under `middlewares` include:*/
 
 // log HTTP requests
-app.use(morgan('dev'))
+app.use(morgan('dev'));
 ```
+- running `npm run test` will show `morgan` logging the http request of our spec
 
+### 3. Commit changes
+```bash
+npm run prettier
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add morgan to project'
+```
 
 ## Add [`body-parser](https://www.npmjs.com/package/body-parser)
 Node.js body parsing middleware.
@@ -389,14 +400,22 @@ npm i body-parser
 To use `body-parser` edit the  `server.ts` file:
 ```typescript
 // import bodyParser, an HTTP request body parser middleware
-import bodyParser from 'body-parser'
+import bodyParser from 'body-parser';
 
-//// after declaring the app include
+////after declaring the `app` under `middlewares` include
 
 // parse the HTTP request body
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 ```
-
+### 3. Commit changes
+```bash
+npm run prettier
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add body-parser to project'
+```
 
 ## Add [dotenv](https://www.npmjs.com/package/dotenv) 
 Dotenv is a zero-dependency module that loads environment variables from a `.env` file into `process.env`. It gives us a way to store environment variables separate from code
@@ -453,30 +472,39 @@ Create file to handle connection.
 ```bash
 touch src/database.ts
 ```
-Add code to file:
+With content:
 ```typescript
-import dotenv from 'dotenv'
-import { Pool } from 'pg'
+/* this file connects the application to the postgres database */
+// import dotenv, to process environment variables stored in the `.env` file
+import dotenv from 'dotenv';
+// import pool, to connect to the database
+import { Pool } from 'pg';
 
-// intializing the environment variables
-dotenv.config()
+// intialize environment variables
+dotenv.config();
 
-const {
-    POSTGRES_HOST,
-    POSTGRES_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
-} = process.env
+// get environmental variables
+const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =
+  process.env;
 
-// connect to database
+// connect to the database
 const client = new Pool({
-    host: POSTGRES_HOST,
-    database: POSTGRES_DB,
-    user: POSTGRES_USER,
-    password: POSTGRES_PASSWORD,
-})
+  host: POSTGRES_HOST,
+  database: POSTGRES_DB,
+  user: POSTGRES_USER,
+  password: POSTGRES_PASSWORD,
+});
 
 export default client;
+```
+### 3. Commit changes
+```bash
+npm run prettier
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add node-postgres to project'
 ```
 
 ## Add database migration tools

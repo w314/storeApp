@@ -1,11 +1,15 @@
 # Store App Tutorial - Project Setup
->Step by step instructions to set up a basic node application we will use to develop the store app project. The application will use:
+>Step by step instructions to set up a basic node application that works with postgres we will use to develop the store app project. The application will use:
 - typescipt
 - prettier
 - eslint
 - express
 - jasmine
+- morgan
+- body-parser
 - dotenv
+- node-postgres
+- db-migrate
 
 
 ## Create project directory
@@ -154,16 +158,14 @@ In project root directory:
   ```javascript
   "scripts": {
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
-    "lint": "eslint \"src/**/*.{js,ts}\"",
+    "eslint": "eslint \"src/**/*.{js,ts}\"",
+    "lint": "npm run prettier && npm run eslint",
   },
   ```
-
-- `npm run prettier` and `npm run lint` should run now
-
+- run `npm run lint` to run both prettier and eslin. Prettier will automatically correct mistakes while eslint will show a list of errors and warnings.
 
 ### 4. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -221,7 +223,6 @@ Script `devStart` will be used during development as it uses `tsc-watch` to rest
 
 ### 4. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -346,7 +347,6 @@ describe('GET /', () => {
 
 ### 6. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -379,7 +379,6 @@ app.use(morgan('dev'));
 
 ### 3. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -409,7 +408,6 @@ app.use(bodyParser.json());
 ```
 ### 3. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -429,6 +427,18 @@ npm i dotenv
 ```bash
 touch .env
 ```
+With content:
+```bash
+POSTGRES_HOST=toBeSet
+POSTGRES_PORT=toBeSet
+POSTGRES_DB=toBeSet
+POSTGRES_DB_TEST=tobeSet
+POSTGRES_USER=toBeSet
+POSTGRES_PASSWORD=toBeSet
+ENV=dev
+```
+- variables will be set, when we create our database as we develop the application
+- we will set up a database as well and a test database for our application and use the `ENV` variable to set the current environment (development or test)
 
 ### 3. Add `.env` file to `.gitignore`
 It will keep sensitive information local.
@@ -484,13 +494,20 @@ import { Pool } from 'pg';
 dotenv.config();
 
 // get environmental variables
-const { POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD } =
-  process.env;
+const { 
+  POSTGRES_HOST,
+  POSTGRES_PORT, 
+  POSTGRES_DB,
+  POSTGRES_DB_TEST,
+  POSTGRES_USER, POSTGRES_PASSWORD,
+  ENV 
+} =  process.env;
 
-// connect to the database
+// declare client
 const client = new Pool({
   host: POSTGRES_HOST,
-  database: POSTGRES_DB,
+  port: parseInt(POSTGRES_PORT as string),
+  database: ENV == "dev" ? POSTGRES_DB : POSTGRES_DB_TEST,
   user: POSTGRES_USER,
   password: POSTGRES_PASSWORD,
 });
@@ -499,7 +516,6 @@ export default client;
 ```
 ### 3. Commit changes
 ```bash
-npm run prettier
 npm run lint
 ```
 ```bash
@@ -507,54 +523,46 @@ git add .
 git commit -m 'chore: Add node-postgres to project'
 ```
 
-## Add database migration tools
+## Add [db-migrate](https://github.com/db-migrate/node-db-migrate#readme)
 
-Migrations are documents outlining changes to the database over time, they are `tracking changes to the database schema`
+`db-migrate` is a database migrations framework for nodejs. Migrations are documents used to build the database and track changes to its schema over time.
 
-### 1. Install `db-migrate`
-```bash
-yarn global add db-migrate
-yarn add db-migrate db-migrate-pg
-```
-- installing `db-migrate` globally allows us to use the terminal commands it provides.
-- `yarn add db-migrate` adds it to `package.json`
-2. Add `database.json` file to project root directory
-This reference file allows us to specify what database we want to run migrations on.
-```bash
-echo '
-{
-  "dev": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db",
-    "user": "store_app_user",
-    "password": "storeSecret"
-  },
-  "test": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db_test",
-    "user": "store_app_user",
-    "password": "storeSecret"
-  }
-}' > database.json
-```
-## Add [`body-parser](https://www.npmjs.com/package/body-parser)
 ### 1. Install
-
 ```bash
-npm i body-parser
+npm install --save-dev db-migrate
+npm install --save-dev db-migrate-pg
 ```
-Node.js body parsing middleware.
-Parse incoming request bodies in a middleware before your handlers, available under the req.body property.
+- installing `db-migrate` globally allows us to use the terminal commands it provides.???
+- [db-migrate-pg](https://www.npmjs.com/package/db-migrate-pg) is a postgres driver for db-migrate
 
-### 2. Use `body-parser` into `server.ts` file
+
+### 2. [Configuration](https://db-migrate.readthedocs.io/en/latest/Getting%20Started/configuration/)
+Create `database.json` file in project root directory
+```bash
+touch database.json
+```
+- The `database.json` file specifies what database we want to run migrations on. It supports the concept of environments.You can pass the -e or --env option to db-migrate to select the environment you want to run migrations against. 
+- You can also specify environment variables in your config file by using a special notation.
+- Set up the `database.json` file like below:
+
+
 ```typescript
-// import body-parser
-import bodyParser from 'body-parser'
-
-// after declaring the app include
-app.use(bodyParser.json())
+{
+    "dev": {
+        "driver": "pg",
+        "host":{"ENV": "POSTGRES_HOST"},
+        "database": {"ENV": "POSTGRES_DB"},
+        "user": {"ENV": "POSTGRES_USER"},
+        "password": {"ENV": "POSTGRES_PASSWORD"}
+    },
+    "test": {
+        "driver": "pg",
+        "host": {"ENV": "POSTGRES_HOST"},
+        "database": {"ENV": "POSTGRES_DB_TEST"},
+        "user": {"ENV": "POSTGRES_USER"},
+        "password": {"ENV": "POSTGRES_PASSWORD"}
+    }
+}
 ```
 
 ## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)

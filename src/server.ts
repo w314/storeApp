@@ -19,8 +19,6 @@ app.use(morgan('dev'))
 app.use(bodyParser.json());
 
 
-// endpoints
-
 // set up endpoint
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Application Starting Page');

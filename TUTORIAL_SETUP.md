@@ -1,5 +1,5 @@
 # Store App Tutorial - Project Setup
->Step by step instructions to set up a basic node application that works with postgres we will use to develop the store app project. The application will use:
+>Step by step instructions to set up the basic node application that  we will use to develop the store app project. The application will make use of the following tools:
 - typescipt
 - prettier
 - eslint
@@ -9,7 +9,10 @@
 - body-parser
 - dotenv
 - node-postgres
-- db-migrate
+- db-migrate, db-migrate-pg
+- jwt
+- docker
+
 
 
 ## Create project directory
@@ -564,6 +567,14 @@ touch database.json
     }
 }
 ```
+### 3. Commit changes
+```bash
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add db-migrate to project'
+```
 
 ## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)
 
@@ -579,3 +590,45 @@ TOKEN_SECRET=verySecretToken
 ### Useful  `JWT` methods:
 - Create a token: `jwt.sign(<objectToIncludeInToken>, <TOKEN_SECRET>)`
 - Check a token: `jwt.verify()`
+
+### 3. Commit changes
+```bash
+git add .
+git commit -m 'chore: Add jwt to project'
+```
+## Add [docker](https://www.docker.com/)
+The application will use Postgres run in a docker container. To do that you have to have 
+[docker compose](https://docs.docker.com/compose/)
+### 1. Install [docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/) if needed
+
+### 2. Add `YAML` file
+This `docker-compose.yml` file will configure the container we are running.
+```bash
+touch docker-compose.yml
+```
+Add content:
+```bash
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - '5555:5432'
+    env_file:
+      - .env
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+
+volumes:
+  postgres:
+```
+
+### 3. Commit changes
+```bash
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add docker-compose.yml file to project'
+```

@@ -1,14 +1,41 @@
 # Store App Tutorial - Backend
->Step by step instructions to create database facing side of the application
+>Step by step instructions to create the an e-store back end.
 
 Work Flow
-- Create Migrations
-- Create Models
-- Create Tests for Models
-- Create Handlers
-<br>Each model file will have its handler file. This file will have all the handler functions associated with the REST-ful routes regarding that model.
-- Import handlers to server file
-- Test api endpoints
+1. Create Database
+1. Create Migrations
+1. Create Models
+1. Create Tests for Models
+1. Create Handlers
+1. Test api endpoints
+
+
+## 1. Create the database and the user the app will use
+1. Start `Docker` container
+
+1. Start Postgres is termnal
+```bash
+psql -U postgres
+```
+Enter password for postgres user. When `postgres=#` prompt appears:
+2. Create user for application
+```sql
+CREATE USER store_app_user WITH PASSWORD 'storeSecret';
+```
+3. Create database for application
+```sql
+CREATE DATABASE store_app_db;
+GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
+```
+4. Test database
+Connect to the database:
+```bash
+\c store_app_db
+\dt
+```
+Outputs: "Did not find any relations."
+
+
 
 
 ## Products
@@ -129,30 +156,6 @@ export default client;
 
 
 
-## Create the database and the user the app will use
-1. Start Postgres is termnal
-```bash
-psql -U postgres
-```
-Enter password for postgres user. When `postgres=#` prompt appears:
-2. Create user for application
-```sql
-CREATE USER store_app_user WITH PASSWORD 'storeSecret';
-```
-3. Create database for application
-```sql
-CREATE DATABASE store_app_db;
-GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
-```
-4. Test database
-Connect to the database:
-```bash
-\c store_app_db
-\dt
-```
-Outputs: "Did not find any relations."
-
-
 
 
 ### Product Migrations
@@ -256,7 +259,8 @@ npm run test
 ```
 
 ### Product Handlers
-
+<br>Each model file will have its handler file. This file will have all the handler functions associated with the REST-ful routes regarding that model.
+ Import handlers to server file
 
 ```typescript
 import express from 'express'

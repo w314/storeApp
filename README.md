@@ -1,5 +1,7 @@
 # Store App
 
+Store App is a node application that serves as the back end of an online store. 
+
 ## Installation
 
 ### 1. Clone directory

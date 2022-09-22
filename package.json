@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run build && node dist/server.js",
-    "devStart": "db-migrate --env test reset && db-migrate --env test up && nodemon src/server.ts",
+    "devStart": "npm run migrate && nodemon src/server.ts",
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "eslint": "eslint \"src/**/*.{js,ts}\"",
     "lint": "npm run prettier && npm run eslint",
-    "testMigrate": "set ENV=test && db-migrate --env test reset && db-migrate --env test up",
+    "migrate": "ENV=test && db-migrate --env test reset && db-migrate --env test up",
     "test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
     "jasmine": "jasmine",
     "build": "npx tsc"

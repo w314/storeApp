@@ -21,7 +21,7 @@ POSTGRES_DB=store_db
 POSTGRES_DB_TEST=store_db_test
 POSTGRES_USER=store_user
 POSTGRES_PASSWORD=store_pass
-# for Json Web Token
+# for JSON Web Token
 TOKEN=very_secret_pass
 # for bcrypt
 BCRYPT_PASSWORD=secretBcryptPass
@@ -86,67 +86,160 @@ Connect to the database:
 Outputs: "Did not find any relations."
 
 
-## 2 Create Migrations 
+## 3 Create Migrations 
+Migrations will set up our database schema 
 
-## Products
+Based on our schema migrations have to be created for the following database tables:
+1. users
+1. products
+1. categories
+1. orders
+1. order_items
+
+For each migration we will run the `db migrate create` command. At the first run it will create:
+- a `migrations` directory in our project root directory
+- an `sqls` directory under migrations
+- migrations will run in order of their creation, so have to be created in logical order (to run without error category table migration has to be run before product table migration)
+- in case categories are introduced later and the order of migration has to be changed one can change the date in the name of the migration files (if the up and down migration file names are, their names have to be updated *within* the automatically generated `.js` migration file)
 
 
-FROM SETUP
-
-
-
-### 5. Add test script to `package.json`
-```javascript
-"test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
-
+At each run it will create:
+- a generated `.js` file that should not be modified under `migrations`
+- two `.sql` files under the `sqls` directory with for the up and down migrations
+  - into the `up` migration file you will enter the `sql` command that  will setup your table
+  - the `down` migration file will hold the `sql` command to the migration you just did in the `up` migration
+  
+>IMPORTANT: when creating tables DO NOT use camelCase, the result from the database comes back all lower case even if the migration table was set up with camelCase and than the property names of the User from the database doesn't match the property names of the User type.
+### 3.1 Add migrations
+#### 3.1.1 users
+create migration file:
+```bash
+db-migrate create users-table --sql-file
 ```
-- `ENV=test` set the environment variable in `.env` file to test
-> in windows use `set ENV=test`
-- `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
-- `ENV=test jasmine-ts` runs the test, `ENV=test` part needed here again otherwise runs it on regular database
--  `db-migrate db:drop test` clears the database after running the tests
-
-Tests can be run by
-- `npm run test`
-- `npm run test --silent` if we don't want to see the npm error messages
-
-
-
-
-
-
-
-### Product Migrations
-1. Create migration file
+add up migration:
+```sql
+CREATE TYPE usertype AS ENUM ('admin', 'regular');
+CREATE TABLE users (
+    username VARCHAR(100) UNIQUE,
+    firstname VARCHAR(100) NOT NULL, 
+    lastname VARCHAR(100) NOT NULL, 
+    password_digest VARCHAR NOT NULL,
+    user_id SERIAL PRIMARY KEY,
+    user_type usertype NOT NULL
+);
+```
+add down migration:
+```sql
+DROP TYPE IF EXISTS usertype CASCADE;
+DROP TABLE IF EXISTS users;
+```
+#### 3.1.2 categories
+create migration file:
+```bash
+db-migrate create categories-table --sql-file
+```
+add up migration:
+```sql
+CREATE TABLE categories (
+  category_id SERIAL PRIMARY KEY,
+  category_name VARCHAR(100) NOT NULL
+);
+```
+add down migration:
+```sql
+DROP TABLE IF EXISTS categories;
+```
+#### 3.1.3 products
+create migration file:
 ```bash
 db-migrate create products-table --sql-file
 ```
-- it will create the directory `migrations`
-- a generated file that should not be modified
-- an `sqls` directory with two files for the up and down migrations
-
-2. Add up migration sql:
+add up migration:
 ```sql
 CREATE TABLE products (
-  name VARCHAR(100), 
-  price float, 
-  id SERIAL PRIMARY KEY
+    name VARCHAR(100) NOT NULL, 
+    price float NOT NULL, 
+    product_id SERIAL PRIMARY KEY,
+    category_id INT NOT NULL REFERENCES categories ON DELETE RESTRICT
 );
 ```
-
-3. App down migration sql:
+add down migration:
 ```sql
-DROP TABLE products;
+DROP TABLE IF EXISTS products CASCADE;
+```
+#### 3.1.4 orders
+create migration file:
+```bash
+db-migrate create orders-table --sql-file
+```
+add up migration:
+```sql
+CREATE TYPE orderstatus AS ENUM ('active', 'completed');
+CREATE TABLE orders (
+  order_id SERIAL PRIMARY KEY,
+  user_id INT NOT NULL REFERENCES users ON DELETE RESTRICT,
+  order_status orderstatus NOT NULL
+);
+```
+add down migration:
+```sql
+DROP TYPE IF EXISTS orderstatus CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
+```
+#### 3.1.5 order_items
+create migration file:
+```bash
+db-migrate create order_items-table --sql-file
+```
+add up migration:
+```sql
+CREATE TABLE order_items (
+  item_id SERIAL PRIMARY KEY,
+  order_id INT NOT NULL REFERENCES orders ON DELETE RESTRICT,
+  product_id INT NOT NULL REFERENCES products ON DELETE RESTRICT,
+  quantity INT NOT NULL
+);
+```
+add down migration:
+```sql
+DROP TABLE  IF EXISTS order_items;
 ```
 
+### 3.2 Update scripts in `package.json`
+3.2.1.  add `migrate` script
+```javascript
+"migrate": "ENV=test && db-migrate --env test reset && db-migrate --env test up",
+```
+- `ENV=test` set the environment variable in `.env` file to test (in windows use `set ENV=test`)
+- `db-migrate --env test reset` clears any migrations run on the database before. It is needed in case test run was not complete last time and the reset after the test run couldn't clear the database
+- `db-migrate --env test up` runs the migrations to recreate the `schema` in the test database
+    
+3.2.2 update `devStart` script
+```javascript
+"devStart": "npm run migrate && nodemon src/server.ts",
+```
+- `devStart` will run the `migrate` script before starting the application
 
-4. Run migrations
+3.2.3 update `test` script
+```javascript
+"test": npm run migrate && ENV=test npm run jasmine  && db-migrate --env test reset",
+```
+- the new script will run `migrate` first
+- `ENV=test jasmine-ts` runs the tests on the test database, `ENV=test` part needed here again otherwise runs it on regular database
+- running `db-migrate --env test reset` clears the test database
+
+There are no migrations to in the `start` script as that would delete all live data in the database. 
+
+### 3.3 Run migrations
+In project root directory run:
 ```bash
 db-migrate up
 ```
+## 4. Create Models
+- `models` will support `CRUD` actions on the tables created during `migration`. 
+- we have to create models for all our tables
 
 ### Product Models
-`Models` will support `CRUD` actions on the tables created during `migration`. 
 
 1. Create model directory
 ```bash
@@ -424,48 +517,11 @@ CREATE TABLE products (
 - it's probably enough to change the name of the `.js` file, if the up and down migration file names are also changed, their names have to be updated within the `.js` file
 
 
-### 3. Create categories model
-- add model to be able to create categories
 
-### 4. Update Product Model, Handler and their tests
-- Update Product type in product model
-- Update product model code
-- Update product handler
-- update model tests (test products used and other errors)
-- update api endpoint test (test products used and other errors)
-
-
-## TO INCLUDE INTO TUTORIAL
-
-- when preapring tables for tests, <br> use <br>`TRUNCATE <table_name> CASCADE` <br> instead of <br>`DELETE FROM <table_name>`<br>`TRUNCATE` resets primary key numbers, while `DELETE` does not<br>`CASCADE` is needed if the table is used as a foreign key in another table 
 
 
 ## Add orders
 
-### 1. Add migration
-- create sql files
-```bash
-db-migrate create orders-table --sql-file
-```
-- add up migration
-```sql
-CREATE TYPE ordertype AS ENUM ('active', 'completed');
-CREATE TABLE orders (
-  order_id SERIAL PRIMARY KEY,
-  user_id INT,
-  order_type ordertype,
-  CONSTRAINT fk_user
-    FOREIGN KEY(user_id)
-      REFERENCES users(user_id)
-      ON DELETE SET NULL
-);
-```
-
-- add down migration
-```sql
-DROP TYPE IF EXISTS ordertype CASCADE;
-DROP TABLE IF EXISTS orders;
-```
 
 ### 2. Model for Orders
 - create Order type
@@ -477,30 +533,3 @@ DROP TABLE IF EXISTS orders;
 - create orderRoutes: assign methods to endpoints
 - export orderRoutes
 - in `server.ts` file call orderRoutes
-
-
-### add order_products table
-#### 1. create migration files
-```bash
-db-migrate create order_products-table --sql-file
-```
-- up migration
-```sql
-CREATE TABLE order_products (
-  order_id INT,
-  product_id INT,
-  quantity INT,
-  CONSTRAINT fk_order
-    FOREIGN KEY(order_id)
-      REFERENCES orders(order_id)
-      ON DELETE SET NULL,
-  CONSTRAINT fk_product
-    FOREIGN KEY(product_id)
-      REFERENCES product(product_id)
-      ON DELETE SET NULL
-);
-```
-- down migration
-```sql
-DROP TABLE  IF EXISTS order_products;
-```

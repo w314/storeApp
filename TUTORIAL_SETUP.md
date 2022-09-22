@@ -1,8 +1,8 @@
 # Store App Tutorial - Project Setup
 >Step by step instructions to set up the basic [node](https://nodejs.org/en/) application that  we will use to develop the store app project. The application will make use of the following tools:
-- [node](https://nodejs.org/en/) for our runtime environment
+- [node](https://nodejs.org/en/) for runtime environment
 - [GIT](https://git-scm.com/) for version control
-- [PostgreSQL](https://www.postgresql.org/) for our database
+- [PostgreSQL](https://www.postgresql.org/) for database
 - [typescript](https://www.typescriptlang.org/) for typed javascipt
 - [prettier](https://prettier.io/) for code formatting
 - [eslint](https://eslint.org/) for code check
@@ -437,13 +437,20 @@ touch .env
 ```
 With content:
 ```bash
-POSTGRES_HOST=toBeSet
-POSTGRES_PORT=toBeSet
-POSTGRES_DB=toBeSet
-POSTGRES_DB_TEST=tobeSet
-POSTGRES_USER=toBeSet
-POSTGRES_PASSWORD=toBeSet
-ENV=toBeSet
+# for setting environment
+ENV=to_be_set
+# for postgres database
+POSTGRES_HOST=to_be_set
+POSTGRES_PORT=to_be_set
+POSTGRES_DB=to_be_set
+POSTGRES_DB_TEST=to_be_set
+POSTGRES_USER=to_be_set
+POSTGRES_PASSWORD=to_be_set
+# for JSON Web Token
+TOKEN=to_be_set
+# for bcrypt
+BCRYPT_PASSWORD=to_be_set
+SALT_ROUNDS=to_be_set
 ```
 - variables will be set, when we create our database as we develop the application
 - we will set up a database as well and a test database for our application and use the `ENV` variable to set the current environment (development or test)
@@ -581,7 +588,7 @@ git add .
 git commit -m 'chore: Add db-migrate to project'
 ```
 
-## Add [JWT](https://jwt.io/introduction/) (Json Web Token)
+## Add [JWT](https://jwt.io/introduction/) (JSON Web Token)
 
 ### 1. Install `JWT`
 ```bash
@@ -601,13 +608,30 @@ TOKEN_SECRET=verySecretToken
 git add .
 git commit -m 'chore: Add jwt to project'
 ```
-## `bycript`
+## Add [bcrypt](https://www.npmjs.com/package/bcrypt)
 >Used for password encription
+### 1. Install 
+```bash
+npm i bcrypt
+npm i --save-dev @types/bcrypt
+```
+### 2. Set enviromental variables
+- make sure the the following enviromental variables are included in `.env` file
+```bash
+BCRYPT_PASSWORD=secretBcryptPass
+SALT_ROUNDS=10
+```
+  - `SALT_ROUNDS` is the number of time the password will be hashed.
+  - `BCYPT_PASSWORD` is the extra string used in the peppering step.
 
+### 3. Commit changes
+```bash
+git add .
+git commit -m 'chore: Add bcypt to project'
+```
 
 ## Add [docker](https://www.docker.com/)
-The application will use Postgres run in a docker container. To do that you have to have 
-[docker compose](https://docs.docker.com/compose/)
+The application will use Postgres run in a docker container. To do that we need [docker](https://www.docker.com/)
 ### 1. Install [docker](https://www.docker.com/)
 - [docker compose](https://docs.docker.com/compose/) is installed with `docker`
 

@@ -1,18 +1,21 @@
 # Store App Tutorial - Project Setup
->Step by step instructions to set up the basic node application that  we will use to develop the store app project. The application will make use of the following tools:
-- `typescipt` for typed javascipt
-- `prettier` for code formatting
-- `eslint` for code check
-- `express` as server framework
-- `jasmine` for testing
-- `morgan` for logging HTTP requests
-- `body-parser` for parsing HTTP request bodies
-- `dotenv` for handling enviromental variables
-- `node-postgres` to handle `Postgres` database
-- `db-migrate` and  `db-migrate-pg` to handle migrations
-- `jwt` for authentication
-- `bycript` for password encyption
-- `docker` for running our app in a container
+>Step by step instructions to set up the basic [node](https://nodejs.org/en/) application that  we will use to develop the store app project. The application will make use of the following tools:
+- [node](https://nodejs.org/en/) for our runtime environment
+- [GIT](https://git-scm.com/) for version control
+- [PostgreSQL](https://www.postgresql.org/) for our database
+- [typescript](https://www.typescriptlang.org/) for typed javascipt
+- [prettier](https://prettier.io/) for code formatting
+- [eslint](https://eslint.org/) for code check
+- [Express](https://expressjs.com/) as server framework
+- [Jasmine](https://jasmine.github.io/) for testing
+- [morgan](https://www.npmjs.com/package/morgan) for logging HTTP requests
+- [body-parser](https://www.npmjs.com/package/body-parser) for parsing HTTP request bodies
+- [dotenv](https://www.npmjs.com/package/dotenv) for handling enviromental variables
+- [node-postgres](https://node-postgres.com/) to handle the `Postgres` database
+- [db-migrate](https://github.com/db-migrate/node-db-migrate#readme) and  [db-migrate-pg](https://www.npmjs.com/package/db-migrate-pg) to handle migrations
+- [jwt](https://jwt.io/introduction/) for authentication
+- [bcrypt](https://www.npmjs.com/package/bcrypt) for password encyption
+- [docker](https://www.docker.com/) for running our app in a container
 
 
 
@@ -30,18 +33,19 @@ echo "console.log('Hello World')" > src/server.ts
 ```
 
 ## Initiate [node](https://nodejs.org/en/) app 
+Install [node](https://nodejs.org/en/) if needed. After installation run:
 ```bash
 npm init -y
 ```
 
 ## Setup [GIT](https://git-scm.com/) repository
-
-1. Initiate a git repository
+1. Install [git](https://git-scm.com/) if needed
+2. Initiate a git repository
 ```bash
 git init
 ```
 
-2. Create `.gitignore` file 
+3. Create `.gitignore` file 
 
 ```bash
 echo '
@@ -50,7 +54,7 @@ dist
 ' > .gitignore
 ```
 
-3. Make initial commit
+4. Make initial commit
 ```shell
 git add .
 git commit -m 'feat: Initial commit'
@@ -390,7 +394,7 @@ git add .
 git commit -m 'chore: Add morgan to project'
 ```
 
-## Add [`body-parser](https://www.npmjs.com/package/body-parser)
+## Add [body-parser](https://www.npmjs.com/package/body-parser)
 Node.js body parsing middleware.
 Parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
 
@@ -577,7 +581,7 @@ git add .
 git commit -m 'chore: Add db-migrate to project'
 ```
 
-## Add [`JWT`](https://jwt.io/introduction/) (Json Web Token)
+## Add [JWT](https://jwt.io/introduction/) (Json Web Token)
 
 ### 1. Install `JWT`
 ```bash

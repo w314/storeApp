@@ -12,14 +12,20 @@ Work Flow
 
 ## 1. Set Environmental Variables
 ```bash
+# for setting environment
+ENV=dev
+# for postgres database
 POSTGRES_HOST=127.0.0.1
 POSTGRES_PORT=5555
 POSTGRES_DB=store_db
 POSTGRES_DB_TEST=store_db_test
 POSTGRES_USER=store_user
 POSTGRES_PASSWORD=store_pass
+# for Json Web Token
 TOKEN=very_secret_pass
-ENV=dev
+# for bcrypt
+BCRYPT_PASSWORD=secretBcryptPass
+SALT_ROUNDS=10
 ```
 
 ## 2. Create the Database

@@ -24,7 +24,7 @@ In the `.env` file add content:
 ### 1. Setup `Docker` container
 <br>In the terminal run
 ```bash
-sudo docker-compose up -d
+sudo docker compose up -d
 ```
 - `-d` will run container in the background
 

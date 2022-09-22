@@ -1,17 +1,18 @@
 # Store App Tutorial - Project Setup
 >Step by step instructions to set up the basic node application that  we will use to develop the store app project. The application will make use of the following tools:
-- typescipt
-- prettier
-- eslint
-- express
-- jasmine
-- morgan
-- body-parser
-- dotenv
-- node-postgres
-- db-migrate, db-migrate-pg
-- jwt
-- docker
+- `typescipt` for typed javascipt
+- `prettier` for code formatting
+- `eslint` for code check
+- `express` as server framework
+- `jasmine` for testing
+- `morgan` for logging HTTP requests
+- `body-parser` for parsing HTTP request bodies
+- `dotenv` for handling enviromental variables
+- `node-postgres` to handle `Postgres` database
+- `db-migrate` and  `db-migrate-pg` to handle migrations
+- `jwt` for authentication
+- `bycript` for password encyption
+- `docker` for running our app in a container
 
 
 
@@ -438,7 +439,7 @@ POSTGRES_DB=toBeSet
 POSTGRES_DB_TEST=tobeSet
 POSTGRES_USER=toBeSet
 POSTGRES_PASSWORD=toBeSet
-ENV=dev
+ENV=toBeSet
 ```
 - variables will be set, when we create our database as we develop the application
 - we will set up a database as well and a test database for our application and use the `ENV` variable to set the current environment (development or test)
@@ -596,20 +597,23 @@ TOKEN_SECRET=verySecretToken
 git add .
 git commit -m 'chore: Add jwt to project'
 ```
+## `bycript`
+>Used for password encription
+
+
 ## Add [docker](https://www.docker.com/)
 The application will use Postgres run in a docker container. To do that you have to have 
 [docker compose](https://docs.docker.com/compose/)
-### 1. Install [docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/) if needed
+### 1. Install [docker](https://www.docker.com/)
+- [docker compose](https://docs.docker.com/compose/) is installed with `docker`
 
 ### 2. Add `YAML` file
-This `docker-compose.yml` file will configure the container we are running.
+This `docker-compose.yaml` file will configure the container we are running.
 ```bash
-touch docker-compose.yml
+touch docker-compose.yaml
 ```
 Add content:
 ```bash
-version: '3.9'
-
 services:
   postgres:
     image: postgres

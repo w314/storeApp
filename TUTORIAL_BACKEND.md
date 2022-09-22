@@ -2,6 +2,7 @@
 >Step by step instructions to create the an e-store back end.
 
 Work Flow
+1. Set Environmental Variables
 1. Create Database
 1. Create Migrations
 1. Create Models
@@ -9,49 +10,84 @@ Work Flow
 1. Create Handlers
 1. Test api endpoints
 
-
-## 1. Create the database and the user the app will use
-1. Start `Docker` container
-
-1. Start Postgres is termnal
+## 1. Set Environmental Variables
 ```bash
-psql -U postgres
+POSTGRES_HOST=127.0.0.1
+POSTGRES_PORT=5555
+POSTGRES_DB=store_db
+POSTGRES_DB_TEST=store_db_test
+POSTGRES_USER=store_user
+POSTGRES_PASSWORD=store_pass
+TOKEN=very_secret_pass
+ENV=dev
 ```
-Enter password for postgres user. When `postgres=#` prompt appears:
-2. Create user for application
+
+## 2. Create the Database
+
+### 2.1 Start `Docker` container
+In the terminal run
+```bash
+sudo docker compose up -d
+```
+- `-d` will run container in the background
+- The `docker-compose.yaml` file will set up the container running postgres.
+- It creates the database with the name specified as `POSTGRES_DB` in the `.env`and user from the .env 
+file
+- It will use the user `POSTGRES_USER` and the password `POSTGRES_PASSWORD` set in the `.env` file
+
+
+- In case of the error:
+`docker-compose up cannot start service postgres: driver failed programming external connectivity on endpoint`, 
+<br>A) stop local postgresql with:
+    ```bash
+    sudo service postgresql stop
+    ```
+    <br>B) Change post assignment in `docker-compose.yml` file:
+    ```bash
+    ports:
+      - '5433:5432'
+    ```
+
+    And run `docker-compose` up again.
+
+### 2.2 Create test database
+
+The created docker container can be listed with:
+```bash
+sudo docker ps
+```
+Connect to the `postgres container`:
+```bash
+sudo docker exec -it <container_name> bash
+```
+- `-it` makes the connection interactive
+
+Start `postgres` in termnal
+```bash
+psql -U store_user store_db
+```
+Create test database:
 ```sql
-CREATE USER store_app_user WITH PASSWORD 'storeSecret';
+CREATE DATABASE store_db_test;
 ```
-3. Create database for application
-```sql
-CREATE DATABASE store_app_db;
-GRANT ALL PRIVILEGES ON DATABASE store_app_db TO store_app_user;
-```
-4. Test database
+
+Test database
 Connect to the database:
 ```bash
-\c store_app_db
+\c store_db_test
 \dt
 ```
 Outputs: "Did not find any relations."
 
 
-
+## 2 Create Migrations 
 
 ## Products
 
 
 FROM SETUP
 
-Add variables to your `.env` file:
-```bash
-echo '
-POSTGRES_HOST=127.0.0.1
-POSTGRES_DB=store_app_db
-POSTGRES_USER=store_app_user
-POSTGRES_PASSWORD=storeSecret
-' > .env
-```
+
 
 ### 5. Add test script to `package.json`
 ```javascript
@@ -67,90 +103,6 @@ POSTGRES_PASSWORD=storeSecret
 Tests can be run by
 - `npm run test`
 - `npm run test --silent` if we don't want to see the npm error messages
-### 5. Setup testing database
-- in `.env` file add
-```javascript
-POSTGRES_TEST_DB=store_app_db_test
-ENV=dev
-```
-Every time before running tests we will set `ENV` to `test`.
-
-- Create test database
-
-Start Postgres is termnal
-```bash
-psql -U postgres
-```
-Enter password for postgres user when `postgres=#` prompt appears.<br>
-Create database for application
-```sql
-CREATE DATABASE store_app_db_test;
-GRANT ALL PRIVILEGES ON DATABASE store_app_db_test TO store_app_user;
-```
-
-- Add connection to test database.The `database.ts` file should look like this now:
-```typescript
-import dotenv from 'dotenv'
-import { Pool } from 'pg'
-
-
-// intializing the environment variables
-dotenv.config()
-
-const {
-    POSTGRES_HOST,
-    POSTGRES_DB,
-    POSTGRES_TEST_DB,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
-    ENV
-} = process.env
-
-// declare client
-let client: Pool = new Pool();
-
-// connect and set client to  test database
-if(ENV ==='test') {
-    client = new Pool({
-        host: POSTGRES_HOST,
-        database: POSTGRES_TEST_DB,
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
-    })
-}
-
-// connect and set client to dev database
-if (ENV === 'dev') {
-    client = new Pool({
-        host: POSTGRES_HOST,
-        database: POSTGRES_DB,
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
-    })    
-}
-
-export default client;
-```
-- Add test database to `database.json` file for `db-migration`:
-```javascript
-
-{
-  "dev": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db",
-    "user": "store_app_user",
-    "password": "storeSecret"
-  },
-  "test": {
-    "driver": "pg",
-    "host": "127.0.0.1",
-    "database": "store_app_db_test",
-    "user": "store_app",
-    "password": "storeSecret"
-  }
-}
-```
 
 
 

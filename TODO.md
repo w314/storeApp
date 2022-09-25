@@ -16,4 +16,8 @@ Tutorial: explain workflow
 Tutorial separate testing?
 
 add clean script to package.json to delete dist folder before build, try:
+CONTINUE with user model
+
+
+
 "clean": "del-cli esm dist lib .cache", ?

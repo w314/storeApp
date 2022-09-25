@@ -110,6 +110,7 @@ At each run it will create:
   - the `down` migration file will hold the `sql` command to the migration you just did in the `up` migration
   
 >IMPORTANT: when creating tables DO NOT use camelCase, the result from the database comes back all lower case even if the migration table was set up with camelCase and than the property names of the User from the database doesn't match the property names of the User type.
+
 ### 3.1 Add migrations
 #### 3.1.1 users
 create migration file:
@@ -120,11 +121,11 @@ add up migration:
 ```sql
 CREATE TYPE usertype AS ENUM ('admin', 'regular');
 CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE,
     firstname VARCHAR(100) NOT NULL, 
     lastname VARCHAR(100) NOT NULL, 
-    password_digest VARCHAR NOT NULL,
-    user_id SERIAL PRIMARY KEY,
+    password VARCHAR NOT NULL,
     user_type usertype NOT NULL
 );
 ```
@@ -141,8 +142,8 @@ db-migrate create categories-table --sql-file
 add up migration:
 ```sql
 CREATE TABLE categories (
-  category_id SERIAL PRIMARY KEY,
-  category_name VARCHAR(100) NOT NULL
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL
 );
 ```
 add down migration:
@@ -157,9 +158,10 @@ db-migrate create products-table --sql-file
 add up migration:
 ```sql
 CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL, 
     price float NOT NULL, 
-    product_id SERIAL PRIMARY KEY,
+    url VARCHAR(200),
     category_id INT NOT NULL REFERENCES categories ON DELETE RESTRICT
 );
 ```
@@ -176,7 +178,7 @@ add up migration:
 ```sql
 CREATE TYPE orderstatus AS ENUM ('active', 'completed');
 CREATE TABLE orders (
-  order_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   user_id INT NOT NULL REFERENCES users ON DELETE RESTRICT,
   order_status orderstatus NOT NULL
 );
@@ -194,7 +196,7 @@ db-migrate create order_items-table --sql-file
 add up migration:
 ```sql
 CREATE TABLE order_items (
-  item_id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   order_id INT NOT NULL REFERENCES orders ON DELETE RESTRICT,
   product_id INT NOT NULL REFERENCES products ON DELETE RESTRICT,
   quantity INT NOT NULL
@@ -238,6 +240,76 @@ db-migrate up
 ## 4. Create Models
 - `models` will support `CRUD` actions on the tables created during `migration`. 
 - we have to create models for all our tables
+
+### 2. Users Model
+add model file:
+```bash
+touch src/models/user.ts
+```
+wit content:
+```typescript
+// import bcrypt for password encryption
+import bcrypt from 'bcrypt';
+// import database connection
+import client from '../database';
+// import dotenv to handle environment variables
+import dotenv from 'dotenv';
+
+// initialize environment variables
+dotenv.config();
+const pepper: string = process.env.BCRYPT_PASSWORD as string;
+const saltRounds: string = process.env.SALT_ROUNDS as string;
+
+// create typescript type for user
+export type User = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  password_digest: string;
+};
+
+// create Class representing table
+export class UserStore {
+  // add methods for CRUD actions
+
+  // CREATE
+  async create(user: User, password_digest: string): Promise<User> {
+    try {
+      // function for password encryption
+      const hash = bcrypt.hashSync(
+        user.password_digest + pepper,
+        parseInt(saltRounds)
+      );
+      // connect to database
+      const conn = await client.connect();
+      // add user
+      const sql = `INSERT INTO users (firstName, lastName, password_digest) 
+                VALUES ($1, $2, $3) RETURNING *`;
+      const result = await conn.query(sql, [
+        user.firstName,
+        user.lastName,
+        password_digest,
+      ]);
+      const createdUser = result.rows[0];
+
+      // disconnect from database
+      conn.release();
+
+      return createdUser;
+    } catch (err) {
+      throw new Error(`Couldn't create user. Error: ${err}`);
+    }
+  }
+}
+
+```
+### 3. User Model Tests
+```bash
+touch src/tests/user_spec.ts
+```
+```typescript
+
+
 
 ### Product Models
 
@@ -361,28 +433,6 @@ app.listen(port, () => {
 
 ## Users
 
-> IMPORTANT: when creating tables DO NOT use camelCase, the result from the database come back all lower case even if the migration table was set up with camelCase and than the property names of the User from the database doesn't match the property names of the User type.
-
-### 1. Users Migrations
-```bash
-db-migrate create users-table --sql-file
-```
-Under `migrations\sqls\` add `sql` commands.
-- in the `*-users-table-up.sql` 
-```sql
-/* Replace with your SQL commands */
-CREATE TABLE users (
-    userName VARCHAR(100),
-    firstName VARCHAR(100), 
-    lastName VARCHAR(100), 
-    pasword_digest VARCHAR, 
-    id SERIAL PRIMARY KEY
-);
-```
-- in the `*-users-table-down.sql`:
-```sql
-DROP TABLE IF EXISTS users;
-```
 
 ### 2. Users Model
 

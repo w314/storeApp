@@ -2,18 +2,18 @@
 {
   "dev": {
     "driver": "pg",
-    "host": "127.0.0.1",
-    "port": 5554,
-    "database": "store_app_db",
-    "user": "store_app_user",
-    "password": "storeSecret"
+    "host": {"ENV": "POSTGRES_HOST"},
+    "port": {"ENV": "POSTGRES_PORT"},
+    "database": {"ENV": "POSTGRES_DB"},
+    "user": {"ENV": "POSTGRES_USER"},
+    "password": {"ENV": "POSTGRES_PASSWORD"}
   },
   "test": {
     "driver": "pg",
-    "host": "127.0.0.1",
-    "port": 5554,
-    "database": "store_app_db_test",
-    "user": "store_app_user",
-    "password": "storeSecret"
+    "host": {"ENV": "POSTGRES_HOST"},
+    "port": {"ENV": "POSTGRES_PORT"},
+    "database": {"ENV": "POSTGRES_DB_TEST"},
+    "user": {"ENV": "POSTGRES_USER"},
+    "password": {"ENV": "POSTGRES_PASSWORD"}
   }
 }

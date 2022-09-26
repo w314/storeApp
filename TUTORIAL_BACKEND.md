@@ -6,7 +6,7 @@ Work Flow
 1. Create Database
 1. Create Migrations
 1. Create Models
-1. Create Tests for Models
+1. Test Models
 1. Create Handlers
 1. Test api endpoints
 
@@ -77,13 +77,11 @@ Create test database:
 CREATE DATABASE store_db_test;
 ```
 
-Test database
-Connect to the database:
+To check creation of  test database, connect to the database:
 ```bash
 \c store_db_test
-\dt
 ```
-Outputs: "Did not find any relations."
+Outputs: You are now connected to database "store_db_test" as user "store_user".
 
 
 ## 3 Create Migrations 
@@ -224,7 +222,7 @@ DROP TABLE  IF EXISTS order_items;
 
 3.2.3 update `test` script
 ```javascript
-"test": npm run migrate && ENV=test npm run jasmine  && db-migrate --env test reset",
+"test": npm run migrate && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
 ```
 - the new script will run `migrate` first
 - `ENV=test jasmine-ts` runs the tests on the test database, `ENV=test` part needed here again otherwise runs it on regular database
@@ -241,7 +239,7 @@ db-migrate up
 - `models` will support `CRUD` actions on the tables created during `migration`. 
 - we have to create models for all our tables
 
-### 2. Users Model
+### 4.1 Users Model
 add model file:
 ```bash
 touch src/models/user.ts
@@ -303,12 +301,51 @@ export class UserStore {
 }
 
 ```
-### 3. User Model Tests
+## 5. Test Models
+### Prepare database for testing
+Before running any test we will delete all previous data from all tables, reset primary keys to 0, and populate tables with a starting set of values.
+
+to clear tables add file:
 ```bash
-touch src/tests/user_spec.ts
+touch src/tests/utilities/dbCleanup.ts
 ```
+with content:
 ```typescript
 
+```
+
+to populate database add file:
+```bash
+touch src/tests/utilities/populateDb.ts
+```
+with content:
+```typescript
+
+```
+
+
+To achive this create the following files.
+```bash
+mkdir src/tests/utilities
+touch src/tests/utilities/dbCleanup.ts
+touch src/tests/utilities/populateDb.ts
+touch src/tests/utilities/dbSetup.ts
+```
+`src/tests/utilites/dbCleanup.ts`:
+```typescript
+
+```
+
+
+### Test User Model
+create file:
+```bash
+touch src/tests/models/user_spec.ts
+```
+with content:
+```typescript
+
+```
 
 
 ### Product Models

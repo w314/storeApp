@@ -7,6 +7,7 @@
 - [prettier](https://prettier.io/) for code formatting
 - [eslint](https://eslint.org/) for code check
 - [Express](https://expressjs.com/) as server framework
+- [tsc-watch](https://www.npmjs.com/package/tsc-watch) for development to restart server after each change in code
 - [Jasmine](https://jasmine.github.io/) for testing
 - [morgan](https://www.npmjs.com/package/morgan) for logging HTTP requests
 - [body-parser](https://www.npmjs.com/package/body-parser) for parsing HTTP request bodies
@@ -220,22 +221,38 @@ export default app;
   `Server started at: localhost:3000`.
   - opening the browser at `localhost:3000` the page displays: `Server is working.`
 
-### 3. Add `devStart` script to `package.json`
 
-Script `devStart` will be used during development as it uses `tsc-watch` to restart the server after every change in the application.
-
-  ```javascript
-  "devStart": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
-  ```
-  - running `npm run devStart` produces the same result as running `npm start` before
-
-### 4. Commit changes
+### 3. Commit changes
 ```bash
 npm run lint
 ```
 ```bash
 git add .
 git commit -m 'chore: Add Express to project'
+```
+
+## Add [tsc-watch](https://www.npmjs.com/package/tsc-watch)
+`tsc-watch` will restart the server after every change in the application.
+
+### 1. Install
+```bash
+npm i tsc-watch
+```
+
+### 2. Add scripts to `package.json`
+```javascript
+"watch": "tsc-watch --esModuleInterop src/server.ts --outDir ./dist --onSuccess 'node ./dist/server.js'",
+"devStart": "npm run watch",
+```
+The script `devStart` will be used to start the application during development as it uses `tsc-watch` to restart the server after every change in the application.
+
+### 3. Commit changes
+```bash
+npm run lint
+```
+```bash
+git add .
+git commit -m 'chore: Add tsc-watch to project'
 ```
 
 ## Add [Jasmine](https://jasmine.github.io/) for testing
@@ -544,10 +561,10 @@ git commit -m 'chore: Add node-postgres to project'
 
 ### 1. Install
 ```bash
-npm install --save-dev db-migrate
-npm install --save-dev db-migrate-pg
+npm install -g db-migrate
+npm install db-migrate-pg
 ```
-- installing `db-migrate` globally allows us to use the terminal commands it provides.???
+- installing `db-migrate` globally (`-g`) allows us to use the terminal commands it provides
 - [db-migrate-pg](https://www.npmjs.com/package/db-migrate-pg) is a postgres driver for db-migrate
 
 
@@ -566,6 +583,7 @@ touch database.json
     "dev": {
         "driver": "pg",
         "host":{"ENV": "POSTGRES_HOST"},
+        "port": { "ENV": "POSTGRES_PORT"},
         "database": {"ENV": "POSTGRES_DB"},
         "user": {"ENV": "POSTGRES_USER"},
         "password": {"ENV": "POSTGRES_PASSWORD"}
@@ -573,6 +591,7 @@ touch database.json
     "test": {
         "driver": "pg",
         "host": {"ENV": "POSTGRES_HOST"},
+        "port": { "ENV": "POSTGRES_PORT"},
         "database": {"ENV": "POSTGRES_DB_TEST"},
         "user": {"ENV": "POSTGRES_USER"},
         "password": {"ENV": "POSTGRES_PASSWORD"}

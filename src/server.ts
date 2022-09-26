@@ -8,7 +8,7 @@ import morgan from 'morgan'
 import orderRoutes from './handlers/order';
 
 const app: express.Application = express();
-const port = 3000;
+const port = 3001;
 
 
 // middlewares

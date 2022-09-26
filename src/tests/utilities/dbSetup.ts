@@ -187,6 +187,7 @@ export class DbSetup {
             return 
 
         } catch (err) {
+            console.log(err)
             throw new Error(`Error setting up database for testing. Error: ${err}`)
         }
 

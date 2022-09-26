@@ -24,5 +24,5 @@ const client = new Pool(
     password: POSTGRES_PASSWORD,
   }
 );
-// console.log(`CLIENT:\n ${JSON.stringify(client, null, 4)}`)
+console.log(`CLIENT:\n ${JSON.stringify(client, null, 4)}`)
 export default client;

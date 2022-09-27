@@ -39,7 +39,7 @@ describe('User Model', () => {
   it('shows a list of users', async () => {
     // get list of users
     const result = await store.index();
-    // console.log(result)
+    console.log(result);
     expect(result.length).toEqual(dbSetup.users.length);
     expect(result[0].username).toEqual(dbSetup.users[0].username);
   });

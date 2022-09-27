@@ -1,7 +1,8 @@
 // import database client
 import client from '../../database';
-// Import User Model
+// import User Model
 import { User } from '../../models/user';
+// import Category Model
 import { Category } from '../../models/category';
 // import { Product } from '../../models/product'
 // import { Order, OrderItem, OrderStore } from '../../models/order'

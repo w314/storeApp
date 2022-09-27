@@ -13,7 +13,7 @@
 //     // prepare database
 //     await dbSetup.setup()
 //    })
-    
+
 //   it('has a create method', () => {
 //     expect(store.create).toBeDefined();
 //   });
@@ -25,7 +25,7 @@
 //       name: 'bob',
 //       price: 9.99,
 //       category_id: 1
-//     };  
+//     };
 //     const result = await store.create(product);
 //     expect(result).toEqual(product);
 //   });
@@ -66,8 +66,6 @@
 //     const result = await store.show(productId);
 //     expect(result).toEqual(dbSetup.products[productId-1]);
 //   });
-
-
 
 //   // // delet product doesn't work, because of foreign key on delete restrict
 //   // it('has a delete method', () => {

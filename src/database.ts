@@ -15,14 +15,12 @@ const {
 } = process.env;
 
 // declare client
-const client = new Pool(
-  {
-    host: POSTGRES_HOST,
-    port: parseInt(POSTGRES_PORT as string),
-    database: ENV === "dev" ? POSTGRES_DB : POSTGRES_DB_TEST,
-    user: POSTGRES_USER,
-    password: POSTGRES_PASSWORD,
-  }
-);
+const client = new Pool({
+  host: POSTGRES_HOST,
+  port: parseInt(POSTGRES_PORT as string),
+  database: ENV === 'dev' ? POSTGRES_DB : POSTGRES_DB_TEST,
+  user: POSTGRES_USER,
+  password: POSTGRES_PASSWORD,
+});
 // console.log(`CLIENT:\n ${JSON.stringify(client, null, 4)}`)
 export default client;

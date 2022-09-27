@@ -52,7 +52,6 @@
 //   }
 // };
 
-
 // // to allow the handler above access to express method we create the function below,
 // // that takes in an instance of express application object as a parameter.
 // // The server.ts file will provide that when calls this function

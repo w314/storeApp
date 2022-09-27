@@ -39,12 +39,12 @@
 //   try {
 //     // get user provided by verifyAuthToken middleware
 //     const userInToken = res.locals.jwtObject
-    
+
 //     // get user id from url
 //     const idInUrl = parseInt(req.params.id)
 
 //     // if user id in URL and in Token is the same
-//     // return user info from token 
+//     // return user info from token
 //     if (userInToken.user_id === idInUrl) {
 //       res.json({
 //           'user_id': userInToken.user_id,
@@ -56,7 +56,7 @@
 //       })
 //     } else if (userInToken.user_type === 'admin') {
 //     // if the token is from an admin
-//     // get user info from model and return it 
+//     // get user info from model and return it
 //       const user = await store.show(idInUrl)
 //       res.json(user)
 //     } else {
@@ -81,7 +81,7 @@
 //     // user_type is admin return user list
 //     if (user_type === 'admin') {
 //       // return user list
-//       const users = await store.index() 
+//       const users = await store.index()
 //       res.status(200)
 //       res.json(users)
 //     } else {
@@ -94,7 +94,6 @@
 //     res.json(err)
 //   }
 // }
-
 
 // const userRoutes = (app: express.Application) => {
 //   app.post('/users', create);

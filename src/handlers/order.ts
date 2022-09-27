@@ -1,17 +1,16 @@
 // import { Order, OrderItem, OrderStore } from './../models/order'
 // import express from 'express'
 
-
 // const orderStore = new OrderStore
 
 // const create = async (req:express.Request, res:express.Response) => {
-    
+
 //     const order = {
 //         order_id: 0,
 //         user_id: parseInt(req.params.id),
 //         order_status: 'active'
 //     }
-    
+
 //     try {
 //         const orderCreated = await orderStore.create(order)
 //         res.json(orderCreated)
@@ -22,7 +21,6 @@
 //         return
 //     }
 // }
-
 
 // const activeOrder = async (req: express.Request, res: express.Response) =>  {
 
@@ -39,11 +37,10 @@
 //     }
 // }
 
-
 // const orderList = async (req: express.Request, res: express.Response) => {
 
 //     const userId = parseInt(req.params.userId)
-   
+
 //     try {
 //         // console.log(`in order handler, in orderList, user id: ${userId}`)
 //         const orderList = await orderStore.orderList(userId)
@@ -55,7 +52,6 @@
 //         return
 //     }
 // }
-
 
 // const addProduct = async (req: express.Request, res: express.Response) => {
 
@@ -74,7 +70,7 @@
 //         if (isActiveOrder) {
 //             const orderItemAdded = await orderStore.addProduct(orderItem)
 //             res.json(orderItemAdded)
-//             return    
+//             return
 //         }
 //         else {
 //             res.sendStatus(403)
@@ -86,10 +82,8 @@
 //         res.json(err)
 //         return
 //     }
-    
 
 // }
-
 
 // const orderRoutes = (app:express.Application) => {
 //     app.post('/orders', create)
@@ -97,6 +91,5 @@
 //     app.get('/orders/:userId', orderList)
 //     app.post('/orders/:userId/active', addProduct)
 // }
-
 
 // export default orderRoutes;

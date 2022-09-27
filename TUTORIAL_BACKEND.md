@@ -229,13 +229,17 @@ DROP TABLE  IF EXISTS order_items;
 - `ENV=test jasmine-ts` runs the tests on the test database, `ENV=test` part needed here again otherwise runs it on regular database
 - running `db-migrate --env test reset` clears the test database
 
-There are no migrations to in the `start` script as that would delete all live data in the database. 
+There are no migrations to in the `start` script as that would delete all live data in the database. To run migration on the live database run `db-migrate up` in project root directory
 
-### 3.3 Run migrations
-In project root directory run:
+### 3.3 Commit changes
 ```bash
-db-migrate up
+npm run lint
 ```
+```bash
+npm add .
+npm commit -m 'feat: Create migrations for project'
+```
+
 ## 4. Create Models
 - `models` will support `CRUD` actions on the tables created during `migration`. 
 - we have to create models for all our tables
@@ -247,54 +251,152 @@ touch src/models/user.ts
 ```
 wit content:
 ```typescript
+// import database client
+import client from '../database';
 // import bcrypt for password encryption
 import bcrypt from 'bcrypt';
-// import database connection
-import client from '../database';
 // import dotenv to handle environment variables
 import dotenv from 'dotenv';
+// import jwt for authentication
+import jsonwebtoken from 'jsonwebtoken';
 
 // initialize environment variables
 dotenv.config();
-const pepper: string = process.env.BCRYPT_PASSWORD as string;
-const saltRounds: string = process.env.SALT_ROUNDS as string;
+const {
+    PEPPER,
+    SALT_ROUNDS,
+    TOKEN_SECRET
+} = process.env
+// // const pepper: string = process.env.BCRYPT_PASSWORD as string;
+// // const saltRounds: string = process.env.SALT_ROUNDS as string;
+// // const tokenSecret: string = process.env.TOKEN_SECRET as string;
 
 // create typescript type for user
 export type User = {
   id: number;
-  firstName: string;
-  lastName: string;
-  password_digest: string;
+  username: string;
+  firstname: string;
+  lastname: string;
+  password: string;
+  user_type: string;
 };
 
-// create Class representing table
+// create UserStore class representing user table
 export class UserStore {
+
+  /* add authenticate method for sign-in
+     returns jwt token if sign-in is valid
+     returns null if user name is invalid
+     throws Error if password is incorrect */
+  async authenticate(userName: string, password: string): Promise<string | null> {
+    try {
+        // connect to database
+        const conn = await client.connect();
+        // get user from database
+        const sql = `SELECT * FROM users WHERE username = $1`;
+        const result = await conn.query(sql, [userName]);
+
+        // disconnect from database
+        conn.release();
+
+        // if result has nonzero length the username was valid
+        if (result.rows.length) {
+            //// console.log(result.rows.length)
+            //// for(let i = 0; i<result.rows.length; i++) {
+            ////   console.log(result.rows[i])
+            //// }
+
+            // the user is:
+            const user: User = result.rows[0];
+
+            // compare user's password at sign-in with provided hashed version
+            //// console.log(`User password coming from db after creation: ${user.password_digest}`)
+            //// console.log(`User submitted this password: ${password}`)
+            if (bcrypt.compareSync(password + PEPPER, user.password)) {
+              // password is valid create and send jwt token
+                //// console.log(`password OK`)
+                return jsonwebtoken.sign(user, TOKEN_SECRET as string)
+            }
+            else {
+              // password was invalid
+            //// console.log('invalid password')
+                throw new Error(`Invalid password`)
+            }
+      }
+      // result length was zero, username is invalid, return null
+      return null;
+    } catch (err) {
+      console.log(`username was valid, but error at authentication: ${err}`)
+      throw new Error(`Could not authenticate user. ${err}`);
+    }
+  }
+
   // add methods for CRUD actions
 
-  // CREATE
-  async create(user: User, password_digest: string): Promise<User> {
+  // INDEX: give a list of all users
+  async index(): Promise<User[]> {
     try {
-      // function for password encryption
-      const hash = bcrypt.hashSync(
-        user.password_digest + pepper,
-        parseInt(saltRounds)
-      );
       // connect to database
       const conn = await client.connect();
-      // add user
-      const sql = `INSERT INTO users (firstName, lastName, password_digest) 
-                VALUES ($1, $2, $3) RETURNING *`;
-      const result = await conn.query(sql, [
-        user.firstName,
-        user.lastName,
-        password_digest,
-      ]);
-      const createdUser = result.rows[0];
-
+      // console.log(conn)
+      // get user list
+      const sql = 'SELECT * FROM users';
+      const result = await conn.query(sql);
+      // console.log(result)
       // disconnect from database
       conn.release();
+      // return user list
+      return result.rows;
+    } catch (err) {
+      throw new Error(`Could not get user list. Error: ${err}`);
+    }
+  }
 
-      return createdUser;
+  // SHOW: show one specific user
+  async show(userId: number): Promise <User> {
+    try {
+      // connect to database
+      const conn = await client.connect()
+      // get user
+      const sql = `SELECT * FROM users WHERE id = $1`
+      const result = await conn.query(sql, [userId])
+      // disconnect from database
+      conn.release()
+      // return user
+      return result.rows[0]
+    } catch (err) {
+      throw new Error(`Could not get user. Error: ${err}`)
+    }
+  }
+
+  // CREATE: create user and return created user
+    async create(user: User): Promise<User> {
+    try {
+        // create password hash
+        const hash = bcrypt.hashSync(
+            user.password + PEPPER,
+            parseInt(SALT_ROUNDS as string)
+        );
+        // connect to database
+        const conn = await client.connect();
+        // sql command to insert user
+        const sql = `INSERT INTO users (username, firstname, lastname, password, user_type)
+                    VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+        // run command and capture returned user
+        const result = await conn.query(sql, [
+            user.username,
+            user.firstname,
+            user.lastname,
+            hash,
+            user.user_type
+        ]);
+        const createdUser = result.rows[0];
+
+        // disconnect from database
+        conn.release();
+
+        // return created user
+        return createdUser;
     } catch (err) {
       throw new Error(`Couldn't create user. Error: ${err}`);
     }
@@ -308,7 +410,7 @@ npm run lint
 ```
 ```bash
 npm add .
-npm commit -m 'feat: Create migrations for project'
+npm commit -m 'feat: Add User model for project'
 ```
 ## 5. Test Models
 ### Prepare database for testing
@@ -362,19 +464,6 @@ to setup database add file:
 touch src/tests/utilities/dbSetup.ts
 ```
 with content:
-```typescript
-
-```
-
-
-To achive this create the following files.
-```bash
-mkdir src/tests/utilities
-touch src/tests/utilities/dbCleanup.ts
-touch src/tests/utilities/populateDb.ts
-touch src/tests/utilities/dbSetup.ts
-```
-`src/tests/utilites/dbCleanup.ts`:
 ```typescript
 
 ```

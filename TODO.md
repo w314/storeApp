@@ -1,3 +1,14 @@
+CURRENT LIST:
+- add test to create valid username with invalid password
+- add dbSetup content to TUTORIAL
+
+
+
+
+OLD LIST:
+
+
+
 NEXT:
 ADD new api endpoint /orders/:userId/active/:productId to add new product
 

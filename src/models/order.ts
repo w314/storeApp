@@ -1,6 +1,5 @@
 // import client from './../database'
 
-
 // export type Order = {
 //     order_id: number,
 //     user_id: number,
@@ -53,11 +52,11 @@
 //             const sqlOrder = `SELECT order_status FROM orders WHERE order_id = $1`
 //             const order = await (await (conn.query(sqlOrder, [orderItem.order_id]))).rows[0]
 //             if ( order.order_status == 'active') {
-//                 const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`            
+//                 const sql = `INSERT INTO order_items (order_id, product_id, quantity) VALUES ($1, $2, $3)`
 //                 const result = await conn.query(sql, [orderItem.order_id, orderItem.product_id, orderItem.quantity])
 //                 conn.release()
 //                 const orderProductAdded = result.rows[0]
-//                 return orderProductAdded        
+//                 return orderProductAdded
 //             }
 //             // if order is completed throw error
 //             else {
@@ -72,7 +71,7 @@
 //     async activeOrder(userId: number) {
 //         try {
 //             const conn = await client.connect()
-//             const sql = `SELECT * FROM order_items 
+//             const sql = `SELECT * FROM order_items
 //                 INNER JOIN orders ON orders.order_id = order_items.order_id
 //                 WHERE orders.user_id = $1 and orders.order_status = $2`
 //             const result = await conn.query(sql, [userId, 'active'])

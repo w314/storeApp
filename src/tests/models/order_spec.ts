@@ -12,18 +12,16 @@
 //         order_id: dbSetup.orders.length + 1,
 //         user_id: dbSetup.user.user_id,
 //         order_status: 'active'
-//     } 
+//     }
 
 //     beforeAll( async () => {
 //         // prepare database for testing
 //         await dbSetup.setup()
 //     })
 
-
 //     it('has create method', () => {
 //         expect(orderStore.create).toBeDefined()
 //     })
-
 
 //     it('can create order', async () => {
 //         // create order
@@ -36,11 +34,9 @@
 //         expect(result.rows.length).toEqual(dbSetup.orders.length + 1)
 //     })
 
-
 //     it('has addProduct method', () => {
 //         expect(orderStore.addProduct).toBeDefined()
 //     })
-
 
 //     it('can add product to active order', async () => {
 //         // add new order_item to newly created order
@@ -57,10 +53,9 @@
 //         expect(result.rows.length).toEqual(dbSetup.orderItems.length + 1)
 //     })
 
-
-//     // THIS DOES NOT WORK BELOW AND WHEN RUN GIVES ERROR MESSAGE EXPECTED HERE AT THE 
+//     // THIS DOES NOT WORK BELOW AND WHEN RUN GIVES ERROR MESSAGE EXPECTED HERE AT THE
 //     // 'can show active or of user' test
-    
+
 //     // xit('throws error if trying to add new item to completed order', async () => {
 //     //     // try to add new item to a completed order
 //     //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
@@ -68,11 +63,9 @@
 //     //     // expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
 //     // })
 
-
 //     it('has activeOrder method', () => {
 //         expect(orderStore.activeOrder).toBeDefined()
 //     })
-
 
 //     it('can show active order of user', async () => {
 //         // test with order created in previouse tests by dbSetup. user with 1 item added

@@ -1,7 +1,6 @@
 // // import database connection
 // import client from '../database';
 
-
 // // creating a TypeScipt type for our table items
 // export type Product = {
 //   product_id: number;
@@ -52,7 +51,7 @@
 //       const conn = await client.connect();
 //       const sql = `INSERT INTO products (name, price, category_id) VALUES ($1, $2, $3) RETURNING *`;
 //       const result = await conn.query(sql, [product.name, product.price, product.category_id]);
-//       const createdProduct = result.rows[0];  
+//       const createdProduct = result.rows[0];
 //       conn.release();
 //       // console.log(`RESULT: ${result.rows[0]}`)
 //       // console.log(`RETURNING CREATED PRODUCT FROM MODEL:\n ${JSON.stringify(createdProduct, null, 4)}`)
@@ -69,8 +68,8 @@
 //   async update(product: Product): Promise<Product> {
 //     try {
 //       const conn = await client.connect();
-//       const sql = `UPDATE products 
-//             SET name=($2), price=($3), category_id=($4) 
+//       const sql = `UPDATE products
+//             SET name=($2), price=($3), category_id=($4)
 //             WHERE product_id=($1) RETURNING *`;
 //       const result = await conn.query(sql, [
 //         product.product_id,

@@ -20,7 +20,7 @@
 //     // remove word "Bearer" from authorizationHeader string
 //     const token = authorizationHeader.slice(6);
 //     // console.log(`TOKEN: ${token}`)
-//     // verify token and store its content    
+//     // verify token and store its content
 //     const verifyObject = jsonwebtoken.verify(token, tokenSecret);
 //     // to store object of jwt to be available for use in any next middleware
 //     // or the route handler set res.locals.<variable name>

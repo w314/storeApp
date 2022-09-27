@@ -6,9 +6,8 @@
 // import { UserStore } from '../../models/user'
 // import { DbSetup } from '../utilities/dbSetup'
 
-
 // xdescribe('Product API Testing', () => {
-// // 
+// //
 //     const dbSetup = new DbSetup()
 //     let adminToken = ''
 //     let userToken = ''
@@ -22,7 +21,6 @@
 //         const userStore = new UserStore()
 //         userToken = await userStore.authenticate(dbSetup.user.username, dbSetup.user.password_digest) as string
 //     })
-
 
 //     it('POST /products creates product if JWT token is provided', (done) => {
 //         // console.log(testProducts[0])
@@ -48,7 +46,6 @@
 //         })
 //     })
 
-
 //     it('POST /products send 401 code if trying to create product without token', (done) => {
 //         request(app)
 //         .post('/products')
@@ -56,9 +53,8 @@
 //         .expect(401)
 //         .end((err) => {
 //             err ? done.fail(err) : done()
-//         })  
+//         })
 //     })
-
 
 //     it('GET /products/id returns product with requested id', (done) => {
 //         // console.log(`TEST PRODUCT[0]: ${JSON.stringify(testProducts[0], null, 4)}`)
@@ -75,7 +71,6 @@
 //                 Error ? done.fail(Error) : done()
 //             })
 //     })
-
 
 //     it('GET /products returns list of products', (done) => {
 //         request(app)

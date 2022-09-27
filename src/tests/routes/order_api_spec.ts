@@ -14,7 +14,6 @@
 
 //     })
 
-
 //     it('GET /orders/:userId/active returns active order of user', (done) => {
 //         request(app)
 //         .get(`/orders/${dbSetup.activeOrder.user_id}/active`)
@@ -28,7 +27,6 @@
 //         })
 //     })
 
-
 //     it('GET /orders/:userId returns list of completed orders of user', (done) => {
 //         request(app)
 //         .get(`/orders/${dbSetup.user.user_id}`)
@@ -41,7 +39,6 @@
 //             done.fail(err)
 //         })
 //     })
-
 
 //     fit('POST /orders/:userId/active adds new product item to active order', (done) => {
 
@@ -66,7 +63,7 @@
 //         //     // console.log(`result.req: ${JSON.stringify(response.req.body, null, 4)}`)
 //             expect(response.body.quantity).toEqual(orderItem.quantity)
 //         //     // check that activeOrder has 1 more item
-//         //     // const itemsCheck = async () => {            
+//         //     // const itemsCheck = async () => {
 //         //     //     try {
 
 //         //     //         const conn =  await client.connect()
@@ -82,7 +79,7 @@
 //         //     //     } catch (err) {
 //         //     //         throw new Error (`Could not check items in the active order. Error: ${err}`)
 //         //     //     }
-    
+
 //         //     // }
 //         //     // itemsCheck()
 //             done()

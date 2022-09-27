@@ -15,19 +15,17 @@
 //     let adminToken = ''
 //     let userToken = ''
 
-  
 //     const dbSetup = new DbSetup()
-
 
 //     beforeAll( async () => {
 //         // setup database for testing
-//         await dbSetup.setup()        
+//         await dbSetup.setup()
 //         // get token for an admin and a regular user
 //         const userStore = new UserStore()
 //         adminToken = await userStore.authenticate(dbSetup.admin.username, dbSetup.admin.password_digest) as string
 //         userToken = await userStore.authenticate(dbSetup.user.username, dbSetup.user.password_digest) as string
 //     })
-    
+
 //     // it('"Application Starting Page" displayed at project root', (done) => {
 //     //     request(app)
 //     //     .get('/')
@@ -55,7 +53,7 @@
 //             password: '1234',
 //             user_type: 'regular'
 //         }
-        
+
 //         request(app)
 //         .post('/users')
 //         .send(newUser)
@@ -69,7 +67,7 @@
 
 //             // get user details from token
 //             const userObject: jsonwebtoken.JwtPayload = jsonwebtoken.verify(newUserToken, tokenSecret) as jsonwebtoken.JwtPayload
-            
+
 //             // check username in token
 //             expect(userObject.username).toEqual(newUser.username)
 //             // const testUserId = userObject.user_id

@@ -412,6 +412,50 @@ npm run lint
 npm add .
 npm commit -m 'feat: Add User model for project'
 ```
+
+### 4.2 Category Model
+add model file:
+```bash
+touch src/models/category.ts
+```
+wit content:
+```typescript
+
+```
+- this version of the app will not provide opportunity to edit or delete categories (all possible categories will be provided at database setup)
+
+## Commit changes
+```bash
+npm run lint
+```
+```bash
+npm add .
+npm commit -m 'feat: Add Category model for project'
+```
+
+### 4.3 Product Model
+add model file:
+```bash
+touch src/models/product.ts
+```
+wit content:
+```typescript
+
+```
+## Commit changes
+```bash
+npm run lint
+```
+```bash
+npm add .
+npm commit -m 'feat: Add Product model for project'
+```
+
+
+### 4.4 Order Model
+
+### 4.5 OrderItem Model
+
 ## 5. Test Models
 ### Prepare database for testing
 Before running any test we will delete all previous data from all tables, reset primary keys to 0, and populate tables with a starting set of values.
@@ -479,6 +523,8 @@ with content:
 
 ```
 
+### Test Category Model
+Due to limited use of category model in this version of the app, there are no tests for it.
 
 ### Product Models
 

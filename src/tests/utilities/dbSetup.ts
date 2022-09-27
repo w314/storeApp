@@ -2,7 +2,7 @@
 import client from '../../database';
 // Import User Model
 import { User } from '../../models/user';
-// import { Category } from '../../models/category'
+import { Category } from '../../models/category';
 // import { Product } from '../../models/product'
 // import { Order, OrderItem, OrderStore } from '../../models/order'
 // import dotenv for using environmental variables
@@ -53,18 +53,18 @@ export class DbSetup {
     return user.user_type == 'regular';
   })[0];
 
-  // categories: Category[] = [
-  //     { category_id: 1, category_name: 'Books' },
-  //     { category_id: 2, category_name: 'Electronics' },
-  //     { category_id: 3, category_name: 'Clothing' },
-  //     { category_id: 4, category_name: 'Garden & Outdoors' },
-  //     { category_id: 5, category_name: 'Appliances' },
-  //     { category_id: 6, category_name: 'Pet Supplies' },
-  //     { category_id: 7, category_name: 'Home & Kitchen' },
-  // ]
+  categories: Category[] = [
+    { id: 1, name: 'Books' },
+    { id: 2, name: 'Electronics' },
+    { id: 3, name: 'Clothing' },
+    { id: 4, name: 'Garden & Outdoors' },
+    { id: 5, name: 'Appliances' },
+    { id: 6, name: 'Pet Supplies' },
+    { id: 7, name: 'Home & Kitchen' },
+  ];
 
   // products: Product[] = [
-  //     { product_id: 1, name: 'Foundation', price: 9.98, category_id: 1 },
+  //     { product_id: 1, name: 'Foundation', price: 9.98, id: 1 },
   //     { product_id: 2, name: 'Hitchhiker\'s Guide to the Galaxy', price: 42, category_id: 1 },
   //     { product_id: 3, name: 'Dishwasher', price: 462, category_id: 5 },
   //     { product_id: 4, name: 'Leash', price: 12, category_id: 6 },
@@ -140,6 +140,7 @@ export class DbSetup {
       const conn = await client.connect();
 
       // add users
+      console.log(`users - populate users table`);
       this.users.forEach(async (user) => {
         const hash = bcrypt.hashSync(
           user.password + PEPPER,
@@ -155,13 +156,17 @@ export class DbSetup {
         );
       });
 
-      // // add categories
-      // for (let i = 0; i < this.categories.length; i++) {
-      //     await conn.query(`INSERT INTO categories
-      //         (category_name)
-      //         VALUES ($1)`,
-      //         [this.categories[i].category_name])
-      // }
+      // add categories
+      console.log(`categories - populate categories table`);
+      this.categories.forEach(async (category) => {
+        console.log(`Inserting category: ${JSON.stringify(category, null, 4)}`);
+        await conn.query(
+          `INSERT INTO categories
+              (name)
+              VALUES ($1)`,
+          [category.name]
+        );
+      });
 
       // // add products
       // for (let i = 0; i < this.products.length; i++) {

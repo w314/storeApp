@@ -1,6 +1,12 @@
 CURRENT LIST:
+CONTINUE WITH:
+category model
+
+
+
+TO SOLVE LATER:
 - add test to create valid username with invalid password
-- add dbSetup content to TUTORIAL
+- add dbSetup content to TUTORIAL and all code of models and their test when its all ready
 
 
 

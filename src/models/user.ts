@@ -1,7 +1,7 @@
+// import database client
+import client from '../database';
 // import bcrypt for password encryption
 import bcrypt from 'bcrypt';
-// import database connection
-import client from '../database';
 // import dotenv to handle environment variables
 import dotenv from 'dotenv';
 // import jwt for authentication
@@ -9,55 +9,68 @@ import jsonwebtoken from 'jsonwebtoken';
 
 // initialize environment variables
 dotenv.config();
-const pepper: string = process.env.BCRYPT_PASSWORD as string;
-const saltRounds: string = process.env.SALT_ROUNDS as string;
-const tokenSecret: string = process.env.TOKEN_SECRET as string;
+const {
+    PEPPER,
+    SALT_ROUNDS,
+    TOKEN_SECRET
+} = process.env
+// // const pepper: string = process.env.BCRYPT_PASSWORD as string;
+// // const saltRounds: string = process.env.SALT_ROUNDS as string;
+// // const tokenSecret: string = process.env.TOKEN_SECRET as string;
 
 // create typescript type for user
 export type User = {
-  user_id: number;
+  id: number;
   username: string;
   firstname: string;
   lastname: string;
-  password_digest: string;
+  password: string;
   user_type: string;
 };
 
-// create Class representing table
+// create UserStore class representing user table
 export class UserStore {
-  // add authenticate method for sign-in
-  // returns jwt token if valid sign-in, null if user name is invalid, Error if password is incorrect
-  async authenticate(username: string, password: string): Promise<string | null> {
+
+  /* add authenticate method for sign-in
+     returns jwt token if sign-in is valid
+     returns null if user name is invalid
+     throws Error if password is incorrect */
+  async authenticate(userName: string, password: string): Promise<string | null> {
     try {
-      // get user from database
-      const conn = await client.connect();
-      const sql = `SELECT * FROM users WHERE userName = $1`;
-      const result = await conn.query(sql, [username]);
-      // disconnect from database
-      conn.release();
-      // if userName is valid and we got a password back
-      if (result.rows.length) {
-        // console.log(result.rows.length)
-        // for(let i = 0; i<result.rows.length; i++) {
-        //   console.log(result.rows[i])
-        // }
-        const user: User = result.rows[0];
-        // compare user's password at sign-in with provided hashed version
-        // if password is valid send jwt token
-        // console.log(`User password coming from db after creation: ${user.password_digest}`)
-        // console.log(`User submitted this password: ${password}`)
-        if (bcrypt.compareSync(password + pepper, user.password_digest)) {
-          // create JWT token and return it
-          // console.log(`password OK`)
-          return jsonwebtoken.sign(user, tokenSecret)         
-        }
-        // in case of invalid password throw error 
-        else {
-          // console.log('wrong password')
-          throw new Error(`Invalid password`)
-        }
+        // connect to database
+        const conn = await client.connect();
+        // get user from database
+        const sql = `SELECT * FROM users WHERE username = $1`;
+        const result = await conn.query(sql, [userName]);
+
+        // disconnect from database
+        conn.release();
+
+        // if result has nonzero length the username was valid
+        if (result.rows.length) {
+            //// console.log(result.rows.length)
+            //// for(let i = 0; i<result.rows.length; i++) {
+            ////   console.log(result.rows[i])
+            //// }
+
+            // the user is:
+            const user: User = result.rows[0];
+
+            // compare user's password at sign-in with provided hashed version
+            //// console.log(`User password coming from db after creation: ${user.password_digest}`)
+            //// console.log(`User submitted this password: ${password}`)
+            if (bcrypt.compareSync(password + PEPPER, user.password)) {
+              // password is valid create and send jwt token
+                //// console.log(`password OK`)
+                return jsonwebtoken.sign(user, TOKEN_SECRET as string)
+            }
+            else {
+              // password was invalid
+            //// console.log('invalid password')
+                throw new Error(`Invalid password`)
+            }
       }
-      // if userName is invalid return null
+      // result length was zero, username is invalid, return null
       return null;
     } catch (err) {
       console.log(`username was valid, but error at authentication: ${err}`)
@@ -67,64 +80,70 @@ export class UserStore {
 
   // add methods for CRUD actions
 
-  // index: give a list of all users
+  // INDEX: give a list of all users
   async index(): Promise<User[]> {
     try {
       // connect to database
       const conn = await client.connect();
+      // console.log(conn)
       // get user list
       const sql = 'SELECT * FROM users';
       const result = await conn.query(sql);
+      // console.log(result)
       // disconnect from database
       conn.release();
       // return user list
       return result.rows;
     } catch (err) {
-      throw new Error(`Could not get use list. Error: ${err}`);
+      throw new Error(`Could not get user list. Error: ${err}`);
     }
   }
 
-  // show one specific user
+  // SHOW: show one specific user
   async show(userId: number): Promise <User> {
     try {
       // connect to database
       const conn = await client.connect()
       // get user
-      const sql = `SELECT * FROM users WHERE user_id = $1`
+      const sql = `SELECT * FROM users WHERE id = $1`
       const result = await conn.query(sql, [userId])
       // disconnect from database
       conn.release()
+      // return user
       return result.rows[0]
     } catch (err) {
       throw new Error(`Could not get user. Error: ${err}`)
     }
-  }  
+  }
 
-  // create user and return created user
-  async create(user: User): Promise<User> {
+  // CREATE: create user and return created user
+    async create(user: User): Promise<User> {
     try {
-      // function for password encryption
-      const hash = bcrypt.hashSync(
-        user.password_digest + pepper,
-        parseInt(saltRounds)
-      );
-      // connect to database
-      const conn = await client.connect();
-      // add user
-      const sql = `INSERT INTO users (userName, firstName, lastName, password_digest, user_type) 
-                VALUES ($1, $2, $3, $4, $5) RETURNING *`;
-      const result = await conn.query(sql, [
-        user.username,
-        user.firstname,
-        user.lastname,
-        hash,
-        user.user_type
-      ]);
-      const createdUser = result.rows[0];
+        // create password hash
+        const hash = bcrypt.hashSync(
+            user.password + PEPPER,
+            parseInt(SALT_ROUNDS as string)
+        );
+        // connect to database
+        const conn = await client.connect();
+        // sql command to insert user
+        const sql = `INSERT INTO users (username, firstname, lastname, password, user_type)
+                    VALUES ($1, $2, $3, $4, $5) RETURNING *`;
+        // run command and capture returned user
+        const result = await conn.query(sql, [
+            user.username,
+            user.firstname,
+            user.lastname,
+            hash,
+            user.user_type
+        ]);
+        const createdUser = result.rows[0];
 
-      // disconnect from database
-      conn.release();
-      return createdUser;
+        // disconnect from database
+        conn.release();
+
+        // return created user
+        return createdUser;
     } catch (err) {
       throw new Error(`Couldn't create user. Error: ${err}`);
     }

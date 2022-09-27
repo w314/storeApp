@@ -159,7 +159,8 @@ CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL, 
     price float NOT NULL, 
-    url VARCHAR(200),
+    url VARCHAR(300),
+    description VARCHAR(600),
     category_id INT NOT NULL REFERENCES categories ON DELETE RESTRICT
 );
 ```
@@ -299,7 +300,15 @@ export class UserStore {
     }
   }
 }
+```
 
+### Commit changes
+```bash
+npm run lint
+```
+```bash
+npm add .
+npm commit -m 'feat: Create migrations for project'
 ```
 ## 5. Test Models
 ### Prepare database for testing
@@ -307,16 +316,50 @@ Before running any test we will delete all previous data from all tables, reset 
 
 to clear tables add file:
 ```bash
-touch src/tests/utilities/dbCleanup.ts
+touch src/tests/utilities/dbCleaner.ts
 ```
 with content:
 ```typescript
+// import database client
+import client from '../../database'
 
+
+// create dbCleaner function
+const dbCleaner = async () => {
+
+    // create array of all tables in database
+    const tables = [
+        'users',
+        'categories',
+        'products',
+        'orders',
+        'order_items'
+    ]
+    
+    try {
+        // connect to database
+        const conn = await client.connect()
+
+        // delete content of each table in our tables array
+        // and reset the primary keys
+        tables.forEach(async (table) => {
+            await conn.query(`TRUNCATE ${table} RESTART IDENTITY CASCADE`)
+        })
+  
+        // disconnect from database
+        conn.release()
+    } catch(err) {
+        // throw error if could not connect to database
+        throw new Error(`Could not connect to database: ${err}`)
+    }
+}
+
+export default dbCleaner
 ```
 
-to populate database add file:
+to setup database add file:
 ```bash
-touch src/tests/utilities/populateDb.ts
+touch src/tests/utilities/dbSetup.ts
 ```
 with content:
 ```typescript

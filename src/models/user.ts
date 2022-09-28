@@ -24,6 +24,11 @@ export type User = {
   user_type: string;
 };
 
+/*
+ a table in the database can be represended as a class
+ CRUD actions are created as methods of the class
+*/
+
 // create UserStore class representing user table
 export class UserStore {
   /* add authenticate method for sign-in

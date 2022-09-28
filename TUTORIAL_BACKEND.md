@@ -236,13 +236,14 @@ There are no migrations to in the `start` script as that would delete all live d
 npm run lint
 ```
 ```bash
-npm add .
-npm commit -m 'feat: Create migrations for project'
+git add .
+git commit -m 'feat: Create migrations for project'
 ```
 
 ## 4. Create Models
-- `models` will support `CRUD` actions on the tables created during `migration`. 
-- we have to create models for all our tables
+-  a table in the database can be represended as a class in typescript
+- CRUD actions are created as methods of the class
+- we create models for all our tables
 
 ### 4.1 Users Model
 add model file:
@@ -409,8 +410,8 @@ export class UserStore {
 npm run lint
 ```
 ```bash
-npm add .
-npm commit -m 'feat: Add User model for project'
+git add .
+git commit -m 'feat: Add User model for project'
 ```
 
 ### 4.2 Category Model
@@ -429,8 +430,8 @@ wit content:
 npm run lint
 ```
 ```bash
-npm add .
-npm commit -m 'feat: Add Category model for project'
+git add .
+git commit -m 'feat: Add Category model for project'
 ```
 
 ### 4.3 Product Model
@@ -447,8 +448,8 @@ wit content:
 npm run lint
 ```
 ```bash
-npm add .
-npm commit -m 'feat: Add Product model for project'
+git add .
+git commit -m 'feat: Add Product model to project'
 ```
 
 
@@ -526,11 +527,11 @@ with content:
 ### Test Category Model
 Due to limited use of category model in this version of the app, there are no tests for it.
 
-### Product Models
+### Test Product Model
 
 1. Create model directory
 ```bash
-mkdir src/models
+touch src/tests/models/product_spec.ts
 ```
 2. Create file for models for our products table
 

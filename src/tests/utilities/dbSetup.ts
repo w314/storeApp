@@ -6,7 +6,8 @@ import { User } from '../../models/user';
 import { Category } from '../../models/category';
 //import Product Model
 import { Product } from '../../models/product';
-// import { Order, OrderItem, OrderStore } from '../../models/order'
+// import types Order and OrderItem
+import { Order, OrderItem } from '../../models/order';
 // import dotenv for using environmental variables
 import dotenv from 'dotenv';
 // import bcrypt for password encryption
@@ -158,64 +159,79 @@ export class DbSetup {
     },
   ];
 
-  // orders: Order[] = [
-  //     { order_id: 1, user_id: 1, order_status: 'completed' },
-  //     { order_id: 2, user_id: 1, order_status: 'completed' },
-  //     { order_id: 3, user_id: 2, order_status: 'completed' },
-  //     { order_id: 4, user_id: 2, order_status: 'completed' },
-  //     { order_id: 5, user_id: 2, order_status: 'completed' },
-  //     { order_id: 6, user_id: this.admin.user_id, order_status: 'active'}
-  // ]
+  orders: Order[] = [
+    { id: 1, user_id: 1, order_status: 'completed' },
+    { id: 2, user_id: 1, order_status: 'completed' },
+    { id: 3, user_id: 2, order_status: 'completed' },
+    { id: 4, user_id: 2, order_status: 'completed' },
+    { id: 5, user_id: 2, order_status: 'completed' },
+    { id: 6, user_id: this.admin.id, order_status: 'active' },
+  ];
 
-  // // the variables below are used in specs
+  // the variables below are used in specs
 
-  // // variable for an active order
-  // activeOrder = this.orders.filter(function(order) { return order.order_status == 'active' })[0]
+  // variable for an active order
+  activeOrder = this.orders.filter(
+    (order) => order.order_status == 'active'
+  )[0];
   // // variable for a completed order
   // completedOrder = this.orders.filter(function(order) { return order.order_status == 'completed' })[0]
 
-  // // function to filter order id's of completed orders created by dbSetup.user
-  // isCompletedByUser = (order: Order) => {
-  //     if ( order.order_status == 'completed' && order.user_id == this.user.user_id ) {
-  //         return order.order_id
-  //     }
-  //     return false
-  // }
-  // // set of orderId of completed orders created by dbSetup.user
-  // completedOrderIdsOfUser = new Set(this.orders.filter(this.isCompletedByUser).map(order => order.order_id))
+  orderItems: OrderItem[] = [
+    { id: 1, order_id: 1, product_id: 2, quantity: 12 },
+    { id: 2, order_id: 2, product_id: 1, quantity: 2 },
+    { id: 3, order_id: 2, product_id: 2, quantity: 112 },
+    { id: 4, order_id: 3, product_id: 1, quantity: 1 },
+    { id: 5, order_id: 3, product_id: 2, quantity: 2 },
+    { id: 6, order_id: 3, product_id: 3, quantity: 9 },
+    { id: 7, order_id: 4, product_id: 2, quantity: 7 },
+    { id: 8, order_id: 4, product_id: 3, quantity: 6 },
+    { id: 9, order_id: 4, product_id: 1, quantity: 4 },
+    { id: 10, order_id: 5, product_id: 2, quantity: 13 },
+    { id: 11, order_id: 5, product_id: 3, quantity: 78 },
+    { id: 12, order_id: 5, product_id: 4, quantity: 4 },
+    { id: 13, order_id: 5, product_id: 5, quantity: 3 },
+    { id: 14, order_id: 5, product_id: 1, quantity: 1 },
+    { id: 15, order_id: this.activeOrder.id, product_id: 3, quantity: 2 },
+    { id: 16, order_id: this.activeOrder.id, product_id: 5, quantity: 7 },
+  ];
 
-  // orderItems: OrderItem[] = [
-  //     { item_id: 1, order_id: 1, product_id: 2, quantity: 12 },
-  //     { item_id: 2, order_id: 2, product_id: 1, quantity: 2 },
-  //     { item_id: 3, order_id: 2, product_id: 2, quantity: 112 },
-  //     { item_id: 4, order_id: 3, product_id: 1, quantity: 1 },
-  //     { item_id: 5, order_id: 3, product_id: 2, quantity: 2 },
-  //     { item_id: 6, order_id: 3, product_id: 3, quantity: 9 },
-  //     { item_id: 7, order_id: 4, product_id: 2, quantity: 7 },
-  //     { item_id: 8, order_id: 4, product_id: 3, quantity: 6 },
-  //     { item_id: 9, order_id: 4, product_id: 1, quantity: 4 },
-  //     { item_id: 10, order_id: 5, product_id: 2, quantity: 13 },
-  //     { item_id: 11, order_id: 5, product_id: 3, quantity: 78 },
-  //     { item_id: 12, order_id: 5, product_id: 4, quantity: 4 },
-  //     { item_id: 13, order_id: 5, product_id: 5, quantity: 3 },
-  //     { item_id: 14, order_id: 5, product_id: 1, quantity: 1 },
-  //     { item_id: 15, order_id: this.activeOrder.order_id, product_id: 3, quantity: 2 },
-  //     { item_id: 16, order_id: this.activeOrder.order_id, product_id: 5, quantity: 7 },
-  // ]
+  // the variables below are used in specs
 
-  // // the variables below are used in specs
+  // count all the items in the only active order in the dataset
+  numberOfItemsInActiveOrder = this.orderItems.reduce(
+    (total, currentItem) =>
+      currentItem.order_id == this.activeOrder.id ? total + 1 : total,
+    0
+  );
 
-  // // count of all the items in the only active order in the dataset
-  // numberOfItemsInActiveOrder = this.orderItems.reduce(
-  //     (total, currentItem) =>
-  //     currentItem.order_id == this.activeOrder.order_id ? total + 1 : total,
-  //     0)
+  // determine the number of items in all the completed orders of user
 
-  // // count of all items in all the order completed by the regular user (user)
-  // numberOfItemsInCompletedOrdersOfUser = this.orderItems.reduce(
-  //     (total, currentItem) =>
-  //     this.completedOrderIdsOfUser.has(currentItem.order_id) ? total + 1 : total,
-  //     0)
+  // function to filter order id's of completed orders created by dbSetup.user
+  isCompletedByUser = (order: Order) => {
+    if (order.order_status == 'completed' && order.user_id == this.user.id) {
+      return order.id;
+    }
+    return false;
+  };
+  // set of orderId of completed orders created by dbSetup.user
+  completedOrders = new Set(
+    this.orders.map((order) => {
+      if (
+        order.user_id === this.user.id &&
+        order.order_status === 'completed'
+      ) {
+        return order.id;
+      }
+    })
+  );
+
+  // count all items in all the completed orders of user
+  numberOfItemsInCompletedOrders = this.orderItems.reduce(
+    (total, currentItem) =>
+      this.completedOrders.has(currentItem.order_id) ? total + 1 : total,
+    0
+  );
 
   // this function enter all data from arrays into the appropriate tables
   setup = async () => {
@@ -276,21 +292,27 @@ export class DbSetup {
         );
       });
 
-      // // add orders
-      // for (let i = 0; i < this.orders.length; i++) {
-      //     await conn.query(`INSERT INTO orders
-      //     (user_id, order_status)
-      //     VALUES ($1, $2)`,
-      //     [this.orders[i].user_id, this.orders[i].order_status])
-      // }
+      // add orders
+      console.log(`orders - populate orders table`);
+      this.orders.forEach(async (order) => {
+        await conn.query(
+          `INSERT INTO orders
+          (user_id, order_status)
+          VALUES ($1, $2)`,
+          [order.user_id, order.order_status]
+        );
+      });
 
-      // // add order_items
-      // for (let i = 0; i < this.orderItems.length; i++) {
-      //     await conn.query(`INSERT INTO order_items
-      //     (order_id, product_id, quantity)
-      //     VALUES ($1, $2, $3)`,
-      //     [this.orderItems[i].order_id, this.orderItems[i].product_id, this.orderItems[i].quantity])
-      // }
+      // add order_items
+      console.log(`order_item - populate order_item table`);
+      this.orderItems.forEach(async (orderItem) => {
+        await conn.query(
+          `INSERT INTO order_items
+        (order_id, product_id, quantity)
+        VALUES ($1, $2, $3)`,
+          [orderItem.order_id, orderItem.product_id, orderItem.quantity]
+        );
+      });
 
       // disconnect from database
       conn.release();

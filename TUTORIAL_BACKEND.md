@@ -5,10 +5,8 @@ Work Flow
 1. Set Environmental Variables
 1. Create Database
 1. Create Migrations
-1. Create Models
-1. Test Models
-1. Create Handlers
-1. Test api endpoints
+1. Create and Test Models
+1. Create and Test Handlers
 
 ## 1. Set Environmental Variables
 ```bash
@@ -243,9 +241,65 @@ git commit -m 'feat: Create migrations for project'
 ## 4. Create Models
 -  a table in the database can be represended as a class in typescript
 - CRUD actions are created as methods of the class
-- we create models for all our tables
 
-### 4.1 Users Model
+
+### 4.1 Setup Test Database
+Before running any test we will delete all previous data from all tables, reset primary keys to 0, and populate tables with a starting set of values.
+
+to clear tables add file:
+```bash
+touch src/tests/utilities/dbCleaner.ts
+```
+with content:
+```typescript
+// import database client
+import client from '../../database'
+
+
+// create dbCleaner function
+const dbCleaner = async () => {
+
+    // create array of all tables in database
+    const tables = [
+        'users',
+        'categories',
+        'products',
+        'orders',
+        'order_items'
+    ]
+    
+    try {
+        // connect to database
+        const conn = await client.connect()
+
+        // delete content of each table in our tables array
+        // and reset the primary keys
+        tables.forEach(async (table) => {
+            await conn.query(`TRUNCATE ${table} RESTART IDENTITY CASCADE`)
+        })
+  
+        // disconnect from database
+        conn.release()
+    } catch(err) {
+        // throw error if could not connect to database
+        throw new Error(`Could not connect to database: ${err}`)
+    }
+}
+
+export default dbCleaner
+```
+
+to setup database add file:
+```bash
+touch src/tests/utilities/dbSetup.ts
+```
+with content:
+```typescript
+
+```
+
+### 4.2 User Model
+#### 4.2.1 Create User Model
 add model file:
 ```bash
 touch src/models/user.ts
@@ -405,16 +459,27 @@ export class UserStore {
 }
 ```
 
-### Commit changes
+#### 4.2.2 Test User Model
+create file:
+```bash
+touch src/tests/models/user_spec.ts
+```
+with content:
+```typescript
+
+```
+
+#### 4.2.3 Commit changes
 ```bash
 npm run lint
 ```
 ```bash
 git add .
-git commit -m 'feat: Add User model for project'
+git commit -m 'feat: Add User model and its tests to project'
 ```
 
-### 4.2 Category Model
+### 4.3 Category Model
+#### 4.3.1 Create Category Model
 add model file:
 ```bash
 touch src/models/category.ts
@@ -425,7 +490,10 @@ wit content:
 ```
 - this version of the app will not provide opportunity to edit or delete categories (all possible categories will be provided at database setup)
 
-## Commit changes
+#### 4.3.2 Test Category model
+Due to limited use of category model in this version of the app, there are no tests for it.
+
+#### 4.3.3 Commit changes
 ```bash
 npm run lint
 ```
@@ -434,7 +502,8 @@ git add .
 git commit -m 'feat: Add Category model for project'
 ```
 
-### 4.3 Product Model
+### 4.4 Product Model
+#### 4.4.1 Create Product Model
 add model file:
 ```bash
 touch src/models/product.ts
@@ -443,7 +512,17 @@ wit content:
 ```typescript
 
 ```
-## Commit changes
+#### 4.4.2 Test Product Model
+add file
+```bash
+touch src/tests/models/product_spec.ts
+```
+with content:
+```typescript
+
+```
+
+#### 4.4.3 Commit changes
 ```bash
 npm run lint
 ```
@@ -453,60 +532,21 @@ git commit -m 'feat: Add Product model to project'
 ```
 
 
-### 4.4 Order Model
-
-### 4.5 OrderItem Model
-
-## 5. Test Models
-### Prepare database for testing
-Before running any test we will delete all previous data from all tables, reset primary keys to 0, and populate tables with a starting set of values.
-
-to clear tables add file:
+### 4.5 Order Model
+#### 4.5.1 Create Order Model
+add model file:
 ```bash
-touch src/tests/utilities/dbCleaner.ts
+touch src/models/order.ts
 ```
-with content:
+wit content:
 ```typescript
-// import database client
-import client from '../../database'
 
-
-// create dbCleaner function
-const dbCleaner = async () => {
-
-    // create array of all tables in database
-    const tables = [
-        'users',
-        'categories',
-        'products',
-        'orders',
-        'order_items'
-    ]
-    
-    try {
-        // connect to database
-        const conn = await client.connect()
-
-        // delete content of each table in our tables array
-        // and reset the primary keys
-        tables.forEach(async (table) => {
-            await conn.query(`TRUNCATE ${table} RESTART IDENTITY CASCADE`)
-        })
-  
-        // disconnect from database
-        conn.release()
-    } catch(err) {
-        // throw error if could not connect to database
-        throw new Error(`Could not connect to database: ${err}`)
-    }
-}
-
-export default dbCleaner
 ```
 
-to setup database add file:
+#### 4.5.2 Test Order Model
+add file
 ```bash
-touch src/tests/utilities/dbSetup.ts
+touch src/tests/models/order_spec.ts
 ```
 with content:
 ```typescript
@@ -514,88 +554,44 @@ with content:
 ```
 
 
-### Test User Model
-create file:
+#### 4.5.3 Commit changes
 ```bash
-touch src/tests/models/user_spec.ts
+npm run lint
 ```
-with content:
+```bash
+git add .
+git commit -m 'feat: Add Order model and its tests to project'
+```
+
+### 4.6 OrderItem Model
+
+#### 4.6.1 Create OrderItem Model
+
+add model file:
+```bash
+touch src/models/order_item.ts
+```
+wit content:
 ```typescript
 
 ```
 
-### Test Category Model
-Due to limited use of category model in this version of the app, there are no tests for it.
+#### 4.6.2 Test OrderItem Model
 
-### Test Product Model
 
-1. Create model directory
+#### 4.6.3 Commit changes
 ```bash
-touch src/tests/models/product_spec.ts
+npm run lint
 ```
-2. Create file for models for our products table
-
 ```bash
-touch product.ts
-```
-Add Content:
-```typescript
-// import database connection
-import client from '../database'
-
-// creating a TypeScipt type for our table items
-export type Product = {
-    id : number;
-    name : string;
-    price: number;
-}
-
-/*
- a table in the database can be represended as a class
- CRUD actions are created as methods of the class
-*/
-export class ProductStore {
-  //index() returns a list of all table items
-  async index(): Promise<Product[]>{
-    try {
-      // open connection to db
-      const conn = await client.connect();
-      // sql command we want to execute
-      const sql = 'SELECT * FROM products';
-      // run query on database
-      const result = await conn.query(sql);
-      // close database connection
-      conn.release();
-      // return query result
-      return result.rows;
-    } catch(err) {
-      throw new Error(`Cannot get products: ${err}`);
-    }
-    
-  }
-}
-```
-### Product Model Testing
-
-Write tests in `product_spec.ts`:
-```typescript
-// import class to test and the types used
-import { Product, ProductStore } from '../models/product';
-
-console.log('import done');
-const store = new ProductStore();
-console.log('store created');
-describe('Product Model', () => {
-  it('should have and index method', () => {
-    expect(store.index).toBeDefined();
-  });
-});
+git add .
+git commit -m 'feat: Add OrderItem model and its tests to project'
 ```
 
-6. Run tests
-```bash
-npm run test
-```
+
+**********************************
+OLD NOTES
+************************************
 
 ### Product Handlers
 <br>Each model file will have its handler file. This file will have all the handler functions associated with the REST-ful routes regarding that model.

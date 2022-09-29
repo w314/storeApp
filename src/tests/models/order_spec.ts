@@ -1,85 +1,110 @@
 // // import supertest from 'supertest'
-// import { Order, OrderItem, OrderStore } from './../../models/order'
-// import client from './../../database'
-// import { DbSetup } from '../utilities/dbSetup'
+// import Order and OrderItem types and OrderStore class
+import { Order, OrderItem, OrderStore } from './../../models/order';
+// import database client
+import client from './../../database';
+// import DbSetup class to setup database before testing
+import { DbSetup } from '../utilities/dbSetup';
 
-// xdescribe('Order Model', () => {
+describe('Order Model', () => {
+  const dbSetup = new DbSetup();
+  const orderStore = new OrderStore();
+  const testOrder: Order = {
+    id: dbSetup.orders.length + 1,
+    user_id: dbSetup.user.id,
+    order_status: 'active',
+  };
+  const testOrderItem: OrderItem = {
+    id: dbSetup.orderItems.length + 1,
+    order_id: dbSetup.activeOrder.id,
+    product_id: dbSetup.products[0].id,
+    quantity: 2,
+  };
 
-//     const dbSetup = new DbSetup()
-//     const orderStore = new OrderStore()
+  beforeAll(async () => {
+    // prepare database for testing
+    await dbSetup.setup();
+  });
 
-//     const newOrder: Order = {
-//         order_id: dbSetup.orders.length + 1,
-//         user_id: dbSetup.user.user_id,
-//         order_status: 'active'
-//     }
+  // TEST method to get list of a user's completed order
+  it('has completedOrders method', () => {
+    expect(orderStore.completedOrders).toBeDefined();
+  });
 
-//     beforeAll( async () => {
-//         // prepare database for testing
-//         await dbSetup.setup()
-//     })
+  it('can show list of completed orders of user', async () => {
+    // check for itesm in completed orders of dbSetup.user
+    const result = await orderStore.completedOrders(dbSetup.user.id);
+    expect(result.length).toEqual(dbSetup.numberOfItemsInCompletedOrders);
+  });
 
-//     it('has create method', () => {
-//         expect(orderStore.create).toBeDefined()
-//     })
+  // TEST method to get active order of user
 
-//     it('can create order', async () => {
-//         // create order
-//         await orderStore.create(newOrder)
-//         // check if order was created
-//         const conn = await client.connect()
-//         const result = await conn.query(`SELECT * FROM orders`)
-//         conn.release()
-//         // there shoud be 1 more order
-//         expect(result.rows.length).toEqual(dbSetup.orders.length + 1)
-//     })
+  it('has activeOrder method', () => {
+    expect(orderStore.activeOrder).toBeDefined();
+  });
 
-//     it('has addProduct method', () => {
-//         expect(orderStore.addProduct).toBeDefined()
-//     })
+  it('can show active order of user', async () => {
+    // test the active order created by admin when setting up the database
+    const activeOrder = await orderStore.activeOrder(dbSetup.admin.id);
+    expect(activeOrder.length).toEqual(dbSetup.numberOfItemsInActiveOrder);
+  });
 
-//     it('can add product to active order', async () => {
-//         // add new order_item to newly created order
-//         const orderItem: OrderItem = {
-//             item_id: 0,
-//             order_id: newOrder.order_id,
-//             product_id: dbSetup.products[0].product_id,
-//             quantity: 4
-//         }
-//         await orderStore.addProduct(orderItem)
-//         const conn = await client.connect()
-//         const result = await conn.query(`SELECT * FROM order_items`)
-//         // there should be one more order_itmes
-//         expect(result.rows.length).toEqual(dbSetup.orderItems.length + 1)
-//     })
+  it('has create method', () => {
+    expect(orderStore.create).toBeDefined();
+  });
 
-//     // THIS DOES NOT WORK BELOW AND WHEN RUN GIVES ERROR MESSAGE EXPECTED HERE AT THE
-//     // 'can show active or of user' test
+  // TEST create order method
 
-//     // xit('throws error if trying to add new item to completed order', async () => {
-//     //     // try to add new item to a completed order
-//     //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
-//     //     await expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
-//     //     // expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
-//     // })
+  it('can create order for user with no active order', async () => {
+    // create order
+    const createdOrder: Order = await orderStore.create(testOrder);
+    // check if returned order equals testOrder
+    expect(createdOrder).toEqual(testOrder);
+    // check if order was created
+    // connect to database
+    const conn = await client.connect();
+    // get list of all order
+    const orderList = await conn.query(`SELECT * FROM orders`);
+    // disconnect from database
+    conn.release();
+    // there shoud be 1 more order than after running dbSetup
+    expect(orderList.rows.length).toEqual(dbSetup.orders.length + 1);
+  });
 
-//     it('has activeOrder method', () => {
-//         expect(orderStore.activeOrder).toBeDefined()
-//     })
+  // TODO test new order for user with active order
 
-//     it('can show active order of user', async () => {
-//         // test with order created in previouse tests by dbSetup. user with 1 item added
-//         const activeOrder = await orderStore.activeOrder(newOrder.user_id)
-//         expect(activeOrder.length).toEqual(1)
-//     })
+  // TEST adding item to an order
 
-//     it('has orderList method', () => {
-//         expect(orderStore.orderList).toBeDefined()
-//     })
+  it('has addOrderItem method', () => {
+    expect(orderStore.addOrderItem).toBeDefined();
+  });
 
-//     it('can show list of past orders of user', async () => {
-//         // check for itesm in completed orders of dbSetup.user
-//         const result = await orderStore.orderList(dbSetup.user.user_id)
-//         expect(result.length).toEqual(dbSetup.numberOfItemsInCompletedOrdersOfUser)
-//     })
-// })
+  it('can add new item to active order', async () => {
+    // add new order_item to newly created order
+    const createdOrderItem = await orderStore.addOrderItem(testOrderItem);
+
+    // check if returned createdOrderItem equals to testOrderItem we wanted to create
+    expect(createdOrderItem).toEqual(testOrderItem);
+
+    // check if order_items table now has 1 more order_item in it
+    // connect to database
+    const conn = await client.connect();
+    // get list of orderItems
+    const result = await conn.query(`SELECT * FROM order_items`);
+    // there should be one more order_itmes than at setup
+    expect(result.rows.length).toEqual(dbSetup.orderItems.length + 1);
+  });
+
+  // TODO test adding new item to completed order
+  // TODO test adding item already existing in active
+
+  //     // THIS DOES NOT WORK BELOW AND WHEN RUN GIVES ERROR MESSAGE EXPECTED HERE AT THE
+  //     // 'can show active or of user' test
+
+  //     // xit('throws error if trying to add new item to completed order', async () => {
+  //     //     // try to add new item to a completed order
+  //     //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
+  //     //     await expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
+  //     //     // expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
+  //     // })
+});

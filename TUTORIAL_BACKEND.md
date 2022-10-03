@@ -6,7 +6,7 @@ Work Flow
 1. Create Database
 1. Create Migrations
 1. Create and Test Models
-1. Create and Test Handlers
+1. Create and Test Routes
 
 ## 1. Set Environmental Variables
 ```bash
@@ -533,6 +533,8 @@ git commit -m 'feat: Add Product model to project'
 
 
 ### 4.5 Order Model
+The order model will handle both the orders and order_items table of the database.
+
 #### 4.5.1 Create Order Model
 add model file:
 ```bash
@@ -563,31 +565,34 @@ git add .
 git commit -m 'feat: Add Order model and its tests to project'
 ```
 
-### 4.6 OrderItem Model
+## 5. Routes
+- Each model file will have its routes file. 
+- This file will have all the functions (like: create) the application needs for to provide response to the REST-ful routes regarding that model.
+- This file will have a variable (like: UserRoutes) that will match the HTTP requests with their corresponding methods. (like: app.post('/users' create))
+- These Routes will be imported to the `server.ts` file to handle incoming requests
 
-#### 4.6.1 Create OrderItem Model
+### 5.1 Create verifyAuthToken function
+We create the function to check the authenticity of the user.
 
-add model file:
+create file:
 ```bash
-touch src/models/order_item.ts
+mkdir src/routes/utilities
+touch src/routes/utilities/verifyAuthToken.ts
 ```
-wit content:
+
+### 5.1 User Route
+create file:
+```
+touch src/handlers/user.ts
+```
+
+with content:
 ```typescript
 
 ```
 
-#### 4.6.2 Test OrderItem Model
 
-
-#### 4.6.3 Commit changes
-```bash
-npm run lint
-```
-```bash
-git add .
-git commit -m 'feat: Add OrderItem model and its tests to project'
-```
-
+Import handlers to server file
 
 **********************************
 OLD NOTES
@@ -645,88 +650,6 @@ app.listen(port, () => {
 
 ## Users
 
-
-### 2. Users Model
-
--   install `bcrypt` for password encryption
-```bash
-npm i bcrypt
-npm i --save-dev @types/bcrypt
-```
-- add following enviromental variables to `.env` file
-```bash
-BCRYPT_PASSWORD=secretBcryptPass
-SALT_ROUNDS=10
-```
-  `SALT_ROUNDS` is the number of time the password will be hashed.
-  <br>`BCYPT_PASSWORD` is the extra string used in the peppering step.
-- add model file
-```bash
-touch src/models/user.ts
-```
-- add content
-```typescript
-// import bcrypt for password encryption
-import bcrypt from 'bcrypt';
-// import database connection
-import client from '../database';
-// import dotenv to handle environment variables
-import dotenv from 'dotenv';
-
-// initialize environment variables
-dotenv.config();
-const pepper: string = process.env.BCRYPT_PASSWORD as string;
-const saltRounds: string = process.env.SALT_ROUNDS as string;
-
-// create typescript type for user
-export type User = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  password_digest: string;
-};
-
-// create Class representing table
-export class UserStore {
-  // add methods for CRUD actions
-
-  async create(user: User, password_digest: string): Promise<User> {
-    try {
-      // function for password encryption
-      const hash = bcrypt.hashSync(
-        user.password_digest + pepper,
-        parseInt(saltRounds)
-      );
-      // connect to database
-      const conn = await client.connect();
-      // add user
-      const sql = `INSERT INTO users (firstName, lastName, password_digest) 
-                VALUES ($1, $2, $3) RETURNING *`;
-      const result = await conn.query(sql, [
-        user.firstName,
-        user.lastName,
-        password_digest,
-      ]);
-      const createdUser = result.rows[0];
-
-      // disconnect from database
-      conn.release();
-
-      return createdUser;
-    } catch (err) {
-      throw new Error(`Couldn't create user. Error: ${err}`);
-    }
-  }
-}
-
-```
-### 3. User Model Tests
-```bash
-touch src/tests/user_spec.ts
-```
-```typescript
-
-```
 ### 4. User Handlers
 ```bash
 touch src/handlers/user.ts
@@ -738,56 +661,6 @@ touch src/handlers/user.ts
 ### 5. Import User Handlers to `server.ts`
 
 
-## To modify already created endpoints
-
->Add category property to product.
-
-### 1. Cretae migration for categories table
-```bash
-db-migrate create categories-table --sql-file
-```
-- up migration
-
-```sql
-CREATE TABLE categories (
-  id SERIAL PRIMARY KEY,
-  name VARCHAR(100)
-);
-```
-
-- down migration
-```sql
-DROP TABLE IF EXISTS categories;
-```
-
-### 2. Modify migration of products table
-```sql
-CREATE TABLE products (
-    name VARCHAR(100), 
-    price float, 
-    product_id SERIAL PRIMARY KEY,
-    category_id INT,
-    CONSTRAINT fk_category
-        FOREIGN KEY(category_id)
-            REFERENCES categories(category_id)
-            ON DELETE SET NULL
-);
-```
-- migrations are run in creation order
-- to be able to run without error category table migration has to be run before product table migration
-- to do that one can change the date in the name of the migration file
-- it's probably enough to change the name of the `.js` file, if the up and down migration file names are also changed, their names have to be updated within the `.js` file
-
-
-
-
-
-## Add orders
-
-
-### 2. Model for Orders
-- create Order type
-- create OrderStore class and add methods
 
 
 ### 3. Handler for Orders

@@ -7,6 +7,9 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 // import orderRoutes from './handlers/order';
 
+
+// create express object app
+// it enables us to use express methods
 const app: express.Application = express();
 const port = 3001;
 
@@ -17,11 +20,12 @@ app.use(morgan('dev'));
 // parse HTTP request bodies
 app.use(bodyParser.json());
 
-// set up endpoint
+// map incoming requests to endpoints
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Application Starting Page');
 });
 
+// pass our express app to our routes
 // productRoutes(app);
 // userRoutes(app);
 // orderRoutes(app);

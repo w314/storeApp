@@ -1,6 +1,7 @@
 # Store App Tutorial - Project Setup
 >Step by step instructions to set up the basic [node](https://nodejs.org/en/) application that  we will use to develop the store app project. The application will make use of the following tools:
 - [node](https://nodejs.org/en/) for runtime environment
+- [npm](https://www.npmjs.com/) for managing node packages
 - [GIT](https://git-scm.com/) for version control
 - [PostgreSQL](https://www.postgresql.org/) for database
 - [typescript](https://www.typescriptlang.org/) for typed javascipt
@@ -34,7 +35,9 @@ echo "console.log('Hello World')" > src/server.ts
 ```
 
 ## Initiate [node](https://nodejs.org/en/) app 
-Install [node](https://nodejs.org/en/) if needed. After installation run:
+Install [node](https://nodejs.org/en/) if needed. This will also install [npm](https://www.npmjs.com/)
+
+After installation run:
 ```bash
 npm init -y
 ```
@@ -200,12 +203,14 @@ npm i --save-dev tsc-watch
 ```typescript
 import express from 'express'
 
+// create express object app
+// it enables us to use express methods
 const app = express();
 const port = 3000;  //can be any number > 1024
 
 // middlewares
 
-// set up routes
+// map incoming requests to an endpoint
 app.get('/api', (req, res) => {
   res.send('server working');
 });
@@ -611,10 +616,12 @@ git commit -m 'chore: Add db-migrate to project'
 
 ### 1. Install `JWT`
 ```bash
+# install jwt
 npm i jsonwebtoken
+# install typescript types for jwt
 npm i --save-dev @types/jsonwebtoken
 ```
-### 2. Add new environmental variabel to `.env` file
+### 2. Add new environmental variable to `.env` file
 ```bash
 TOKEN_SECRET=verySecretToken
 ```
@@ -637,7 +644,10 @@ npm i --save-dev @types/bcrypt
 ### 2. Set enviromental variables
 - make sure the the following enviromental variables are included in `.env` file
 ```bash
+## for bcrypt ##
+#extra string added to passwords before hashing
 BCRYPT_PASSWORD=secretBcryptPass
+# number of times password will be hashed
 SALT_ROUNDS=10
 ```
   - `SALT_ROUNDS` is the number of time the password will be hashed.

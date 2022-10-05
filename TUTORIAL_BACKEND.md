@@ -588,11 +588,33 @@ touch src/handlers/user.ts
 
 with content:
 ```typescript
+// add methods
+
+// create userRoutes 
 
 ```
 
+import route to server file:<br>`server.ts`:
+```typescript
+// import user routes
+import userRoutes from './routes/user';
 
-Import handlers to server file
+// OTHER CODE 
+// app.get ...
+
+// pass our express app to our routes
+userRoutes(app);
+```
+
+create test file:
+```bash
+touch src/tests/routes/user_api_spec.ts
+```
+
+`user_api_spec.ts`:
+```typescript
+
+```
 
 **********************************
 OLD NOTES
@@ -647,19 +669,6 @@ app.listen(port, () => {
   console.log(`Server is listening on localhost:${port}`);
 });
 ```
-
-## Users
-
-### 4. User Handlers
-```bash
-touch src/handlers/user.ts
-```
-```typescript
-
-```
-
-### 5. Import User Handlers to `server.ts`
-
 
 
 

@@ -243,7 +243,7 @@ export class DbSetup {
       const conn = await client.connect();
 
       // add users
-      console.log(`users - populate users table`);
+      // console.log(`users - populate users table`);
       this.users.forEach(async (user) => {
         // encrypt password
         const hash = bcrypt.hashSync(
@@ -263,7 +263,7 @@ export class DbSetup {
       });
 
       // add categories
-      console.log(`categories - populate categories table`);
+      // console.log(`categories - populate categories table`);
       this.categories.forEach(async (category) => {
         // console.log(`Inserting category: ${JSON.stringify(category, null, 4)}`);
         await conn.query(
@@ -275,7 +275,7 @@ export class DbSetup {
       });
 
       // add products
-      console.log(`products - populate products table`);
+      // console.log(`products - populate products table`);
       this.products.forEach(async (product) => {
         // console.log(`Inserting category: ${JSON.stringify(products, null, 4)}`);
         await conn.query(
@@ -293,7 +293,7 @@ export class DbSetup {
       });
 
       // add orders
-      console.log(`orders - populate orders table`);
+      // console.log(`orders - populate orders table`);
       this.orders.forEach(async (order) => {
         await conn.query(
           `INSERT INTO orders
@@ -304,7 +304,7 @@ export class DbSetup {
       });
 
       // add order_items
-      console.log(`order_item - populate order_item table`);
+      // console.log(`order_item - populate order_item table`);
       this.orderItems.forEach(async (orderItem) => {
         await conn.query(
           `INSERT INTO order_items

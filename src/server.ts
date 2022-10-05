@@ -1,12 +1,11 @@
 import express from 'express';
 // import productRoutes from './handlers/product';
-// import userRoutes from './handlers/user';
+import userRoutes from './routes/user';
 // import bodyParser, an HTTP request body parser middleware
 import bodyParser from 'body-parser';
 // import morgan, a HTTP request logging middleware
 import morgan from 'morgan';
 // import orderRoutes from './handlers/order';
-
 
 // create express object app
 // it enables us to use express methods
@@ -26,8 +25,8 @@ app.get('/', (req: express.Request, res: express.Response) => {
 });
 
 // pass our express app to our routes
+userRoutes(app);
 // productRoutes(app);
-// userRoutes(app);
 // orderRoutes(app);
 
 // start server

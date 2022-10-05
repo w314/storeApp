@@ -1,5 +1,5 @@
 import express from 'express';
-// import productRoutes from './handlers/product';
+import productRoutes from './routes/product';
 import userRoutes from './routes/user';
 // import bodyParser, an HTTP request body parser middleware
 import bodyParser from 'body-parser';
@@ -26,7 +26,7 @@ app.get('/', (req: express.Request, res: express.Response) => {
 
 // pass our express app to our routes
 userRoutes(app);
-// productRoutes(app);
+productRoutes(app);
 // orderRoutes(app);
 
 // start server

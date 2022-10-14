@@ -1,31 +1,76 @@
-// import { agent as request } from 'supertest'
-// import app from '../../server'
-// import { DbSetup } from '../utilities/dbSetup'
+import { agent as request } from 'supertest'
+import app from '../../server'
+import { DbSetup } from '../utilities/dbSetup'
 // import { OrderItem } from '../../models/order'
 // import client from '../../database'
+// import TestTokens class to create tokens for testing
+// import User type and UserStore class
+import { UserStore } from '../../models/user';
 
-// xdescribe('Order API Testing', () => {
+const dbSetup = new DbSetup()
+const userStore = new UserStore()
+//  token for testing product creation
+ let adminToken = '';
+ let userToken = '';
+ let userWithActiveOrderToken = ''
 
-//     const dbSetup = new DbSetup()
+describe('Order API Testing', () => {
 
-//     beforeAll( async () => {
-//         // prepare database for testing
-//         await dbSetup.setup()
 
-//     })
+    beforeAll( async () => {
+        // prepare database for testing
+        await dbSetup.setup()
+        // console.log(`TEST DATABASE IS READY`)
+        adminToken = await userStore.authenticate(
+            dbSetup.admin.username, 
+            dbSetup.admin.password) as string
+        userToken = await userStore.authenticate(
+            dbSetup.user.username,
+            dbSetup.user.password) as string
+        userWithActiveOrderToken  = await userStore.authenticate(
+            dbSetup.userWithActiveOrder.username, 
+            dbSetup.userWithActiveOrder.password) as string   
 
-//     it('GET /orders/:userId/active returns active order of user', (done) => {
-//         request(app)
-//         .get(`/orders/${dbSetup.activeOrder.user_id}/active`)
-//         .expect(200)
-//         .then((result) => {
-//             expect(result.body.length).toEqual(dbSetup.numberOfItemsInActiveOrder)
-//             done()
-//         })
-//         .catch((err) => {
-//             done.fail(err)
-//         })
-//     })
+    })
+
+    // TEST GET/orders/:userId/active
+
+    it('GET /orders/:userId/active User can see its own active order', done => {
+        request(app)
+        .get(`/orders/${dbSetup.userWithActiveOrder.id}/active`)
+        .set('Authorization', 'Bearer' + userWithActiveOrderToken)
+        .expect(200)
+        .end(err => {
+            err ? done.fail(err) : done()
+        })
+    })
+
+    it('GET /orders/:userId/active admin can see any user\'s active order', (done) => {
+        request(app)
+        .get(`/orders/${dbSetup.activeOrder.user_id}/active`)
+        // .set('Authorization', 'Bearer' + userWithActiveOrderToken)
+        .set('Authorization', 'Bearer' + adminToken)
+        .expect(200)
+        .then((result) => {
+            expect(result.body.length).toEqual(dbSetup.numberOfItemsInActiveOrder)
+            done()
+        })
+        .catch((err) => {
+            console.log(err)
+            done.fail(err)
+        })
+    })
+
+
+    it('GET orders/:userId/active Regular user cannot see other users\' active order', (done) => {
+        request(app)
+        .get(`/orders/${dbSetup.userWithActiveOrder.id}/active`)
+        .set('Authorization', 'Bearer' + userToken)
+        .expect(401)
+        .end(err => {
+            err ? done.fail(err) : done()
+        })
+    })
 
 //     it('GET /orders/:userId returns list of completed orders of user', (done) => {
 //         request(app)
@@ -89,4 +134,4 @@
 //             done.fail(err)
 //         })
 //     })
-// })
+})

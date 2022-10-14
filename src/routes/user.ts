@@ -47,7 +47,7 @@ const create = async (req: express.Request, res: express.Response) => {
 const index = async (req: express.Request, res: express.Response) => {
   try {
     const users: User[] = await store.index();
-    console.log(`users from database: ${JSON.stringify(users, null, 4)}`);
+    // console.log(`users from database: ${JSON.stringify(users, null, 4)}`);
     res.status(200);
     res.json(users);
   } catch (err) {
@@ -60,7 +60,7 @@ const index = async (req: express.Request, res: express.Response) => {
 // show requires a Json Web Token and displays the user data requested
 const show = async (req: express.Request, res: express.Response) => {
   try {
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.userId);
     const user = await store.show(id);
     res.json(user);
   } catch (err) {
@@ -72,7 +72,7 @@ const show = async (req: express.Request, res: express.Response) => {
 const userRoutes = (app: express.Application) => {
   app.post('/users', create);
   app.get('/users', Authenticate.verify('admin'), index);
-  app.get('/users/:id', Authenticate.verify('self'), show);
+  app.get('/users/:userId', Authenticate.verify('self'), show);
 };
 
 export default userRoutes;

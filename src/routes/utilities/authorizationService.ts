@@ -14,12 +14,16 @@ export class Authenticate {
     const TOKEN_SECRET: string = process.env.TOKEN_SECRET as string;
 
     // get token from request header
+    // console.log('\n Request in authorization')
+    // console.log(req.headers)
     const authorizationHeader = req.headers.authorization as string;
     // remove word "Bearer" from authorizationHeader string
     const token = authorizationHeader.slice(6);
+    // console.log(`TOKEN received by authorization service: ${JSON.stringify(token, null, 4)}`)
     try {
       // verify user
       const user = jwt.verify(token, TOKEN_SECRET);
+      // console.log(`USER in authentication ${JSON.stringify(user, null, 4)}`)
       // store user
       res.locals.user = user;
       return true;
@@ -38,6 +42,7 @@ export class Authenticate {
     ) => {
       // if token is  invalid
       if (!this.verifyToken(req, res)) {
+        console.log('Invalid token.')
         res.status(401);
         res.json('Invalid token');
         return;
@@ -48,19 +53,25 @@ export class Authenticate {
 
       // if role is admin but user is not admin
       if (role === 'admin' && res.locals.user.user_type != 'admin') {
+        console.log('User has to be admin for this action')
         res.status(401);
         res.json('User has to be admin for this action');
-        return;
+        return
       }
 
       // if role is self but user is not self OR admin
+      // console.log(`checking if user is admin or self`)
+      // console.log(`request parameters: ${JSON.stringify(req.params, null, 4)}`)
+      // console.log(`user id: ${res.locals.user.id}, user in request: ${parseInt(req.params.userId)}`)
+      // console.log(`user type: ${res.locals.user.user_type}`)
       if (
         role === 'self' &&
         !(
-          res.locals.user.id === parseInt(req.params.id) ||
+          res.locals.user.id === parseInt(req.params.userId) ||
           res.locals.user.user_type === 'admin'
         )
       ) {
+        console.log('Users can only acces their own records.')
         res.status(401);
         res.json('Users can only acces their own records.');
         return;

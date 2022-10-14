@@ -40,22 +40,34 @@ export class DbSetup {
       password: '1234',
       user_type: 'regular',
     },
+    {
+      id: 3,
+      username: 'userWithActiveOrder',
+      firstname: 'bob',
+      lastname: 'bobek',
+      password: '1234',
+      user_type: 'regular',
+    },
   ];
 
   /*
-        Creates two users an admin and a regular. 
-        Uses admin user to create one active order
-        Regular user will only have completed orders.
-        Regular user can be used in tests to create active order.
+        Creates an admin and two users. 
+        Regular user "user" will only have completed orders.
+        Regular user "userWithActiveOrder" will have and active order
     */
   // administrator
   admin: User = this.users.filter(function (user) {
     return user.user_type == 'admin';
   })[0];
-  // regular user
+  // regular user without active order
   user: User = this.users.filter(function (user) {
     return user.user_type == 'regular';
   })[0];
+  // regular user with active order in database
+  userWithActiveOrder: User = this.users.filter(user => 
+    user.username === 'userWithActiveOrder' && user.user_type === 'regular'
+  )[0]
+
 
   categories: Category[] = [
     { id: 1, name: 'Books' },
@@ -160,20 +172,20 @@ export class DbSetup {
   ];
 
   orders: Order[] = [
-    { id: 1, user_id: 1, order_status: 'completed' },
-    { id: 2, user_id: 1, order_status: 'completed' },
-    { id: 3, user_id: 2, order_status: 'completed' },
-    { id: 4, user_id: 2, order_status: 'completed' },
-    { id: 5, user_id: 2, order_status: 'completed' },
-    { id: 6, user_id: this.admin.id, order_status: 'active' },
+    { id: 1, user_id: this.admin.id, order_status: 'completed' },
+    { id: 2, user_id: this.admin.id, order_status: 'completed' },
+    { id: 3, user_id: this.user.id, order_status: 'completed' },
+    { id: 4, user_id: this.user.id, order_status: 'completed' },
+    { id: 5, user_id: this.user.id, order_status: 'completed' },
+    { id: 6, user_id: this.userWithActiveOrder.id, order_status: 'active' }
   ];
 
   // the variables below are used in specs
 
   // variable for an active order
   activeOrder = this.orders.filter(
-    (order) => order.order_status == 'active'
-  )[0];
+    (order) =>  order.order_status == 'active')[0];
+  
   // // variable for a completed order
   // completedOrder = this.orders.filter(function(order) { return order.order_status == 'completed' })[0]
 
@@ -194,6 +206,9 @@ export class DbSetup {
     { id: 14, order_id: 5, product_id: 1, quantity: 1 },
     { id: 15, order_id: this.activeOrder.id, product_id: 3, quantity: 2 },
     { id: 16, order_id: this.activeOrder.id, product_id: 5, quantity: 7 },
+    { id: 17, order_id: this.activeOrder.id, product_id: 2, quantity: 3 },
+    { id: 18, order_id: this.activeOrder.id, product_id: 2, quantity: 3 },
+    { id: 19, order_id: this.activeOrder.id, product_id: 2, quantity: 3 },
   ];
 
   // the variables below are used in specs

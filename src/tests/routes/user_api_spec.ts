@@ -11,7 +11,7 @@ import { User, UserStore } from '../../models/user';
 // import DbSetup class to setup database
 import { DbSetup } from '../utilities/dbSetup';
 
-describe('User API testing', () => {
+describe('USER API TESTING', () => {
   // get TOKEN_SECRET from enviromental variables
   dotenv.config();
   const TOKEN_SECRET: string = process.env.TOKEN_SECRET as string;
@@ -37,7 +37,7 @@ describe('User API testing', () => {
 
   // TEST POST /users
 
-  it('POST /users creates user and returns Json Web Token', (done) => {
+  it('POST /users - Creates user and returns Json Web Token', (done) => {
     // new user to add
     const newUser: User = {
       id: dbSetup.users.length + 1,
@@ -57,7 +57,7 @@ describe('User API testing', () => {
       .then((response) => {
         // token received
         const token = response.body;
-        console.log(`TOKEN RECEIVED:\n ${token}`);
+        // console.log(`TOKEN RECEIVED:\n ${token}`);
 
         // get user details from token
         const userObject: jwt.JwtPayload = jwt.verify(
@@ -77,7 +77,7 @@ describe('User API testing', () => {
 
   // TEST GET /users
 
-  it('GET /users returns list of users to admin user', (done) => {
+  it('GET /users - Returns list of users to admin user', (done) => {
     request(app)
       .get('/users')
       // send admin token
@@ -93,7 +93,7 @@ describe('User API testing', () => {
       });
   });
 
-  it('GET /users returns 401 status code if requested by regular user', (done) => {
+  it('GET /users - Returns 401 status code if requested by regular user', (done) => {
     request(app)
       .get('/users')
       .set('Authorization', 'Bearer' + userToken)
@@ -104,7 +104,7 @@ describe('User API testing', () => {
   });
 
   // TEST GET/users/:id
-  it('GET /users/id lets user see its own details', (done) => {
+  it('GET /users/userId - Lets user see its own details', (done) => {
     request(app)
       .get(`/users/${dbSetup.user.id}`)
       // send token to endpoint
@@ -121,7 +121,7 @@ describe('User API testing', () => {
       });
   });
 
-  it('GET /users/id refuses to show users info of other users', (done) => {
+  it('GET /users/userId - Refuses to show a user\'s info of other regular users', (done) => {
     request(app)
       // ask for details of newly created user
       .get(`/users/${dbSetup.users.length + 1}`)
@@ -133,7 +133,7 @@ describe('User API testing', () => {
       });
   });
 
-  it("GET/users/id lets admin see any user's details", (done) => {
+  it("GET /users/id - Lets admin see any user's details", (done) => {
     // console.log(`ADMIN TOKEN: \n ${adminToken}`)
     request(app)
       // ask for details of dbSetup's regular user

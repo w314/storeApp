@@ -64,10 +64,10 @@ export class DbSetup {
     return user.user_type == 'regular';
   })[0];
   // regular user with active order in database
-  userWithActiveOrder: User = this.users.filter(user => 
-    user.username === 'userWithActiveOrder' && user.user_type === 'regular'
-  )[0]
-
+  userWithActiveOrder: User = this.users.filter(
+    (user) =>
+      user.username === 'userWithActiveOrder' && user.user_type === 'regular'
+  )[0];
 
   categories: Category[] = [
     { id: 1, name: 'Books' },
@@ -177,15 +177,16 @@ export class DbSetup {
     { id: 3, user_id: this.user.id, order_status: 'completed' },
     { id: 4, user_id: this.user.id, order_status: 'completed' },
     { id: 5, user_id: this.user.id, order_status: 'completed' },
-    { id: 6, user_id: this.userWithActiveOrder.id, order_status: 'active' }
+    { id: 6, user_id: this.userWithActiveOrder.id, order_status: 'active' },
   ];
 
   // the variables below are used in specs
 
   // variable for an active order
   activeOrder = this.orders.filter(
-    (order) =>  order.order_status == 'active')[0];
-  
+    (order) => order.order_status == 'active'
+  )[0];
+
   // // variable for a completed order
   // completedOrder = this.orders.filter(function(order) { return order.order_status == 'completed' })[0]
 

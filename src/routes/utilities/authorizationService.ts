@@ -42,7 +42,7 @@ export class Authenticate {
     ) => {
       // if token is  invalid
       if (!this.verifyToken(req, res)) {
-        console.log('Invalid token.')
+        console.log('Invalid token.');
         res.status(401);
         res.json('Invalid token');
         return;
@@ -53,10 +53,10 @@ export class Authenticate {
 
       // if role is admin but user is not admin
       if (role === 'admin' && res.locals.user.user_type != 'admin') {
-        console.log('User has to be admin for this action')
+        console.log('User has to be admin for this action');
         res.status(401);
         res.json('User has to be admin for this action');
-        return
+        return;
       }
 
       // if role is self but user is not self OR admin
@@ -71,7 +71,7 @@ export class Authenticate {
           res.locals.user.user_type === 'admin'
         )
       ) {
-        console.log('Users can only acces their own records.')
+        console.log('Users can only acces their own records.');
         res.status(401);
         res.json('Users can only acces their own records.');
         return;

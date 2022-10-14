@@ -1,28 +1,26 @@
-import express from 'express'
+import express from 'express';
 // import Order type and OrderStore class
-import { Order, OrderItem, OrderStore } from './../models/order'
+import { OrderStore } from './../models/order';
 // import Authenticate class for authentication
-import { Authenticate } from './utilities/authorizationService'
+import { Authenticate } from './utilities/authorizationService';
 
-const orderStore = new OrderStore
+const orderStore = new OrderStore();
 
 // gets active order of user
-const activeOrder = async (req: express.Request, res: express.Response) =>  {
+const activeOrder = async (req: express.Request, res: express.Response) => {
+  const userId = parseInt(req.params.userId);
+  // console.log(`user id: ${userId}`)
 
-    const userId = parseInt(req.params.userId)
-    // console.log(`user id: ${userId}`)
-
-    try {
-        const activeOrder = await orderStore.activeOrder(userId)
-        res.json(activeOrder)
-        return
-    } catch (err) {
-        res.sendStatus(500)
-        res.json(err)
-        return
-    }
-}
-
+  try {
+    const activeOrder = await orderStore.activeOrder(userId);
+    res.json(activeOrder);
+    return;
+  } catch (err) {
+    res.sendStatus(500);
+    res.json(err);
+    return;
+  }
+};
 
 // // CREATE creates new order
 // const create = async (req:express.Request, res:express.Response) => {
@@ -43,7 +41,6 @@ const activeOrder = async (req: express.Request, res: express.Response) =>  {
 //         return
 //     }
 // }
-
 
 // const orderList = async (req: express.Request, res: express.Response) => {
 
@@ -93,11 +90,11 @@ const activeOrder = async (req: express.Request, res: express.Response) =>  {
 
 // }()
 
-const orderRoutes = (app:express.Application) => {
-    // app.post('/orders', create)
-    app.get('/orders/:userId/active', Authenticate.verify('self') , activeOrder)
-//     app.get('/orders/:userId', orderList)
-//     app.post('/orders/:userId/active', addProduct)
-}
+const orderRoutes = (app: express.Application) => {
+  // app.post('/orders', create)
+  app.get('/orders/:userId/active', Authenticate.verify('self'), activeOrder);
+  //     app.get('/orders/:userId', orderList)
+  //     app.post('/orders/:userId/active', addProduct)
+};
 
 export default orderRoutes;

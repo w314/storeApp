@@ -45,7 +45,9 @@ describe('Order Model', () => {
 
   it('can show active order of user', async () => {
     // test the active order created by userWithActiveOrder when setting up the database
-    const activeOrder = await orderStore.activeOrder(dbSetup.userWithActiveOrder.id);
+    const activeOrder = await orderStore.activeOrder(
+      dbSetup.userWithActiveOrder.id
+    );
     expect(activeOrder.length).toEqual(dbSetup.numberOfItemsInActiveOrder);
   });
 

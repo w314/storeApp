@@ -121,7 +121,7 @@ describe('USER API TESTING', () => {
       });
   });
 
-  it('GET /users/userId - Refuses to show a user\'s info of other regular users', (done) => {
+  it("GET /users/userId - Refuses to show a user's info of other regular users", (done) => {
     request(app)
       // ask for details of newly created user
       .get(`/users/${dbSetup.users.length + 1}`)

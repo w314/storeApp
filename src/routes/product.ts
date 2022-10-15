@@ -12,8 +12,8 @@ const index = async (_req: express.Request, res: express.Response) => {
     const products = await store.index();
     res.json(products);
   } catch (err) {
-    res.sendStatus(500);
-    res.json(err);
+    res.status(500).send(err);
+    // res.json(err);
   }
 };
 

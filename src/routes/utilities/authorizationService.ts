@@ -13,14 +13,14 @@ export class Authenticate {
     dotenv.config();
     const TOKEN_SECRET: string = process.env.TOKEN_SECRET as string;
 
-    // get token from request header
     // console.log('\n Request in authorization')
     // console.log(req.headers)
-    const authorizationHeader = req.headers.authorization as string;
-    // remove word "Bearer" from authorizationHeader string
-    const token = authorizationHeader.slice(6);
-    // console.log(`TOKEN received by authorization service: ${JSON.stringify(token, null, 4)}`)
-    try {
+    try {      
+      // get token from request header
+      const authorizationHeader = req.headers.authorization as string;
+      // remove word "Bearer" from authorizationHeader string
+      const token = authorizationHeader.slice(6);
+      // console.log(`TOKEN received by authorization service: ${JSON.stringify(token, null, 4)}`)
       // verify user
       const user = jwt.verify(token, TOKEN_SECRET);
       // console.log(`USER in authentication ${JSON.stringify(user, null, 4)}`)

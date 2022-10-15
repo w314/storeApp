@@ -24,13 +24,13 @@ In the `.env` file add content:
 ENV=dev
 # for postgres database
 POSTGRES_HOST=127.0.0.1
-POSTGRES_PORT=5555
+POSTGRES_PORT=5554
 POSTGRES_DB=store_db
 POSTGRES_DB_TEST=store_db_test
 POSTGRES_USER=store_user
-POSTGRES_PASSWORD=your_password
+POSTGRES_PASSWORD=password
 # for JSON Web Token
-TOKEN=your_secret
+TOKEN_SECRET=secret
 # for bcrypt
 BCRYPT_PASSWORD=your_bcrypt_pass
 SALT_ROUNDS=10
@@ -63,48 +63,77 @@ The created docker container can be listed with:
 sudo docker ps
 ```
 
-### Set up test database if using 
+### Set up test database for testing 
 Connect to docker container
 ```bash
 sudo docker exec -it <container_id> bash
 ```
 This will connect to the container. To connec to the database:
 ```bash
-psql -U <POSTGRES_USER> <POSTGRES_DB>
+psql -U store_user store_db
 ```
 Or in one step:
 ```bash
-docker exec -it <container_id> psql -U <POSTGRES_USER> <POSTGRES_DB>
+docker exec -it <container_id> psql -U store_user store_db
 ```
 
 Create test database
 ```sql
-CREATE DATABASE store_app_db_test;
+CREATE DATABASE store_db_test;
 ```
-
-### Run migrations
-If you are using application in dev mode and start it with `npm run devStart` it will use the test database and the script will run the migration. 
-
-However if you start the application with `npm run start` you will have to run migrations to set up the live database before first time use.
-
-
-
-
-
 
 ##  Start the application
 
-1. In the terminal start docker container
+In the terminal in the project directory start the application with: 
 ```bash
-sudo docker-compose up
+npm run devStart
 ```
-2. In the terminal in project directory start the application
-```bash
-npm start
-```
-3. open application in browser: `localhost:3000`
+Open application in browser: `localhost:3001` 
 
-## How to use the app
+The application will display: "Application Starting Page"
+
+## Run tests
+In the terminal in the project root directory run:
+```bash
+npm run test
+```
+Before the tests run, a the `DbSetup` class `setup()` method is called to populate the database with data. During setup 3 users are created: `admin`, regular `user` who has no active order, and a regular `userWithActiveOrder` who has an active order. These users are properties of the `DbSetup` class and are used throughout the tests.
+
+## Use the applications
+The application provides the following API endpoints:
+### User related
+#### 1. Create user  
+- endpoint: POST /users
+- NO TOKEN required (it allows people to sign up for being users without any admin's approval)
+
+#### 2. List users
+- endpoint: GET /users
+- TOKEN REQUIRED, only admin user tokens are accepted
+
+#### 3. Show details of a certain user
+- endpoint: GET /users/userId
+- TOKEN REQUIRED, only the user themselves or an admin can view the details
+
+### Porduct related
+
+#### 1. List all products
+- endpoint: GET /products
+- NO TOKEN required
+
+#### 2. Show details of a specific product
+- endpoint: GET /products/productId
+- NO TOKEN required
+
+#### 3. Create new product
+- endpoint: POST /products
+- TOKEN REQUIRED, only admin token is accepted
+
+### Order Related
+#### 1. Show active order of user
+- endpoint GET /orders/userId
+- TOKEN REQUIRED, only the user themselves or an admin can view the order
+
+
 
 
 

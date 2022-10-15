@@ -21,7 +21,7 @@ const index = async (_req: express.Request, res: express.Response) => {
 const show = async (req: express.Request, res: express.Response) => {
   try {
     // get product id from url
-    const id = parseInt(req.params.id);
+    const id = parseInt(req.params.productId);
     // get product from database
     const product = await store.show(id);
     // return product
@@ -58,7 +58,7 @@ const create = async (req: express.Request, res: express.Response) => {
 // The server.ts file will provide that when calls this function
 const productRoutes = (app: express.Application) => {
   app.get('/products', index);
-  app.get('/products/:id', show);
+  app.get('/products/:productId', show);
   app.post('/products', Authenticate.verify('admin'), create);
 };
 

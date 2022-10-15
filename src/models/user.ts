@@ -10,9 +10,6 @@ import jsonwebtoken from 'jsonwebtoken';
 // initialize environment variables
 dotenv.config();
 const { PEPPER, SALT_ROUNDS, TOKEN_SECRET } = process.env;
-// // const pepper: string = process.env.BCRYPT_PASSWORD as string;
-// // const saltRounds: string = process.env.SALT_ROUNDS as string;
-// // const tokenSecret: string = process.env.TOKEN_SECRET as string;
 
 // create typescript type for user
 export type User = {
@@ -51,24 +48,15 @@ export class UserStore {
 
       // if result has nonzero length the username was valid
       if (result.rows.length) {
-        //// console.log(result.rows.length)
-        //// for(let i = 0; i<result.rows.length; i++) {
-        ////   console.log(result.rows[i])
-        //// }
-
         // the user is:
         const user: User = result.rows[0];
 
         // compare user's password at sign-in with provided hashed version
-        //// console.log(`User password coming from db after creation: ${user.password_digest}`)
-        //// console.log(`User submitted this password: ${password}`)
         if (bcrypt.compareSync(password + PEPPER, user.password)) {
           // password is valid create and send jwt token
-          //// console.log(`password OK`)
           return jsonwebtoken.sign(user, TOKEN_SECRET as string);
         } else {
           // password was invalid
-          //// console.log('invalid password')
           throw new Error(`Invalid password`);
         }
       }
@@ -87,11 +75,9 @@ export class UserStore {
     try {
       // connect to database
       const conn = await client.connect();
-      // console.log(conn)
       // get user list
       const sql = 'SELECT * FROM users';
       const result = await conn.query(sql);
-      // console.log(result)
       // disconnect from database
       conn.release();
       // return user list

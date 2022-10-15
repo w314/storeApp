@@ -13,17 +13,13 @@ export class Authenticate {
     dotenv.config();
     const TOKEN_SECRET: string = process.env.TOKEN_SECRET as string;
 
-    // console.log('\n Request in authorization')
-    // console.log(req.headers)
-    try {      
+    try {
       // get token from request header
       const authorizationHeader = req.headers.authorization as string;
       // remove word "Bearer" from authorizationHeader string
       const token = authorizationHeader.slice(6);
-      // console.log(`TOKEN received by authorization service: ${JSON.stringify(token, null, 4)}`)
       // verify user
       const user = jwt.verify(token, TOKEN_SECRET);
-      // console.log(`USER in authentication ${JSON.stringify(user, null, 4)}`)
       // store user
       res.locals.user = user;
       return true;
@@ -46,9 +42,6 @@ export class Authenticate {
         res.status(401);
         res.json('Invalid token');
         return;
-        //     // return res.status(401).send({
-        //     msg: 'Invalid token',
-        //     });
       }
 
       // if role is admin but user is not admin
@@ -60,10 +53,6 @@ export class Authenticate {
       }
 
       // if role is self but user is not self OR admin
-      // console.log(`checking if user is admin or self`)
-      // console.log(`request parameters: ${JSON.stringify(req.params, null, 4)}`)
-      // console.log(`user id: ${res.locals.user.id}, user in request: ${parseInt(req.params.userId)}`)
-      // console.log(`user type: ${res.locals.user.user_type}`)
       if (
         role === 'self' &&
         !(

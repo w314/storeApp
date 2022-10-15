@@ -130,7 +130,7 @@ The application provides the following API endpoints:
 
 ### Order Related
 #### 1. Show active order of user
-- endpoint GET /orders/userId
+- endpoint GET /orders/userId/active
 - TOKEN REQUIRED, only the user themselves or an admin can view the order
 
 

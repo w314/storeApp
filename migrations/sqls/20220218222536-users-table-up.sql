@@ -1,4 +1,3 @@
-/* Replace with your SQL commands */
 CREATE TYPE usertype AS ENUM ('admin', 'regular');
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,

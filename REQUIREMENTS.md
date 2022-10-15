@@ -10,7 +10,7 @@
 - Create - POST /users
 
 #### Orders
-- Current Order by user - GET /orders/userId
+- Current Order by user - GET /orders/userId/active
 
 ## Database Schema
 

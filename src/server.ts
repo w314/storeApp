@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 // import morgan, a HTTP request logging middleware
 import morgan from 'morgan';
 import orderRoutes from './routes/order';
+import cors from 'cors'
 
 // create express object app
 // it enables us to use express methods
@@ -14,6 +15,7 @@ const port = 3001;
 
 // middlewares
 
+app.use(cors())
 // log HTTP requests
 app.use(morgan('dev'));
 // parse HTTP request bodies

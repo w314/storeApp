@@ -332,6 +332,7 @@ export class DbSetup {
 
       // disconnect from database
       conn.release();
+      console.log(`\nDATABASE SETUP FINISHED`)
       return;
     } catch (err) {
       console.log(err);

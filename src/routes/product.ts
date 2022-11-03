@@ -8,10 +8,12 @@ const store = new ProductStore();
 
 // INDEX return list of all products
 const index = async (_req: express.Request, res: express.Response) => {
+  console.log(`in /products route index method`)
   try {
     const products = await store.index();
     res.json(products);
   } catch (err) {
+    console.log(err)
     res.sendStatus(500);
     res.json(err);
   }

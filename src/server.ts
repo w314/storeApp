@@ -22,9 +22,9 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 
 // map incoming requests to endpoints
-app.get('/', (req: express.Request, res: express.Response) => {
-  res.send('Application Starting Page');
-});
+// app.get('/', (req: express.Request, res: express.Response) => {
+//   res.send('Application Starting Page');
+// });
 
 // pass our express app to our routes
 userRoutes(app);

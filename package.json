@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node dist/server.js",
+    "start": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
+    "prodStart": "npm run build && node dist/server.js",
     "devStart": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
     "testStart": "npm run migrateTest && npm run build && npm run dbSetup && nodemon dist/server.js",
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",

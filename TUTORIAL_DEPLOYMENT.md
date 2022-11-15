@@ -3,7 +3,11 @@
 
 ### Setup `AWS` `RDS` database
 - do not use easy setup, to be able to make database public at setup (easy setup sets it automatically to private)
-- select free tier database
+- under `Engine Options` select `PostgreSQL`
+- under `Templates` select `Free tier`
+- under `Credential Settings`
+    - set and remember `Master username` (`DATABASE_USER` in `.env` file)
+    - set and remember `Master password` (`DATABASE_PASSWORD` in `.env` file)
 - set database to public
 
 ### Adjust environmental variales in `.env` file in project
@@ -19,6 +23,16 @@
 - enter `Application name`
 - select `node.js` as `platfrom`
 - select `upload your code` in the `Applicatin code` section
+
+### Prepare code for uploading
+After uploading `EB` will run the following commands:
+- npm install --production
+- npm start
+
+The application has to be ready to be started by running those commands.
+
+Can you try deleting the node_modules, and package-lock.json and run these ^ command locally and see if it works? Ensure to have the same Node.js version as you have chosen for the EB environment.
 - upload zipped application code
+- click `Create application` button
 
 

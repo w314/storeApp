@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node dist/server.js",
-    "devStart": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
-    "testStart": "npm run migrateTest && npm run build && npm run dbSetup && nodemon dist/server.js",
+    "start": "node server.js",
+    "notworkingdevStart": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
+    "notworkingtestStart": "npm run migrateTest && npm run build && npm run dbSetup && nodemon dist/server.js",
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "eslint": "eslint \"src/**/*.{js,ts}\"",
     "lint": "npm run prettier && npm run eslint",
@@ -14,7 +14,7 @@
     "migrateTest": "ENV=test && db-migrate --env test reset && db-migrate --env test up",
     "test": "ENV=test && db-migrate --env test reset && db-migrate --env test up && npm run build && ENV=test npm run jasmine  && db-migrate --env test reset",
     "jasmine": "jasmine",
-    "build": "npx tsc",
+    "build": "npm run migrate && npx tsc && npm run dbSetup",
     "dbSetup": "node dist/tests/utilities/runSetup.js"
   },
   "repository": {
@@ -49,7 +49,9 @@
     "prettier": "^2.5.1",
     "supertest": "^6.2.2",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -60,8 +62,6 @@
     "jasmine-es6-promise-matchers": "^2.1.2",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "pg": "^8.7.1",
-    "db-migrate": "^0.11.13",
-    "db-migrate-pg": "^1.2.2"
+    "pg": "^8.7.1"
   }
 }

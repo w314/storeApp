@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
-    "notworkingdevStart": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
+    "devStart": "npm run migrate && npm run build && npm run dbSetup && nodemon dist/server.js",
     "notworkingtestStart": "npm run migrateTest && npm run build && npm run dbSetup && nodemon dist/server.js",
     "prettier": "prettier --config .prettierrc \"src/**/*{js,ts,tsx}\" --write",
     "eslint": "eslint \"src/**/*.{js,ts}\"",

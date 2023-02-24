@@ -1,24 +1,44 @@
 # Store App
 
-Store App is a node application that serves as the back end of an online store. 
+Store App is an e-commerse website back-end.The API currently has the following endpoints:
+
+## Store App REST API
+
+The API uses `JSON Web Token` for authentication.
+
+### Products
+- index:  GET /products
+- show: GET /products/:productId
+- create: POST /porducts 
+
+  *(Token required, only admin token is accepted)*
+### Orders
+- GET /orders/:userId/active 
+  
+  *(Token required only the user themselves or an admin can view the order)*
+
+### Users
+- index: GET /users 
+  
+  *(Token required, only admin user tokens are accepted.)*
+- show: GET /users/:userId 
+  
+  *(Token required, only the user themselves or an admin can view the details.)*
+- POST /users 
 
 ## Setup Application
 
-### 1. Clone directory
+### 1. Clone directory and install dependencies
 ```bash
 git clone https://github.com/w314/storeApp.git
-```
-### 2. Install dependencies
-<br>In the terminal, in the project root directory run:
-```bash
 cd storeApp
 npm install
 ```
-### 3. Add `.env` file
+### 2. Add `.env` file
 ```bash
 touch .env
 ```
-In the `.env` file add content:
+Add the following content to the  `.env` file:
 ```bash
 # for setting environment
 ENV=dev
@@ -36,8 +56,7 @@ BCRYPT_PASSWORD=your_bcrypt_pass
 SALT_ROUNDS=10
 ```
 
-### Start `Docker` container
-<br>In the terminal run
+### 3. Start `Docker` container
 ```bash
 sudo docker compose up -d
 ```
@@ -57,18 +76,30 @@ sudo docker compose up -d
 
     And run `docker-compose` up again.
 
+### 4. Start app
+#### Start server:
+```bash
+npm run devStart
+```
+- This will populate the database with the mock data set and start the application.
 
+#### Open application:
+[http://localhost:3001/products](http://localhost:3001/products)
+
+- The application will display the list of products in JSON format.
+
+## Test the application 
+
+### 1. Set up test database for testing 
 The created docker container can be listed with:
 ```bash
 sudo docker ps
 ```
-
-### Set up test database for testing 
 Connect to docker container
 ```bash
 sudo docker exec -it <container_id> bash
 ```
-This will connect to the container. To connec to the database:
+This will connect to the container. To connect to the database:
 ```bash
 psql -U store_user store_db
 ```
@@ -82,58 +113,10 @@ Create test database
 CREATE DATABASE store_db_test;
 ```
 
-##  Start the application
-
-In the terminal in the project directory start the application with: 
-```bash
-npm run devStart
-```
-Open application in browser: `localhost:3001` 
-
-The application will display: "Application Starting Page"
-
-## Run tests
-In the terminal in the project root directory run:
+### 2. Run tests
 ```bash
 npm run test
 ```
-Before the tests run, a the `DbSetup` class `setup()` method is called to populate the database with data. During setup 3 users are created: `admin`, regular `user` who has no active order, and a regular `userWithActiveOrder` who has an active order. These users are properties of the `DbSetup` class and are used throughout the tests.
-
-## Use the applications
-The application provides the following API endpoints:
-### User related
-#### 1. Create user  
-- endpoint: POST /users
-- NO TOKEN required (it allows people to sign up for being users without any admin's approval)
-
-#### 2. List users
-- endpoint: GET /users
-- TOKEN REQUIRED, only admin user tokens are accepted
-
-#### 3. Show details of a certain user
-- endpoint: GET /users/userId
-- TOKEN REQUIRED, only the user themselves or an admin can view the details
-
-### Porduct related
-
-#### 1. List all products
-- endpoint: GET /products
-- NO TOKEN required
-
-#### 2. Show details of a specific product
-- endpoint: GET /products/productId
-- NO TOKEN required
-
-#### 3. Create new product
-- endpoint: POST /products
-- TOKEN REQUIRED, only admin token is accepted
-
-### Order Related
-#### 1. Show active order of user
-- endpoint GET /orders/userId/active
-- TOKEN REQUIRED, only the user themselves or an admin can view the order
-
-
-
-
-
+- Before the tests run, the test database is populated with mock data.
+- 3 users are created: `admin`, regular `user` who has no active order, and a regular `userWithActiveOrder` who has an active order.
+- `Jasmine` is used for testing, 40 scpecs run testing both the models and the API endpoints.

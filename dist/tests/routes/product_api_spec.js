@@ -11,6 +11,8 @@ const server_1 = __importDefault(require("../../server"));
 const user_1 = require("../../models/user");
 // import DbSetup class to set up database before testing
 const dbSetup_1 = require("../utilities/dbSetup");
+// import mock data set
+const mockDataSet_1 = __importDefault(require("../utilities/mockDataSet"));
 describe('Product API Testing', () => {
     const dbSetup = new dbSetup_1.DbSetup();
     // token for testing product creation
@@ -18,7 +20,7 @@ describe('Product API Testing', () => {
     let userToken = '';
     // product to test product entry
     const testProduct = {
-        id: dbSetup.products.length + 1,
+        id: mockDataSet_1.default.products.length + 1,
         name: 'Scarf',
         price: 4.5,
         url: '',
@@ -30,8 +32,8 @@ describe('Product API Testing', () => {
         await dbSetup.setup();
         // get user to to use for product creation
         const userStore = new user_1.UserStore();
-        adminToken = (await userStore.authenticate(dbSetup.admin.username, dbSetup.admin.password));
-        userToken = (await userStore.authenticate(dbSetup.user.username, dbSetup.user.password));
+        adminToken = (await userStore.authenticate(mockDataSet_1.default.admin.username, mockDataSet_1.default.admin.password));
+        userToken = (await userStore.authenticate(mockDataSet_1.default.user.username, mockDataSet_1.default.user.password));
     });
     // TEST GET /products
     it('GET /products returns list of products', (done) => {
@@ -40,7 +42,7 @@ describe('Product API Testing', () => {
             .expect(200)
             .then((response) => {
             // console.log(response.body)
-            expect(response.body.length).toEqual(dbSetup.products.length);
+            expect(response.body.length).toEqual(mockDataSet_1.default.products.length);
             done();
         })
             .catch((err) => {
@@ -56,7 +58,7 @@ describe('Product API Testing', () => {
             .expect(200)
             .then((response) => {
             // console.log(response)
-            expect(response.body).toEqual(dbSetup.products[productId - 1]);
+            expect(response.body).toEqual(mockDataSet_1.default.products[productId - 1]);
             done();
         })
             .catch((Error) => {

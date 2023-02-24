@@ -12,6 +12,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // import DbSetup class to setup database for testing
 const dbSetup_1 = require("../utilities/dbSetup");
+// import mock data set
+const mockDataSet_1 = __importDefault(require("../utilities/mockDataSet"));
 // initialize enviromental variables
 dotenv_1.default.config();
 const { PEPPER, TOKEN_SECRET } = process.env;
@@ -38,16 +40,16 @@ describe('User Model', () => {
         // get list of users
         const result = await store.index();
         // console.log(result)
-        expect(result.length).toEqual(dbSetup.users.length);
-        expect(result[0].username).toEqual(dbSetup.users[0].username);
+        expect(result.length).toEqual(mockDataSet_1.default.users.length);
+        expect(result[0].username).toEqual(mockDataSet_1.default.users[0].username);
     });
     /***  test show method  ***/
     it('has show method', () => {
         expect(store.show).toBeDefined;
     });
     it('shows requested user', async () => {
-        const result = await store.show(dbSetup.users[1].id);
-        expect(result.username).toEqual(dbSetup.users[1].username);
+        const result = await store.show(mockDataSet_1.default.users[1].id);
+        expect(result.username).toEqual(mockDataSet_1.default.users[1].username);
     });
     /***  test create method  ***/
     it('has create method', () => {
@@ -58,7 +60,7 @@ describe('User Model', () => {
         const createdUser = await store.create(testUser);
         // check that createdUser detials match provided testUser input
         // expect new user to receive the next available id
-        const userId = dbSetup.users.length + 1;
+        const userId = mockDataSet_1.default.users.length + 1;
         expect(userId).toEqual(createdUser.id);
         // use bcrypt to compare passwords of returned created user and testUser
         expect(bcrypt_1.default.compareSync(testUser.password + PEPPER, createdUser.password))

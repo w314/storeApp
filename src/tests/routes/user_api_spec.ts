@@ -10,6 +10,8 @@ import dotenv from 'dotenv';
 import { User, UserStore } from '../../models/user';
 // import DbSetup class to setup database
 import { DbSetup } from '../utilities/dbSetup';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 describe('USER API TESTING', () => {
   // get TOKEN_SECRET from enviromental variables
@@ -26,12 +28,12 @@ describe('USER API TESTING', () => {
     // get token for an admin and a regular user
     const userStore = new UserStore();
     adminToken = (await userStore.authenticate(
-      dbSetup.admin.username,
-      dbSetup.admin.password
+      mockDataSet.admin.username,
+      mockDataSet.admin.password
     )) as string;
     userToken = (await userStore.authenticate(
-      dbSetup.user.username,
-      dbSetup.user.password
+      mockDataSet.user.username,
+      mockDataSet.user.password
     )) as string;
   });
 
@@ -40,7 +42,7 @@ describe('USER API TESTING', () => {
   it('POST /users - Creates user and returns Json Web Token', (done) => {
     // new user to add
     const newUser: User = {
-      id: dbSetup.users.length + 1,
+      id: mockDataSet.users.length + 1,
       username: 'newUser',
       firstname: 'New',
       lastname: 'User',
@@ -84,7 +86,7 @@ describe('USER API TESTING', () => {
       .set('Authorization', 'Bearer' + adminToken)
       .expect(200)
       .then((response) => {
-        expect(response.body.length).toEqual(dbSetup.users.length + 1);
+        expect(response.body.length).toEqual(mockDataSet.users.length + 1);
         done();
       })
       .catch((err) => {
@@ -106,13 +108,13 @@ describe('USER API TESTING', () => {
   // TEST GET/users/:id
   it('GET /users/userId - Lets user see its own details', (done) => {
     request(app)
-      .get(`/users/${dbSetup.user.id}`)
+      .get(`/users/${mockDataSet.user.id}`)
       // send token to endpoint
       .set('Authorization', 'Bearer' + userToken)
       .expect(200)
       .expect('Content-Type', /json/)
       .then((response) => {
-        expect((response.body.user_id = dbSetup.user.id));
+        expect((response.body.user_id = mockDataSet.user.id));
         done();
       })
       .catch((err) => {
@@ -124,8 +126,8 @@ describe('USER API TESTING', () => {
   it("GET /users/userId - Refuses to show a user's info of other regular users", (done) => {
     request(app)
       // ask for details of newly created user
-      .get(`/users/${dbSetup.users.length + 1}`)
-      // send token to endpoint use token of dbSetup's regular user
+      .get(`/users/${mockDataSet.users.length + 1}`)
+      // send token to endpoint use token of mockDataSet's regular user
       .set('Authorization', 'Bearer' + userToken)
       .expect(401)
       .end((err) => {
@@ -136,13 +138,13 @@ describe('USER API TESTING', () => {
   it("GET /users/id - Lets admin see any user's details", (done) => {
     // console.log(`ADMIN TOKEN: \n ${adminToken}`)
     request(app)
-      // ask for details of dbSetup's regular user
-      .get(`/users/${dbSetup.user.id}`)
+      // ask for details of mockDataSet's regular user
+      .get(`/users/${mockDataSet.user.id}`)
       // send admin token
       .set('Authorization', 'Bearer' + adminToken)
       .expect(200)
       .then((response) => {
-        expect(response.body.username).toEqual(dbSetup.user.username);
+        expect(response.body.username).toEqual(mockDataSet.user.username);
         done();
       })
       .catch((err) => {

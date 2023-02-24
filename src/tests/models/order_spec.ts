@@ -5,19 +5,21 @@ import { Order, OrderItem, OrderStore } from './../../models/order';
 import client from './../../database';
 // import DbSetup class to setup database before testing
 import { DbSetup } from '../utilities/dbSetup';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 describe('Order Model', () => {
   const dbSetup = new DbSetup();
   const orderStore = new OrderStore();
   const testOrder: Order = {
-    id: dbSetup.orders.length + 1,
-    user_id: dbSetup.user.id,
+    id: mockDataSet.orders.length + 1,
+    user_id: mockDataSet.user.id,
     order_status: 'active',
   };
   const testOrderItem: OrderItem = {
-    id: dbSetup.orderItems.length + 1,
-    order_id: dbSetup.activeOrder.id,
-    product_id: dbSetup.products[0].id,
+    id: mockDataSet.orderItems.length + 1,
+    order_id: mockDataSet.activeOrder.id,
+    product_id: mockDataSet.products[0].id,
     quantity: 2,
   };
 
@@ -32,9 +34,9 @@ describe('Order Model', () => {
   });
 
   it('can show list of completed orders of user', async () => {
-    // check for itesm in completed orders of dbSetup.user
-    const result = await orderStore.completedOrders(dbSetup.user.id);
-    expect(result.length).toEqual(dbSetup.numberOfItemsInCompletedOrders);
+    // check for itesm in completed orders of mockDataSet.user
+    const result = await orderStore.completedOrders(mockDataSet.user.id);
+    expect(result.length).toEqual(mockDataSet.numberOfItemsInCompletedOrders);
   });
 
   // TEST method to get active order of user
@@ -46,9 +48,9 @@ describe('Order Model', () => {
   it('can show active order of user', async () => {
     // test the active order created by userWithActiveOrder when setting up the database
     const activeOrder = await orderStore.activeOrder(
-      dbSetup.userWithActiveOrder.id
+      mockDataSet.userWithActiveOrder.id
     );
-    expect(activeOrder.length).toEqual(dbSetup.numberOfItemsInActiveOrder);
+    expect(activeOrder.length).toEqual(mockDataSet.numberOfItemsInActiveOrder);
   });
 
   it('has create method', () => {
@@ -70,7 +72,7 @@ describe('Order Model', () => {
     // disconnect from database
     conn.release();
     // there shoud be 1 more order than after running dbSetup
-    expect(orderList.rows.length).toEqual(dbSetup.orders.length + 1);
+    expect(orderList.rows.length).toEqual(mockDataSet.orders.length + 1);
   });
 
   // TODO test new order for user with active order
@@ -94,7 +96,7 @@ describe('Order Model', () => {
     // get list of orderItems
     const result = await conn.query(`SELECT * FROM order_items`);
     // there should be one more order_itmes than at setup
-    expect(result.rows.length).toEqual(dbSetup.orderItems.length + 1);
+    expect(result.rows.length).toEqual(mockDataSet.orderItems.length + 1);
   });
 
   // TODO test adding new item to completed order
@@ -105,8 +107,8 @@ describe('Order Model', () => {
 
   //     // xit('throws error if trying to add new item to completed order', async () => {
   //     //     // try to add new item to a completed order
-  //     //     // await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)
-  //     //     await expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
-  //     //     // expect(async function() {await orderStore.addProduct(dbSetup.completedOrder.order_id, dbSetup.products[1].product_id, 5)}).toThrow()
+  //     //     // await orderStore.addProduct(mockDataSet.completedOrder.order_id, mockDataSet.products[1].product_id, 5)
+  //     //     await expect(async function() {await orderStore.addProduct(mockDataSet.completedOrder.order_id, mockDataSet.products[1].product_id, 5)}).toThrow(new Error('Cannot add new item to completed order.'))
+  //     //     // expect(async function() {await orderStore.addProduct(mockDataSet.completedOrder.order_id, mockDataSet.products[1].product_id, 5)}).toThrow()
   //     // })
 });

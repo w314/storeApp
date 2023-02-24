@@ -6,6 +6,8 @@ import { DbSetup } from '../utilities/dbSetup';
 // import TestTokens class to create tokens for testing
 // import User type and UserStore class
 import { UserStore } from '../../models/user';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 const dbSetup = new DbSetup();
 const userStore = new UserStore();
@@ -20,16 +22,16 @@ describe('Order API Testing', () => {
     await dbSetup.setup();
     // console.log(`TEST DATABASE IS READY`)
     adminToken = (await userStore.authenticate(
-      dbSetup.admin.username,
-      dbSetup.admin.password
+      mockDataSet.admin.username,
+      mockDataSet.admin.password
     )) as string;
     userToken = (await userStore.authenticate(
-      dbSetup.user.username,
-      dbSetup.user.password
+      mockDataSet.user.username,
+      mockDataSet.user.password
     )) as string;
     userWithActiveOrderToken = (await userStore.authenticate(
-      dbSetup.userWithActiveOrder.username,
-      dbSetup.userWithActiveOrder.password
+      mockDataSet.userWithActiveOrder.username,
+      mockDataSet.userWithActiveOrder.password
     )) as string;
   });
 
@@ -37,7 +39,7 @@ describe('Order API Testing', () => {
 
   it('GET /orders/:userId/active User can see its own active order', (done) => {
     request(app)
-      .get(`/orders/${dbSetup.userWithActiveOrder.id}/active`)
+      .get(`/orders/${mockDataSet.userWithActiveOrder.id}/active`)
       .set('Authorization', 'Bearer' + userWithActiveOrderToken)
       .expect(200)
       .end((err) => {
@@ -47,12 +49,12 @@ describe('Order API Testing', () => {
 
   it("GET /orders/:userId/active admin can see any user's active order", (done) => {
     request(app)
-      .get(`/orders/${dbSetup.activeOrder.user_id}/active`)
+      .get(`/orders/${mockDataSet.activeOrder.user_id}/active`)
       // .set('Authorization', 'Bearer' + userWithActiveOrderToken)
       .set('Authorization', 'Bearer' + adminToken)
       .expect(200)
       .then((result) => {
-        expect(result.body.length).toEqual(dbSetup.numberOfItemsInActiveOrder);
+        expect(result.body.length).toEqual(mockDataSet.numberOfItemsInActiveOrder);
         done();
       })
       .catch((err) => {
@@ -63,7 +65,7 @@ describe('Order API Testing', () => {
 
   it("GET orders/:userId/active Regular user cannot see other users' active order", (done) => {
     request(app)
-      .get(`/orders/${dbSetup.userWithActiveOrder.id}/active`)
+      .get(`/orders/${mockDataSet.userWithActiveOrder.id}/active`)
       .set('Authorization', 'Bearer' + userToken)
       .expect(401)
       .end((err) => {
@@ -73,10 +75,10 @@ describe('Order API Testing', () => {
 
   //     it('GET /orders/:userId returns list of completed orders of user', (done) => {
   //         request(app)
-  //         .get(`/orders/${dbSetup.user.user_id}`)
+  //         .get(`/orders/${mockDataSet.user.user_id}`)
   //         .expect(200)
   //         .then((result) => {
-  //             expect(result.body.length).toEqual(dbSetup.numberOfItemsInCompletedOrdersOfUser)
+  //             expect(result.body.length).toEqual(mockDataSet.numberOfItemsInCompletedOrdersOfUser)
   //             done()
   //         })
   //         .catch((err) => {
@@ -86,13 +88,13 @@ describe('Order API Testing', () => {
 
   //     fit('POST /orders/:userId/active adds new product item to active order', (done) => {
 
-  //         const activeOrder = dbSetup.activeOrder
-  //         const userId = dbSetup.activeOrder.user_id
+  //         const activeOrder = mockDataSet.activeOrder
+  //         const userId = mockDataSet.activeOrder.user_id
 
   //         const orderItem: OrderItem = {
   //             item_id: 0,
   //             order_id: activeOrder.order_id,
-  //             product_id: dbSetup.products[0].product_id,
+  //             product_id: mockDataSet.products[0].product_id,
   //             quantity: 37
   //         }
 
@@ -116,9 +118,9 @@ describe('Order API Testing', () => {
   //         //     //         // console.log(result)
   //         //     //         const activeOrderItems = result.rows
   //         //     //         console.log(activeOrderItems.length)
-  //         //     //         console.log(dbSetup.numberOfItemsInActiveOrder + 1)
+  //         //     //         console.log(mockDataSet.numberOfItemsInActiveOrder + 1)
   //         //     //         conn.release()
-  //         //     //         expect(activeOrderItems.length).toEqual(dbSetup.numberOfItemsInActiveOrder +  1)
+  //         //     //         expect(activeOrderItems.length).toEqual(mockDataSet.numberOfItemsInActiveOrder +  1)
   //         //     //         done()
   //         //     //     } catch (err) {
   //         //     //         throw new Error (`Could not check items in the active order. Error: ${err}`)

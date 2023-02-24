@@ -2,12 +2,14 @@
 import { Product, ProductStore } from '../../models/product';
 // import DbSetup class  to preapre database
 import { DbSetup } from '../utilities/dbSetup';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 describe('Product Model', () => {
   const dbSetup = new DbSetup();
   const store = new ProductStore();
   const testProduct: Product = {
-    id: dbSetup.products.length + 1,
+    id: mockDataSet.products.length + 1,
     name: 'iron',
     price: 19.98,
     url: 'none',
@@ -15,15 +17,15 @@ describe('Product Model', () => {
     category_id: 5,
   };
   const productToUpdate = 0;
-  const updatedProduct: Product = dbSetup.products[productToUpdate];
+  const updatedProduct: Product = mockDataSet.products[productToUpdate];
   updatedProduct.price += 100;
   // const updatedProduct: Product = {
-  //     id: dbSetup.products[productToUpdate].id,
-  //     name: dbSetup.products[productToUpdate].name,
-  //     price: dbSetup.products[productToUpdate].price + 100,
-  //     url: dbSetup.products[productToUpdate].url,
-  //     description: dbSetup.products[productToUpdate].description,
-  //     category_id: dbSetup.products[productToUpdate].category_id
+  //     id: mockDataSet.products[productToUpdate].id,
+  //     name: mockDataSet.products[productToUpdate].name,
+  //     price: mockDataSet.products[productToUpdate].price + 100,
+  //     url: mockDataSet.products[productToUpdate].url,
+  //     description: mockDataSet.products[productToUpdate].description,
+  //     category_id: mockDataSet.products[productToUpdate].category_id
   // }
 
   beforeAll(async () => {
@@ -39,7 +41,7 @@ describe('Product Model', () => {
 
   it('can show a list of products', async () => {
     const result = await store.index();
-    expect(result.length).toEqual(dbSetup.products.length);
+    expect(result.length).toEqual(mockDataSet.products.length);
   });
 
   // TEST show method
@@ -51,7 +53,7 @@ describe('Product Model', () => {
   it('shows product', async () => {
     const productId = 2;
     const result = await store.show(productId);
-    expect(result).toEqual(dbSetup.products[productId - 1]);
+    expect(result).toEqual(mockDataSet.products[productId - 1]);
   });
 
   // TEST create method
@@ -93,6 +95,6 @@ describe('Product Model', () => {
     // expect productList to contain one less product
     // and equal original number of products provided before starting to tes
     const productList = await store.index();
-    expect(productList.length).toEqual(dbSetup.products.length);
+    expect(productList.length).toEqual(mockDataSet.products.length);
   });
 });

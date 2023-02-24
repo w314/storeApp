@@ -8,6 +8,8 @@ import { Product } from '../../models/product';
 import { UserStore } from '../../models/user';
 // import DbSetup class to set up database before testing
 import { DbSetup } from '../utilities/dbSetup';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 describe('Product API Testing', () => {
   const dbSetup = new DbSetup();
@@ -16,7 +18,7 @@ describe('Product API Testing', () => {
   let userToken = '';
   // product to test product entry
   const testProduct: Product = {
-    id: dbSetup.products.length + 1,
+    id: mockDataSet.products.length + 1,
     name: 'Scarf',
     price: 4.5,
     url: '',
@@ -30,12 +32,12 @@ describe('Product API Testing', () => {
     // get user to to use for product creation
     const userStore = new UserStore();
     adminToken = (await userStore.authenticate(
-      dbSetup.admin.username,
-      dbSetup.admin.password
+      mockDataSet.admin.username,
+      mockDataSet.admin.password
     )) as string;
     userToken = (await userStore.authenticate(
-      dbSetup.user.username,
-      dbSetup.user.password
+      mockDataSet.user.username,
+      mockDataSet.user.password
     )) as string;
   });
 
@@ -47,7 +49,7 @@ describe('Product API Testing', () => {
       .expect(200)
       .then((response) => {
         // console.log(response.body)
-        expect(response.body.length).toEqual(dbSetup.products.length);
+        expect(response.body.length).toEqual(mockDataSet.products.length);
         done();
       })
       .catch((err) => {
@@ -65,7 +67,7 @@ describe('Product API Testing', () => {
       .expect(200)
       .then((response) => {
         // console.log(response)
-        expect(response.body).toEqual(dbSetup.products[productId - 1]);
+        expect(response.body).toEqual(mockDataSet.products[productId - 1]);
         done();
       })
       .catch((Error) => {

@@ -7,6 +7,8 @@ import dotenv from 'dotenv';
 import jsonwebtoken from 'jsonwebtoken';
 // import DbSetup class to setup database for testing
 import { DbSetup } from '../utilities/dbSetup';
+// import mock data set
+import mockDataSet from '../utilities/mockDataSet';
 
 // initialize enviromental variables
 dotenv.config();
@@ -40,8 +42,8 @@ describe('User Model', () => {
     // get list of users
     const result = await store.index();
     // console.log(result)
-    expect(result.length).toEqual(dbSetup.users.length);
-    expect(result[0].username).toEqual(dbSetup.users[0].username);
+    expect(result.length).toEqual(mockDataSet.users.length);
+    expect(result[0].username).toEqual(mockDataSet.users[0].username);
   });
 
   /***  test show method  ***/
@@ -51,8 +53,8 @@ describe('User Model', () => {
   });
 
   it('shows requested user', async () => {
-    const result = await store.show(dbSetup.users[1].id);
-    expect(result.username).toEqual(dbSetup.users[1].username);
+    const result = await store.show(mockDataSet.users[1].id);
+    expect(result.username).toEqual(mockDataSet.users[1].username);
   });
 
   /***  test create method  ***/
@@ -68,7 +70,7 @@ describe('User Model', () => {
     // check that createdUser detials match provided testUser input
 
     // expect new user to receive the next available id
-    const userId: number = dbSetup.users.length + 1;
+    const userId: number = mockDataSet.users.length + 1;
     expect(userId).toEqual(createdUser.id);
     // use bcrypt to compare passwords of returned created user and testUser
     expect(bcrypt.compareSync(testUser.password + PEPPER, createdUser.password))

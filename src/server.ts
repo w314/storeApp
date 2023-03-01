@@ -8,8 +8,9 @@ import morgan from 'morgan';
 import orderRoutes from './routes/order';
 import cors from 'cors'
 
-// create express object app
-// it enables us to use express methods
+// app returned by express is a javaScript function
+// designed to be passed to Node's HTTP server
+// to handle requests
 const app: express.Application = express();
 const port = 3001;
 
@@ -31,7 +32,7 @@ userRoutes(app);
 productRoutes(app);
 orderRoutes(app);
 
-// start server
+// start server, app.listen returns an http.Server object
 app.listen(port, () => {
   console.log(`Server is listening on localhost:${port}`);
 });

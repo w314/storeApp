@@ -17,7 +17,7 @@
 - [db-migrate](https://github.com/db-migrate/node-db-migrate#readme) and  [db-migrate-pg](https://www.npmjs.com/package/db-migrate-pg) to handle migrations
 - [jwt](https://jwt.io/introduction/) for authentication
 - [bcrypt](https://www.npmjs.com/package/bcrypt) for password encyption
-- [docker](https://www.docker.com/) for running our app in a container
+- [docker](https://www.docker.com/) for running postgresql in a container
 
 
 
@@ -37,7 +37,7 @@ echo "console.log('Hello World')" > src/server.ts
 ## Initiate [node](https://nodejs.org/en/) app 
 Install [node](https://nodejs.org/en/) if needed. This will also install [npm](https://www.npmjs.com/)
 
-After installation run:
+After installation initiate node application:
 ```bash
 npm init -y
 ```
@@ -203,7 +203,7 @@ npm i --save-dev tsc-watch
 ```typescript
 import express from 'express'
 
-// create express object app
+// create the app express objects
 // it enables us to use express methods
 const app = express();
 const port = 3000;  //can be any number > 1024
@@ -211,8 +211,8 @@ const port = 3000;  //can be any number > 1024
 // middlewares
 
 // map incoming requests to an endpoint
-app.get('/api', (req, res) => {
-  res.send('server working');
+app.get('/', (req, res) => {
+  res.send('server is working');
 });
 
 // start the server
@@ -352,13 +352,13 @@ import { agent as request } from 'supertest';
 import app from '../server';
 
 describe('GET /', () => {
-  it('responds with: Server is working.', (done) => {
+  it('responds with: server is working.', (done) => {
     request(app)
       .get('/')
       .expect(200)
       .expect('Content-Type', 'text/html; charset=utf-8')
       .then((response) => {
-        expect(response.text).toBe('Server is working.');
+        expect(response.text).toBe('server is working.');
         done();
       })
       .catch((Error) => {
@@ -402,7 +402,7 @@ import morgan from 'morgan';
 
 /*After the `app` is declared under `middlewares` include:*/
 
-// log HTTP requests
+// log HTTP requests wiht morgan('dev' specifies the format of the output)
 app.use(morgan('dev'));
 ```
 - running `npm run test` will show `morgan` logging the http request of our spec

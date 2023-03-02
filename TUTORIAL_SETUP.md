@@ -418,7 +418,7 @@ git commit -m 'chore: Add morgan to project'
 
 ## Add [body-parser](https://www.npmjs.com/package/body-parser)
 Node.js body parsing middleware.
-Parse incoming request bodies in a middleware before your handlers, available under the `req.body` property.
+Parse incoming request bodies in a middleware. It will populate the `req.body` with the parsed body.
 
 ### 1. Install
 ```bash
@@ -474,8 +474,9 @@ TOKEN=to_be_set
 BCRYPT_PASSWORD=to_be_set
 SALT_ROUNDS=to_be_set
 ```
-- variables will be set, when we create our database as we develop the application
-- we will set up a database as well and a test database for our application and use the `ENV` variable to set the current environment (development or test)
+- docker will set  up our psql database using the database name, and user info from the `.env` file
+- we will set up the test database  manually
+- the `ENV` variable to set the current environment (development or test)
 
 ### 3. Add `.env` file to `.gitignore`
 It will keep sensitive information local.
@@ -492,12 +493,12 @@ If you want to use the environment variables stored in the `.env` file:
  //Initialize environment variables in your program
 dotenv.config()
 ```
-`dotenv.config()`  will create a javascript object called `process.env` which will have all the environment variables as properties.
+`dotenv.config()`  will create a javascript object called `process.env` which will have all the kyes and values set in the `.env` file.
 
 ```typescript
 //environment variables can be accessed like:
-process.env.YOUR_VARIABLE
-// or
+const myVariable = process.env.VARIABLE_KEY
+// or using object destructuring
 const { YOUR_VARIABLE } = process.env;
 ```
 ### 5. Commit changes
@@ -614,6 +615,8 @@ git commit -m 'chore: Add db-migrate to project'
 
 ## Add [JWT](https://jwt.io/introduction/) (JSON Web Token)
 
+`JWT` will be used for authentication.
+
 ### 1. Install `JWT`
 ```bash
 # install jwt
@@ -635,7 +638,7 @@ git add .
 git commit -m 'chore: Add jwt to project'
 ```
 ## Add [bcrypt](https://www.npmjs.com/package/bcrypt)
->Used for password encription
+Used for password encription
 ### 1. Install 
 ```bash
 npm i bcrypt

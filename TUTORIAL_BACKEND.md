@@ -1,5 +1,5 @@
 # Store App Tutorial - Backend
->Step by step instructions to create the an e-store back end.
+>Step by step instructions to create the Store App.
 
 Work Flow
 1. Set Environmental Variables
@@ -35,9 +35,8 @@ sudo docker compose up -d
 ```
 - `-d` will run container in the background
 - The `docker-compose.yaml` file will set up the container running postgres.
-- It creates the database with the name specified as `POSTGRES_DB` in the `.env`and user from the .env 
-file
-- It will use the user `POSTGRES_USER` and the password `POSTGRES_PASSWORD` set in the `.env` file
+- It creates the database with the name and user specified as `POSTGRES_DB` in the `.env` file.
+- It will create the user `POSTGRES_USER` with the password `POSTGRES_PASSWORD` set in the `.env` file
 
 
 - In case of the error:
@@ -96,14 +95,14 @@ For each migration we will run the `db migrate create` command. At the first run
 - a `migrations` directory in our project root directory
 - an `sqls` directory under migrations
 - migrations will run in order of their creation, so have to be created in logical order (to run without error category table migration has to be run before product table migration)
-- in case categories are introduced later and the order of migration has to be changed one can change the date in the name of the migration files (if the up and down migration file names are, their names have to be updated *within* the automatically generated `.js` migration file)
+- in case categories are introduced later and the order of migration has to be changed one can change the date in the name of the migration files (if the up and down migration file names are changed, their names have to be updated *within* the automatically generated `.js` migration file)
 
 
 At each run it will create:
 - a generated `.js` file that should not be modified under `migrations`
 - two `.sql` files under the `sqls` directory with for the up and down migrations
   - into the `up` migration file you will enter the `sql` command that  will setup your table
-  - the `down` migration file will hold the `sql` command to the migration you just did in the `up` migration
+  - the `down` migration file will hold the `sql` command to reverse the commands you just entered in the `up` migration file
   
 >IMPORTANT: when creating tables DO NOT use camelCase, the result from the database comes back all lower case even if the migration table was set up with camelCase and than the property names of the User from the database doesn't match the property names of the User type.
 

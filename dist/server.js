@@ -12,8 +12,9 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const order_1 = __importDefault(require("./routes/order"));
 const cors_1 = __importDefault(require("cors"));
-// create express object app
-// it enables us to use express methods
+// app returned by express is a javaScript function
+// designed to be passed to Node's HTTP server
+// to handle requests
 const app = (0, express_1.default)();
 const port = 3001;
 // middlewares
@@ -30,7 +31,7 @@ app.use(body_parser_1.default.json());
 (0, user_1.default)(app);
 (0, product_1.default)(app);
 (0, order_1.default)(app);
-// start server
+// start server, app.listen returns an http.Server object
 app.listen(port, () => {
     console.log(`Server is listening on localhost:${port}`);
 });
